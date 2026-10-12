@@ -17,7 +17,7 @@ test("menu opens and shows section links", async ({ page }) => {
   await expect(menu).toBeVisible();
   await expect(menu.getByRole("link", { name: "Work" })).toHaveAttribute(
     "href",
-    "#work",
+    "#wrok",
   );
 
   await page.keyboard.press("Escape");
