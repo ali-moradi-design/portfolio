@@ -1,0 +1,30 @@
+name: Hello CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Before checkout
+        run: ls -la
+
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: After checkout
+        run: ls -la
+
+      - name: Say hello
+        run: echo "Event=${{ github.event_name }} Branch=${{ github.ref_name }} OS=${{ runner.os }}"
+
+  second:
+    needs: hello
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runs after hello
+        run: ls -la
