@@ -27,3 +27,5 @@ Next.js 16, React 19, TypeScript, Tailwind CSS 4, Framer Motion, Lenis, three.js
 Font: Inter (light 300, wide tracking, mostly uppercase) via next/font.
 
 Motion: Framer Motion clip-path and y-reveals. Lenis smooth scroll. Reduced-motion turns clip tricks, Lenis, and the 3D particle ring off.
+
+some change
