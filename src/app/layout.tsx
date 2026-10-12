@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { seo, person } from "@/data/content";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import "./globals.css";
 
-const inter = Inter({
+const inter = localFont({
+  src: "./fonts/inter-latin-wght-normal.woff2",
   variable: "--font-inter",
-  subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500"],
+  weight: "100 900",
 });
 
 export const metadata: Metadata = {
@@ -56,10 +56,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full overflow-x-hidden bg-bg text-ink">
         <CustomCursor />
         {children}
