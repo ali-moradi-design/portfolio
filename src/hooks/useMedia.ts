@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 function useMatch(query: string, initial = false) {
   const [matches, setMatches] = useState(initial);
@@ -28,23 +28,28 @@ export function useIsMobile() {
   return useMatch("(max-width: 767px)", true);
 }
 
-export function useWebGL() {
-  const [ok, setOk] = useState<boolean | null>(null);
+let webglSupport: boolean | undefined;
 
-  useEffect(() => {
+function detectWebGL() {
+  if (webglSupport === undefined) {
     try {
       const canvas = document.createElement("canvas");
-      const gl =
+      webglSupport = Boolean(
         canvas.getContext("webgl2") ||
         canvas.getContext("webgl") ||
-        canvas.getContext("experimental-webgl");
-      setOk(Boolean(gl));
+        canvas.getContext("experimental-webgl"),
+      );
     } catch {
-      setOk(false);
+      webglSupport = false;
     }
-  }, []);
+  }
+  return webglSupport;
+}
 
-  return ok;
+const subscribeNoop = () => () => {};
+
+export function useWebGL(): boolean | null {
+  return useSyncExternalStore(subscribeNoop, detectWebGL, () => null);
 }
 
 export function usePageVisible() {
