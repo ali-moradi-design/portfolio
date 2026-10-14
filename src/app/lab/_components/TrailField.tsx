@@ -99,7 +99,7 @@ export function TrailField({
   children?: ReactNode;
 }) {
   const wrapRef = useRef<HTMLElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hostRef = useRef<HTMLDivElement>(null);
   const h1Ref = useRef<HTMLHeadingElement>(null);
   const tokensRef = useRef(tokens);
   const requestRef = useRef<() => void>(() => {});
@@ -111,15 +111,24 @@ export function TrailField({
 
   useEffect(() => {
     const wrap = wrapRef.current;
-    const canvas = canvasRef.current;
+    const host = hostRef.current;
     const h1 = h1Ref.current;
-    if (!wrap || !canvas || !h1) return;
+    if (!wrap || !host || !h1) return;
 
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!fine || reduce) return;
+    // The lab shows why the trail is off, so a reviewer can tell a setting from a bug.
+    const off = (note: string) => {
+      wrap.dataset.trailNote = note;
+      return () => delete wrap.dataset.trailNote;
+    };
+    if (reduce) return off("Trail is off: this system asks for reduced motion.");
+    if (!fine) return off("Trail is off on touch screens.");
+    // A fresh canvas per effect run: React Strict Mode runs effects twice in development, and a
+    // canvas whose context was lost in the first cleanup cannot give a working context again.
+    const canvas = document.createElement("canvas");
     const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false });
-    if (!gl) return;
+    if (!gl) return off("Trail is off: WebGL is not available in this browser.");
 
     let program: WebGLProgram;
     try {
@@ -127,9 +136,9 @@ export function TrailField({
       gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, VERT));
       gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, FRAG));
       gl.linkProgram(program);
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return off("Trail is off: the WebGL shader did not link.");
     } catch {
-      return;
+      return off("Trail is off: the WebGL shader did not compile.");
     }
     gl.useProgram(program);
 
@@ -259,15 +268,15 @@ export function TrailField({
     ro.observe(wrap);
     document.fonts.ready.then(rebuild);
     window.addEventListener("pointermove", onMove, { passive: true });
+    host.appendChild(canvas);
     h1.classList.add("is-gl");
-    canvas.classList.add("is-on");
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
       window.removeEventListener("pointermove", onMove);
       h1.classList.remove("is-gl");
-      canvas.classList.remove("is-on");
+      canvas.remove();
       requestRef.current = () => {};
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
@@ -276,7 +285,7 @@ export function TrailField({
   const words = headline.split(" ");
   return (
     <section ref={wrapRef} className={`trail ${className ?? ""}`}>
-      <canvas ref={canvasRef} className="trail-canvas" aria-hidden="true" />
+      <div ref={hostRef} className="trail-canvas" aria-hidden="true" />
       {before}
       <h1 ref={h1Ref} className="trail-title">
         {words.map((w, i) => (

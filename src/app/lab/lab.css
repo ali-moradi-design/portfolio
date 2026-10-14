@@ -173,8 +173,12 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 
 /* Variant B: Halftone trail */
 .trail { position: relative; isolation: isolate; }
-.trail-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; display: none; }
-.trail-canvas.is-on { display: block; }
+.trail-canvas { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.trail-canvas canvas { display: block; width: 100%; height: 100%; }
+.trail[data-trail-note]::after {
+  content: attr(data-trail-note); position: absolute; left: 50%; bottom: var(--s-4); transform: translateX(-50%);
+  font-size: var(--step--1); color: var(--muted); background: var(--raised); padding: 6px 10px; border-radius: var(--r-md);
+}
 .trail-title { margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
 .trail-title.is-gl { color: transparent; }
 .trail-title.is-gl ::selection { color: var(--text); background: color-mix(in srgb, var(--accent) 30%, transparent); }
