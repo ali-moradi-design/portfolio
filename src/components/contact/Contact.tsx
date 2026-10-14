@@ -11,7 +11,7 @@ export function Contact() {
       <div className="section-shell">
         <SectionHeading
           title="Contact"
-          kicker="Email is the fastest way to reach me. LinkedIn works too."
+          kicker="Email is the fastest way to reach me. LinkedIn and GitHub work too."
         />
 
         <Reveal>
@@ -37,6 +37,14 @@ export function Contact() {
                 >
                   LinkedIn
                 </a>
+                <a
+                  href={person.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pill"
+                >
+                  GitHub
+                </a>
               </div>
             </div>
             <ul className="divide-y divide-line border-y border-line">
@@ -47,15 +55,6 @@ export function Contact() {
                 </span>
               </li>
               <li className="flex min-h-[3.5rem] items-center justify-between gap-4 px-0">
-                <span className="index-label">Tel</span>
-                <a
-                  href={person.phoneHref}
-                  className="text-sm font-light uppercase tracking-[0.1em] text-ink transition-colors duration-200 hover:text-accent"
-                >
-                  {person.phone}
-                </a>
-              </li>
-              <li className="flex min-h-[3.5rem] items-center justify-between gap-4 px-0">
                 <span className="index-label">In</span>
                 <a
                   href={person.linkedin}
@@ -63,7 +62,18 @@ export function Contact() {
                   rel="noopener noreferrer"
                   className="text-sm font-light uppercase tracking-[0.08em] text-ink transition-colors duration-200 hover:text-accent"
                 >
-                  ali-moradi-91542a213
+                  {person.linkedinLabel}
+                </a>
+              </li>
+              <li className="flex min-h-[3.5rem] items-center justify-between gap-4 px-0">
+                <span className="index-label">Gh</span>
+                <a
+                  href={person.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-light uppercase tracking-[0.08em] text-ink transition-colors duration-200 hover:text-accent"
+                >
+                  {person.githubLabel}
                 </a>
               </li>
             </ul>

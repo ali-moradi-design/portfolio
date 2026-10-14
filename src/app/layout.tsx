@@ -12,7 +12,7 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL("https://ali-moradi-develop.com"),
   title: {
     default: seo.title,
     template: "%s — Ali Moradi",
@@ -20,12 +20,13 @@ export const metadata: Metadata = {
   description: seo.description,
   keywords: [
     "Ali Moradi",
-    "Senior Front-end developer",
+    "Senior Frontend Developer",
     "React",
     "Next.js",
     "dashboards",
     "data visualization",
-    "Tehran",
+    "Istanbul",
+    "remote",
   ],
   authors: [{ name: person.name, url: person.linkedin }],
   creator: person.name,

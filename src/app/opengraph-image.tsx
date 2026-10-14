@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Ali Moradi — Senior Front-end developer";
+export const alt = "Ali Moradi — Senior Frontend Developer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -91,7 +91,7 @@ export default function OpenGraphImage() {
                 color: "#3FD0B8",
               }}
             >
-              Senior Front-end developer
+              Senior Frontend Developer
             </div>
             <div
               style={{
@@ -102,7 +102,7 @@ export default function OpenGraphImage() {
                 color: "#D4D4D4",
               }}
             >
-              5+ years building the dashboards people actually work in.
+              7+ years building enterprise dashboards for big data products.
             </div>
           </div>
           <div
