@@ -1,5 +1,5 @@
 export const person = {
-  name: "Ali Moradi",
+  name: "Ali Moradi (v2)",
   initials: "AM",
   role: "Senior Front-end developer",
   location: "Tehran, Iran",
@@ -9,7 +9,8 @@ export const person = {
   emailHref: "mailto:ali.moradi.design@gmail.com",
   linkedin: "https://www.linkedin.com/in/ali-moradi-91542a213/",
   linkedinLabel: "linkedin.com/in/ali-moradi-91542a213",
-  heroLine: "5+ years building the dashboards people actually work in — AG Grid, maps, charts, React Flow, a Metabase-like builder. Fast React/Next.js for high-traffic teams in Tehran.",
+  heroLine:
+    "5+ years building the dashboards people actually work in — AG Grid, maps, charts, React Flow, a Metabase-like builder. Fast React/Next.js for high-traffic teams in Tehran.",
   years: "5+",
 } as const;
 
