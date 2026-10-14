@@ -10,7 +10,7 @@ export function Work() {
       <div className="section-shell">
         <SectionHeading
           title="Selected Work"
-          kicker="Dashboards and interfaces shipped in production. No live demos to link."
+          kicker="Highlights from production work at Neor, Asiatech, and Homa Pharmed."
           action={
             <a href={person.emailHref} className="pill">
               Contact

@@ -46,6 +46,14 @@ export function Hero() {
           >
             LinkedIn
           </a>
+          <a
+            href={person.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-4 mt-0.5 inline-flex min-h-9 items-center transition hover:text-ink"
+          >
+            GitHub
+          </a>
         </div>
 
         <a
