@@ -1,21 +1,40 @@
 import Link from "next/link";
 import { hero, person } from "@/data/content";
+import { FitStage } from "./FitStage";
 import { Inspector } from "./Inspector";
 import { MiniDashboard } from "./MiniDashboard";
 
 export function HeroInspector() {
   return (
-    <section className="hero-a">
-      <div className="hero-a-copy">
-        <p className="hero-kicker">{person.role}, {person.location}</p>
-        <h1 className="hero-a-title">{person.name}</h1>
+    <section className="hero-fit">
+      <div className="lab-copy">
+        <HeroKicker />
+        <h1 className="hero-title">{person.name}</h1>
         <p className="hero-lede">{hero.bio}</p>
         <HeroActions />
       </div>
-      <Inspector>
-        <MiniDashboard />
-      </Inspector>
+      <InspectorPanel />
     </section>
+  );
+}
+
+export function HeroKicker() {
+  return (
+    <p className="hero-kicker">
+      {person.role}, {person.location}
+    </p>
+  );
+}
+
+export function InspectorPanel({ hint }: { hint?: string }) {
+  return (
+    <div className="lab-panel">
+      <Inspector hint={hint}>
+        <FitStage width={640}>
+          <MiniDashboard compact />
+        </FitStage>
+      </Inspector>
+    </div>
   );
 }
 

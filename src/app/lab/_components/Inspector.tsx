@@ -10,6 +10,8 @@ type Finding = {
   tokens: string[];
   box: Box;
   contrast: number | null;
+  /** Size in design pixels: the dashboard may be scaled to fit the hero. */
+  size: { w: number; h: number };
 };
 
 const MAX_FINDINGS = 12;
@@ -37,6 +39,7 @@ function textElement(el: Element): Element | null {
 
 function describe(el: Element, id: number, origin: DOMRect): Finding {
   const r = el.getBoundingClientRect();
+  const scale = parseFloat(el.closest("[data-scale]")?.getAttribute("data-scale") ?? "1") || 1;
   const textEl = textElement(el);
   let contrast: number | null = null;
   if (textEl) {
@@ -55,6 +58,7 @@ function describe(el: Element, id: number, origin: DOMRect): Finding {
       .map((t) => t.trim())
       .filter(Boolean),
     box: { x: r.left - origin.left, y: r.top - origin.top, w: r.width, h: r.height },
+    size: { w: Math.round(r.width / scale), h: Math.round(r.height / scale) },
     contrast,
   };
 }
@@ -235,6 +239,24 @@ export function Inspector({ children, hint }: { children: ReactNode; hint?: stri
             <div ref={coords} className="insp-coords" />
           </div>
         </div>
+        {findings.length > 0 && (
+          <ul className="insp-report" aria-live="polite">
+            {findings.map((f) => (
+              <li key={f.id}>
+                <span className="insp-report-name">{f.name}</span>
+                <span className="insp-report-size">
+                  {f.size.w} × {f.size.h}
+                </span>
+                <span className="insp-report-tokens">{f.tokens.join(", ") || "no tokens"}</span>
+                {f.contrast !== null && (
+                  <span className={`insp-badge ${f.contrast >= 4.5 ? "is-pass" : "is-fail"}`}>
+                    {f.contrast.toFixed(2)}:1 {f.contrast >= 4.5 ? "AA pass" : "AA fail"}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="insp-panel">
@@ -251,24 +273,6 @@ export function Inspector({ children, hint }: { children: ReactNode; hint?: stri
             )}
           </div>
         </div>
-        {findings.length > 0 && (
-          <ul className="insp-report" aria-live="polite">
-            {findings.map((f) => (
-              <li key={f.id}>
-                <span className="insp-report-name">{f.name}</span>
-                <span className="insp-report-size">
-                  {Math.round(f.box.w)} × {Math.round(f.box.h)}
-                </span>
-                <span className="insp-report-tokens">{f.tokens.join(", ") || "no tokens"}</span>
-                {f.contrast !== null && (
-                  <span className={`insp-badge ${f.contrast >= 4.5 ? "is-pass" : "is-fail"}`}>
-                    {f.contrast.toFixed(2)}:1 {f.contrast >= 4.5 ? "AA pass" : "AA fail"}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </div>
   );
@@ -276,10 +280,11 @@ export function Inspector({ children, hint }: { children: ReactNode; hint?: stri
 
 function Outline({ f }: { f: Finding }) {
   const { x, y, w, h } = f.box;
+  const { w: dw, h: dh } = f.size;
   return (
     <div className="insp-outline" style={{ left: x, top: y, width: w, height: h }}>
       <span className="insp-tag">
-        {f.name} {Math.round(w)}×{Math.round(h)}
+        {f.name} {dw}×{dh}
       </span>
     </div>
   );

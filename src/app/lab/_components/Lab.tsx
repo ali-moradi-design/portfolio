@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useSyncExternalStore, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useSyncExternalStore, type CSSProperties } from "react";
 import { PALETTES, PALETTE_LABELS, TOKENS, type Mode, type Palette } from "../_lib/tokens";
 import { HeroCombined } from "./HeroCombined";
 import { HeroInspector } from "./HeroInspector";
@@ -50,13 +50,25 @@ export function Lab() {
     [params, router],
   );
 
+  // Heroes fill the viewport below the lab toolbar; the toolbar wraps on small screens.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const bar = barRef.current;
+    const root = rootRef.current;
+    if (!bar || !root) return;
+    const ro = new ResizeObserver(() => root.style.setProperty("--lab-bar-h", `${bar.offsetHeight}px`));
+    ro.observe(bar);
+    return () => ro.disconnect();
+  }, []);
+
   const style = Object.fromEntries(
     Object.entries(tokens).map(([k, v]) => [`--${k}`, v]),
   ) as CSSProperties;
 
   return (
-    <div className="lab-root" style={{ ...style, colorScheme: mode }} data-mode={mode}>
-      <header className="lab-bar">
+    <div ref={rootRef} className="lab-root" style={{ ...style, colorScheme: mode }} data-mode={mode}>
+      <header ref={barRef} className="lab-bar">
         <strong className="lab-bar-title">Hero lab</strong>
         <Segmented
           label="Variant"

@@ -65,18 +65,32 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 .btn-secondary { color: var(--text); border-color: var(--border-strong); }
 .btn-secondary:hover { background: var(--raised); }
 
-/* Variant A: Inspector */
-.hero-a {
-  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-7);
-  align-items: center; padding: var(--s-8) max(16px, 2.5vw);
+/* Hero frame: always exactly the viewport below the toolbar, like a poster. Everything inside
+   scales with the frame; the dashboard is laid out at 640 px and scaled to fit (FitStage). */
+.hero-fit {
+  --pad: clamp(16px, 2.5vw, 48px);
+  height: calc(100svh - var(--lab-bar-h, 58px));
+  min-height: 320px;
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(16px, 3vw, 56px); padding: var(--pad); overflow: hidden;
 }
-.hero-a-copy { display: grid; gap: var(--s-5); align-content: center; }
-.hero-a-title { margin: 0; font-size: clamp(3rem, 7vw, 5.5rem); line-height: 1; letter-spacing: -0.02em; text-wrap: balance; }
+.lab-copy { display: grid; gap: clamp(10px, 2.2vh, 24px); align-content: center; min-height: 0; }
+.hero-title, .hero-c .trail-title {
+  margin: 0; line-height: 1; letter-spacing: -0.02em; text-wrap: balance;
+  font-size: clamp(2.25rem, min(6.5vw, 11vh), 6rem);
+}
+.hero-c .trail-title { font-size: clamp(2rem, min(5.4vw, 9.5vh), 5.5rem); }
+.hero-fit .hero-lede { font-size: clamp(0.9rem, min(1.25vw, 2.1vh), 1.125rem); }
+.lab-panel { min-height: 0; min-width: 0; display: grid; }
+.fit-box { position: absolute; inset: var(--s-5); display: grid; place-items: center; }
+.fit-sizer { position: relative; }
+.fit-inner { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 
 /* Inspector */
-.insp { display: grid; gap: var(--s-3); min-width: 0; }
+.insp { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: var(--s-3); min-width: 0; min-height: 0; }
 .insp-frame {
-  display: grid; grid-template-columns: 24px minmax(0, 1fr); grid-template-rows: 24px auto;
+  position: relative; min-height: 0;
+  display: grid; grid-template-columns: 24px minmax(0, 1fr); grid-template-rows: 24px minmax(0, 1fr);
   border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden;
   background:
     radial-gradient(circle, color-mix(in srgb, var(--muted) 28%, transparent) 1px, transparent 1.2px) 0 0 / 16px 16px,
@@ -96,7 +110,7 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
     repeating-linear-gradient(180deg, var(--border-strong) 0 1px, transparent 1px 100px) right / 10px 100% no-repeat;
 }
 .insp-ruler-y span { position: absolute; left: 2px; padding-top: 3px; writing-mode: vertical-rl; transform: rotate(180deg) translateY(-100%); }
-.insp-stage { position: relative; padding: var(--s-6); touch-action: none; user-select: none; }
+.insp-stage { position: relative; min-height: 0; touch-action: none; user-select: none; }
 .insp-overlay { position: absolute; inset: 0; pointer-events: none; }
 .insp-cross-x, .insp-cross-y { position: absolute; opacity: 0; background: var(--accent); }
 .insp-cross-x { top: 0; bottom: 0; left: 0; width: 1px; opacity: 0; }
@@ -126,8 +140,16 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
   border: 1px solid var(--border-strong); border-radius: var(--r-md); padding: 8px 12px; cursor: pointer;
 }
 .insp-actions button:hover { background: var(--raised); }
-.insp-report { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; font-size: var(--step--1); border-top: 1px solid var(--border); }
-.insp-report li { display: grid; grid-template-columns: minmax(0, 1.2fr) 90px minmax(0, 2fr) auto; gap: var(--s-3); align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.insp-report {
+  position: absolute; right: var(--s-3); bottom: var(--s-3); z-index: 2;
+  width: min(460px, calc(100% - 48px)); max-height: 45%; overflow: auto;
+  list-style: none; margin: 0; padding: 4px var(--s-4); display: grid; gap: 0; font-size: 13px; line-height: 1.4;
+  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--r-md);
+  box-shadow: 0 12px 32px -16px color-mix(in srgb, var(--text) 40%, transparent);
+}
+.insp-report li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 2px var(--s-3); align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.insp-report li:last-child { border-bottom: 0; }
+.insp-report-tokens { grid-column: 1 / -1; }
 .insp-report-size { color: var(--muted); font-variant-numeric: tabular-nums; }
 .insp-report-tokens { color: var(--muted); overflow-wrap: anywhere; }
 .insp-badge { font-size: 12px; line-height: 1; padding: 5px 7px; border-radius: var(--r-sm); white-space: nowrap; }
@@ -176,36 +198,34 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 .trail-canvas { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .trail-canvas canvas { display: block; width: 100%; height: 100%; }
 .trail[data-trail-note]::after {
-  content: attr(data-trail-note); position: absolute; left: 50%; bottom: var(--s-4); transform: translateX(-50%);
+  content: attr(data-trail-note); position: absolute; left: 50%; bottom: var(--s-3); transform: translateX(-50%);
   font-size: var(--step--1); color: var(--muted); background: var(--raised); padding: 6px 10px; border-radius: var(--r-md);
 }
 .trail-title { margin: 0; text-wrap: balance; letter-spacing: -0.02em; }
 .trail-title.is-gl { color: transparent; }
 .trail-title.is-gl ::selection { color: var(--text); background: color-mix(in srgb, var(--accent) 30%, transparent); }
 .hero-b {
-  display: grid; justify-items: center; text-align: center; gap: var(--s-5);
-  padding: var(--s-9) max(16px, 2.5vw) var(--s-8); min-height: calc(100vh - 64px); align-content: center;
+  height: calc(100svh - var(--lab-bar-h, 58px)); min-height: 420px;
+  display: grid; place-items: center; text-align: center; padding: clamp(16px, 2.5vw, 48px);
 }
-.hero-b .trail-title { font-size: clamp(3rem, 9vw, 8.5rem); line-height: 0.98; max-width: 12ch; }
+.hero-b .lab-copy { justify-items: center; }
+.hero-b .trail-title { font-size: clamp(2.5rem, min(9vw, 13vh), 8.5rem); line-height: 0.98; max-width: 12ch; }
+.hero-b .hero-lede { font-size: clamp(0.9rem, min(1.25vw, 2.1vh), 1.125rem); }
 .hero-b .hero-actions { justify-content: center; }
 
-/* Variant C: Combined */
-.hero-c { display: grid; }
-.hero-c-top {
-  display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--s-6); align-items: end;
-  padding: var(--s-8) max(16px, 2.5vw) var(--s-6);
+/* Portrait and narrow screens: copy on top, the dashboard fills the rest of the frame. */
+@media (max-width: 600px), (max-aspect-ratio: 5/6) {
+  .hero-fit { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .hero-fit .lab-copy { align-content: start; }
+  .fit-box { inset: var(--s-2); }
 }
-.hero-c-top .trail-title { font-size: clamp(2.75rem, 7vw, 6.5rem); line-height: 1; max-width: 13ch; }
-.hero-c-meta { display: grid; gap: var(--s-4); }
-.hero-c-lede { background: color-mix(in srgb, var(--bg) 80%, transparent); }
-.hero-c-bottom { padding: 0 max(16px, 2.5vw) var(--s-8); }
-
+@media (max-height: 640px) {
+  .hero-fit .hero-lede { display: none; }
+}
 @media (max-width: 900px) {
-  .hero-a, .hero-c-top, .dash-compact { grid-template-columns: minmax(0, 1fr); }
-  .insp-stage { padding: var(--s-3); }
-  .dash-kpis { grid-template-columns: minmax(0, 1fr); }
-  .insp-report li { grid-template-columns: minmax(0, 1fr) auto; }
-  .insp-report-tokens { grid-column: 1 / -1; }
+  .insp-frame { grid-template-columns: 16px minmax(0, 1fr); grid-template-rows: 16px minmax(0, 1fr); }
+  .insp-ruler span { display: none; }
+  .insp-panel-head p { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .lab-root, .lab-root * { transition: none !important; }
