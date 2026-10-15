@@ -7,7 +7,7 @@ type Variant = "primary" | "secondary";
 type Size = "default" | "small";
 
 const base =
-  "inline-flex cursor-pointer items-center border border-transparent text-xs leading-none tracking-[0.06em] text-text uppercase no-underline";
+  "inline-flex cursor-pointer items-center border border-transparent text-xs leading-none tracking-[0.06em] text-text uppercase no-underline disabled:pointer-events-none disabled:opacity-50";
 const variants: Record<Variant, string> = {
   primary:
     "bg-accent text-on-accent [--px-fill:var(--text)] [--px-ink:var(--bg)]",
@@ -31,20 +31,33 @@ function Inner({ children }: { children: ReactNode }) {
   );
 }
 
-/** A link styled as a button. Paths use next/link; mailto and external links use <a>. */
+/**
+ * A link styled as a button. Page links use next/link; mailto, external links
+ * and downloads use <a>.
+ */
 export function ButtonLink({
   href,
   variant = "secondary",
   size = "default",
+  download,
+  external,
   children,
 }: {
   href: string;
   variant?: Variant;
   size?: Size;
+  /** File name to save the linked file as. */
+  download?: string;
+  /** Opens in a new tab. */
+  external?: boolean;
   children: ReactNode;
 }) {
   const className = classes(variant, size);
-  if (href.startsWith("/") || href.startsWith("#")) {
+  if (
+    !download &&
+    !external &&
+    (href.startsWith("/") || href.startsWith("#"))
+  ) {
     return (
       <Link href={href} className={className}>
         <Inner>{children}</Inner>
@@ -52,7 +65,12 @@ export function ButtonLink({
     );
   }
   return (
-    <a href={href} className={className}>
+    <a
+      href={href}
+      className={className}
+      download={download}
+      {...(external && { target: "_blank", rel: "noreferrer" })}
+    >
       <Inner>{children}</Inner>
     </a>
   );
