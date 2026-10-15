@@ -5,9 +5,8 @@ import type { Project } from "./types";
 // `preview` field in types.ts). Entries marked `placeholder` are samples for
 // development only; delete them once real projects are in.
 
+// Samples use a still image only (no video), to keep testing light.
 const sample = (slug: string) => ({
-  webm: `/projects/samples/${slug}.webm`,
-  mp4: `/projects/samples/${slug}.mp4`,
   poster: `/projects/samples/${slug}.jpg`,
 });
 

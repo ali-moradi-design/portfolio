@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import { hexToVec3 } from "@/shared/lib/contrast";
+import { fxOff } from "@/shared/lib/debug";
 import { useTheme } from "@/shared/lib/theme";
 
 // A WebGL2 layer behind a hero, modelled on a small fluid: the cursor pushes "ink" into a
@@ -179,6 +180,7 @@ export function TrailField({
       wrap.dataset.trailNote = note;
       return () => delete wrap.dataset.trailNote;
     };
+    if (fxOff("trail")) return off("Trail is off: ?fx switch.");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
       return off("Trail is off: this system asks for reduced motion.");
     // Touch screens get the static headline; that is the design, not an error, so no note.

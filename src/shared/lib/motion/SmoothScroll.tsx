@@ -2,6 +2,7 @@
 
 import Lenis from "lenis";
 import { useEffect } from "react";
+import { fxOff } from "@/shared/lib/debug";
 import { gsap, prefersReducedMotion, ScrollTrigger } from "./gsap";
 
 /**
@@ -12,7 +13,7 @@ import { gsap, prefersReducedMotion, ScrollTrigger } from "./gsap";
  */
 export function SmoothScroll() {
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (prefersReducedMotion() || fxOff("lenis")) return;
     const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1 });
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);

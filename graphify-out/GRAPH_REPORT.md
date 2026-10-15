@@ -1,23 +1,23 @@
 # Graph Report - portfolio  (2026-10-15)
 
 ## Corpus Check
-- 122 files · ~25,882 words
+- 124 files · ~26,127 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 5, .ttf 1, .woff2 1)
 
 ## Summary
-- 531 nodes · 1168 edges · 21 communities (18 shown, 3 thin omitted)
+- 535 nodes · 1187 edges · 23 communities (19 shown, 4 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.81)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `92993c61`
+- Built from commit: `33b9cc6c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - scripts
-- next
+- lib/logo/index.ts
 - package.json
 - Button.tsx
 - react
@@ -37,6 +37,8 @@
 - @playwright/test
 - engines
 - motion/index.ts
+- FormBuilderSample.tsx
+- @feature-sliced/steiger-plugin
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 42 edges
@@ -45,7 +47,7 @@
 4. `Section()` - 15 edges
 5. `next` - 14 edges
 6. `useTheme()` - 14 edges
-7. `Reveal()` - 13 edges
+7. `Reveal()` - 14 edges
 8. `HomePage()` - 13 edges
 9. `vitest` - 12 edges
 10. `Project` - 12 edges
@@ -68,27 +70,27 @@
 ## Hyperedges (group relationships)
 - **CI/CD flow: build image to ghcr, SSH deploy via compose, health check** — _github_workflows_docker_image_job, _github_workflows_docker_ghcr_portfolio_image, _github_workflows_docker_deploy_job, _github_workflows_docker_srv_apps_portfolio, _github_workflows_docker_site_health_check [EXTRACTED 1.00]
 
-## Communities (21 total, 3 thin omitted)
+## Communities (23 total, 4 thin omitted)
 
 ### Community 0 - "scripts"
 Cohesion: 0.18
 Nodes (11): scripts, build, dev, format, format:check, lint, start, start:standalone (+3 more)
 
-### Community 1 - "next"
-Cohesion: 0.11
-Nodes (15): contentType, size, contentType, size, alt, contentType, OpenGraphImage(), size (+7 more)
+### Community 1 - "lib/logo/index.ts"
+Cohesion: 0.32
+Nodes (7): contentType, size, LOGO_BRACKETS, LOGO_LETTERS, LOGO_STROKES, LOGO_VIEWBOX, logoSvg()
 
 ### Community 2 - "package.json"
-Cohesion: 0.11
-Nodes (17): name, packageManager, private, version, babel-plugin-react-compiler, @feature-sliced/steiger-plugin, prettier, prettier-plugin-tailwindcss (+9 more)
+Cohesion: 0.13
+Nodes (14): name, packageManager, private, version, babel-plugin-react-compiler, prettier, prettier-plugin-tailwindcss, react-dom (+6 more)
 
 ### Community 3 - "Button.tsx"
 Cohesion: 0.10
-Nodes (28): nextConfig, next, metadata, Page(), featuredProjects(), visibleProjects(), ThemeSwitcher(), Button() (+20 more)
+Nodes (27): nextConfig, clsx, next, tailwind-merge, ThemeSwitcher(), cn(), twMerge, Button() (+19 more)
 
 ### Community 4 - "react"
-Cohesion: 0.28
-Nodes (8): react, FitStage(), Hero(), compile(), Double, Fbo, link(), TrailField()
+Cohesion: 0.12
+Nodes (15): react, alt, contentType, OpenGraphImage(), size, tick(), hero, person (+7 more)
 
 ### Community 5 - "CI/CD Workflows"
 Cohesion: 0.08
@@ -107,12 +109,12 @@ Cohesion: 0.11
 Nodes (18): devDependencies, babel-plugin-react-compiler, eslint, eslint-config-next, eslint-config-prettier, eslint-plugin-boundaries, @feature-sliced/steiger-plugin, @playwright/test (+10 more)
 
 ### Community 9 - "RootLayout.tsx"
-Cohesion: 0.11
-Nodes (28): next-themes, huninn, metadata, RootLayout(), themeStyles, viewport, Mode, Palette (+20 more)
+Cohesion: 0.09
+Nodes (30): next-themes, huninn, contentType, size, metadata, RootLayout(), themeStyles, viewport (+22 more)
 
 ### Community 10 - "project/index.ts"
-Cohesion: 0.10
-Nodes (40): applyFilters(), facets(), filtersToQuery(), haystack(), isFiltered(), isSort(), isType(), NO_FILTERS (+32 more)
+Cohesion: 0.09
+Nodes (45): metadata, Page(), applyFilters(), facets(), filtersToQuery(), haystack(), isFiltered(), isSort() (+37 more)
 
 ### Community 11 - "Inspector.tsx"
 Cohesion: 0.10
@@ -123,8 +125,8 @@ Cohesion: 0.50
 Nodes (3): plugins, tailwindFunctions, tailwindStylesheet
 
 ### Community 14 - "WorkSamples.tsx"
-Cohesion: 0.08
-Nodes (28): Page(), CopyButton(), approach, coreSkills, experience, facts, nav, person (+20 more)
+Cohesion: 0.09
+Nodes (27): Page(), CopyButton(), approach, coreSkills, experience, facts, nav, Role (+19 more)
 
 ### Community 15 - "dependencies"
 Cohesion: 0.14
@@ -135,12 +137,16 @@ Cohesion: 0.22
 Nodes (8): eslintConfig, fsd, layers, sliced, eslint, eslint-config-next, eslint-config-prettier, eslint-plugin-boundaries
 
 ### Community 17 - "DashboardBuilderSample.tsx"
-Cohesion: 0.06
-Nodes (47): clsx, tailwind-merge, cn(), twMerge, Tag(), buildSchema(), FieldConfig, fieldSchema() (+39 more)
+Cohesion: 0.08
+Nodes (31): Tag(), linePath(), series(), CATALOG, DashboardBuilderSample(), insert(), Kind, KINDS (+23 more)
 
 ### Community 20 - "motion/index.ts"
-Cohesion: 0.15
-Nodes (8): gsap, @gsap/react, lenis, EASE, prefersReducedMotion(), motionScript, SmoothScroll(), Props
+Cohesion: 0.14
+Nodes (10): gsap, @gsap/react, lenis, Fx, fxOff(), EASE, prefersReducedMotion(), motionScript (+2 more)
+
+### Community 21 - "FormBuilderSample.tsx"
+Cohesion: 0.19
+Nodes (13): zod, buildSchema(), FieldConfig, fieldSchema(), FieldType, MISSING, readForm(), fields (+5 more)
 
 ## Ambiguous Edges - Review These
 - `Inter font via next/font` → `Huninn Font OFL License`  [AMBIGUOUS]
@@ -149,23 +155,23 @@ Nodes (8): gsap, @gsap/react, lenis, EASE, prefersReducedMotion(), motionScript,
 ## Knowledge Gaps
 - **19 isolated node(s):** `react-dom`, `@tailwindcss/turbopack`, `@types/node`, `@types/react`, `@types/react-dom` (+14 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 189 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `react` connect `react` to `package.json`, `Button.tsx`, `SampleDashboard.tsx`, `RootLayout.tsx`, `project/index.ts`, `Inspector.tsx`, `WorkSamples.tsx`, `DashboardBuilderSample.tsx`, `motion/index.ts`?**
+- **Why does `react` connect `react` to `package.json`, `Button.tsx`, `SampleDashboard.tsx`, `RootLayout.tsx`, `project/index.ts`, `Inspector.tsx`, `WorkSamples.tsx`, `DashboardBuilderSample.tsx`, `motion/index.ts`, `FormBuilderSample.tsx`?**
   _High betweenness centrality (0.231) - this node is a cross-community bridge._
 - **What connects `react-dom`, `@tailwindcss/turbopack`, `@types/node` to the rest of the system?**
   _19 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `next` be split into smaller, more focused modules?**
-  _Cohesion score 0.10837438423645321 - nodes in this community are weakly interconnected._
-- **Why does `cn()` connect `DashboardBuilderSample.tsx` to `Button.tsx`, `SampleDashboard.tsx`, `project/index.ts`, `Inspector.tsx`, `WorkSamples.tsx`?**
-  _High betweenness centrality (0.105) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
-- **Why does `next` connect `Button.tsx` to `next`, `package.json`, `SampleDashboard.tsx`, `RootLayout.tsx`, `project/index.ts`, `WorkSamples.tsx`?**
-  _High betweenness centrality (0.098) - this node is a cross-community bridge._
+  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
+- **Why does `cn()` connect `Button.tsx` to `SampleDashboard.tsx`, `project/index.ts`, `Inspector.tsx`, `WorkSamples.tsx`, `DashboardBuilderSample.tsx`, `FormBuilderSample.tsx`?**
+  _High betweenness centrality (0.104) - this node is a cross-community bridge._
+- **Should `Button.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.10104529616724739 - nodes in this community are weakly interconnected._
+- **Why does `next` connect `Button.tsx` to `lib/logo/index.ts`, `package.json`, `react`, `SampleDashboard.tsx`, `RootLayout.tsx`, `project/index.ts`?**
+  _High betweenness centrality (0.097) - this node is a cross-community bridge._
 
 ### Low-confidence Hints
 _AMBIGUOUS edges — the extractor was unsure. Verify before acting on these._

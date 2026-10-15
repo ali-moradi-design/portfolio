@@ -102,6 +102,21 @@ export function ProjectPreview({
     );
   }
 
+  if (!preview.mp4 && !preview.webm) {
+    return (
+      <div className={frame}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- a small still; next/image adds nothing here */}
+        <img
+          src={preview.poster}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="size-full object-cover"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={frame}>
       <video

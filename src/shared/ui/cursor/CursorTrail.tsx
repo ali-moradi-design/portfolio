@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { fxOff } from "@/shared/lib/debug";
 import { useTheme } from "@/shared/lib/theme";
 
 // Cursor after heronaiapp.com, measured frame by frame there. The native
@@ -37,6 +38,7 @@ export function CursorTrail() {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
+    if (fxOff("cursor")) return;
     if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -46,6 +48,7 @@ export function CursorTrail() {
     const square: Point = { x: 0, y: 0 };
     /** Path behind the square, oldest first, STEP px apart. */
     let path: Point[] = [];
+    let dirty = { x: 0, y: 0, w: innerWidth, h: innerHeight };
     let visible = false;
     let started = false;
     let raf = 0;
@@ -102,7 +105,9 @@ export function CursorTrail() {
         }
       }
 
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      // Clear only what the last frame drew, not the whole screen.
+      ctx.clearRect(dirty.x - 2, dirty.y - 2, dirty.w + 4, dirty.h + 4);
+      dirty = { x: 0, y: 0, w: 0, h: 0 };
       if (visible) {
         const c = color.current;
         const n = path.length;
@@ -125,6 +130,16 @@ export function CursorTrail() {
         }
         ctx.fillStyle = c;
         ctx.fillRect(square.x - SIZE / 2, square.y - SIZE / 2, SIZE, SIZE);
+        const xs = [square.x, ...path.map((q) => q.x)];
+        const ys = [square.y, ...path.map((q) => q.y)];
+        const x0 = Math.min(...xs) - SIZE;
+        const y0 = Math.min(...ys) - SIZE;
+        dirty = {
+          x: x0,
+          y: y0,
+          w: Math.max(...xs) + SIZE - x0,
+          h: Math.max(...ys) + SIZE - y0,
+        };
       }
       // Keep animating until the square has arrived and the line is gone.
       if (

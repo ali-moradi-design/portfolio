@@ -294,9 +294,9 @@
     "semantic_hash": ""
   },
   "src/widgets/hero/ui/TrailField.tsx": {
-    "mtime": 1792078541.4022171,
-    "seen": 1792078876.522324,
-    "ast_hash": "ff7325648e0ecbe436e8b31f896b372b",
+    "mtime": 1792082086.9670024,
+    "seen": 1792082170.9760046,
+    "ast_hash": "a8a214bbd365c508d43cad1d77b91140",
     "semantic_hash": ""
   },
   "src/widgets/sample-dashboard/index.ts": {
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "src/entities/project/model/projects.ts": {
-    "mtime": 1792072641.1730158,
-    "seen": 1792072777.984662,
-    "ast_hash": "3d939803a12ee4820ac818ffffb8629e",
+    "mtime": 1792082047.1633286,
+    "seen": 1792082170.9758723,
+    "ast_hash": "a297c83c39c2726624502d4e437432a6",
     "semantic_hash": ""
   },
   "src/entities/project/model/types.ts": {
@@ -606,9 +606,9 @@
     "semantic_hash": ""
   },
   "src/entities/project/ui/ProjectPreview.tsx": {
-    "mtime": 1792081766.1269724,
-    "seen": 1792081877.749689,
-    "ast_hash": "a051892ae5c51263f5904aff81629bec",
+    "mtime": 1792082047.1640084,
+    "seen": 1792082170.9758835,
+    "ast_hash": "836ab3eb3b81ee3448ad3c0c7ce53d9c",
     "semantic_hash": ""
   },
   "src/features/filter-projects/index.ts": {
@@ -713,42 +713,6 @@
     "ast_hash": "3b21a4ed1ff2ff2500d805fb8087b48e",
     "semantic_hash": ""
   },
-  "public/projects/samples/inferno.mp4": {
-    "mtime": 1792070484.8498714,
-    "seen": 1792070751.0639563,
-    "ast_hash": "d31884bcc23783c1d966bd67ff7b3ccb",
-    "semantic_hash": ""
-  },
-  "public/projects/samples/inferno.webm": {
-    "mtime": 1792070483.4018712,
-    "seen": 1792070751.0639575,
-    "ast_hash": "1953d5c027aed8c990f4a525f56e8754",
-    "semantic_hash": ""
-  },
-  "public/projects/samples/midnight.mp4": {
-    "mtime": 1792070477.4516425,
-    "seen": 1792070751.0639586,
-    "ast_hash": "2054ca8c5f7d7dac7d5eaaae5b09636d",
-    "semantic_hash": ""
-  },
-  "public/projects/samples/midnight.webm": {
-    "mtime": 1792070475.7538707,
-    "seen": 1792070751.0639596,
-    "ast_hash": "b2bc1a6bf367fdd367519a03e37ff106",
-    "semantic_hash": ""
-  },
-  "public/projects/samples/sage.mp4": {
-    "mtime": 1792070467.195808,
-    "seen": 1792070751.0639608,
-    "ast_hash": "9460aa7946d3de3d0efe24759777b8b4",
-    "semantic_hash": ""
-  },
-  "public/projects/samples/sage.webm": {
-    "mtime": 1792070465.5498703,
-    "seen": 1792070751.0639617,
-    "ast_hash": "27d073fe6927ee7c6000d1e9b34b0850",
-    "semantic_hash": ""
-  },
   "src/features/filter-projects/model/useProjectFilters.ts": {
     "mtime": 1792072641.3250158,
     "seen": 1792072777.9847152,
@@ -762,9 +726,9 @@
     "semantic_hash": ""
   },
   "src/shared/lib/motion/SmoothScroll.tsx": {
-    "mtime": 1792072956.1153283,
-    "seen": 1792073394.7611127,
-    "ast_hash": "7b0735879ac7a0a0e48916da65364210",
+    "mtime": 1792082086.9662023,
+    "seen": 1792082170.9759324,
+    "ast_hash": "97751b60af852bddc621a4e47af833ab",
     "semantic_hash": ""
   },
   "src/shared/lib/motion/gsap.ts": {
@@ -786,9 +750,9 @@
     "semantic_hash": ""
   },
   "src/shared/ui/cursor/CursorTrail.tsx": {
-    "mtime": 1792078586.1848376,
-    "seen": 1792078876.5222142,
-    "ast_hash": "b0e9786870a8d7dcc429ded0a428408d",
+    "mtime": 1792082086.9658697,
+    "seen": 1792082170.975951,
+    "ast_hash": "b06b05f73da65116334db1065fffd0d1",
     "semantic_hash": ""
   },
   "src/shared/ui/cursor/index.ts": {
@@ -798,9 +762,9 @@
     "semantic_hash": ""
   },
   "src/shared/ui/reveal/Reveal.tsx": {
-    "mtime": 1792072871.2476492,
-    "seen": 1792073394.761141,
-    "ast_hash": "373950dbf75c822e7ff630a311a34e0c",
+    "mtime": 1792082086.966762,
+    "seen": 1792082170.975961,
+    "ast_hash": "e93906675872f2e1c0e1639a412f801c",
     "semantic_hash": ""
   },
   "src/shared/ui/reveal/index.ts": {
@@ -813,6 +777,18 @@
     "mtime": 1792078814.475095,
     "seen": 1792078876.5221238,
     "ast_hash": "389e4a42526cc76f31a0e26ccc4ed638",
+    "semantic_hash": ""
+  },
+  "src/shared/lib/debug/fx.ts": {
+    "mtime": 1792082088.8848245,
+    "seen": 1792082170.9759238,
+    "ast_hash": "9d0366a667d501a771c73a5873907627",
+    "semantic_hash": ""
+  },
+  "src/shared/lib/debug/index.ts": {
+    "mtime": 1792082086.9524262,
+    "seen": 1792082170.9759254,
+    "ast_hash": "7eb521246147bb762c43c98a8e194c77",
     "semantic_hash": ""
   }
 }
