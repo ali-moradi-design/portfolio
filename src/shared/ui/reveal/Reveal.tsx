@@ -15,7 +15,6 @@ import {
   useGSAP,
   watchPageHeight,
 } from "@/shared/lib/motion";
-import { fxOff } from "@/shared/lib/debug";
 
 // Scroll reveals after heronaiapp.com. Elements carry data-reveal so they start
 // hidden (globals.css) until their tween takes over; with reduced motion they
@@ -43,7 +42,7 @@ export function RevealText<T extends ElementType = "p">({
       const el = ref.current;
       if (!el) return;
       gsap.set(el, { autoAlpha: 1 });
-      if (prefersReducedMotion() || fxOff("reveal")) return;
+      if (prefersReducedMotion()) return;
       watchPageHeight();
       SplitText.create(el, {
         type: "lines",
@@ -88,7 +87,7 @@ export function Reveal<T extends ElementType = "div">({
       const el = ref.current;
       if (!el) return;
       gsap.set(el, { autoAlpha: 1 });
-      if (prefersReducedMotion() || fxOff("reveal")) return;
+      if (prefersReducedMotion()) return;
       watchPageHeight();
       const from = { y, autoAlpha: 0 };
       const to = {
@@ -142,7 +141,7 @@ export function ScrambleText({
       const el = ref.current;
       if (!el) return;
       gsap.set(el, { autoAlpha: 1 });
-      if (prefersReducedMotion() || fxOff("reveal")) return;
+      if (prefersReducedMotion()) return;
       watchPageHeight();
       gsap.from(el, {
         duration: 0.9,

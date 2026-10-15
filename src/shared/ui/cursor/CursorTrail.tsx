@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { fxOff } from "@/shared/lib/debug";
 import { useTheme } from "@/shared/lib/theme";
 
 // Cursor after heronaiapp.com, measured frame by frame there. The native
@@ -38,7 +37,6 @@ export function CursorTrail() {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    if (fxOff("cursor")) return;
     if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
