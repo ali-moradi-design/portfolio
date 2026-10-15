@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { nav, person } from "@/data/content";
 import { PALETTES, PALETTE_LABELS, TOKENS, type Mode, type Palette } from "../_lib/tokens";
+import { Logo, type LogoStyle } from "./Logo";
 import { Pixels } from "./Pixels";
 
 // Menu after heronaiapp.com: equal cells divided by rules, mono-style uppercase labels, a pixel
@@ -11,7 +12,7 @@ import { Pixels } from "./Pixels";
 const ITEMS = nav.filter((n) => n.href !== "#contact");
 
 type ThemeProps = { palette: Palette; mode: Mode; onPalette: (p: Palette) => void; onMode: (m: Mode) => void };
-export function HeroNav(theme: ThemeProps) {
+export function HeroNav({ logo, ...theme }: ThemeProps & { logo: LogoStyle }) {
   const [open, setOpen] = useState(false);
 
   const track = (e: React.PointerEvent<HTMLElement>) => {
@@ -26,9 +27,7 @@ export function HeroNav(theme: ThemeProps) {
     <header className="hnav" onPointerMove={track}>
       <div className="hnav-left">
         <Link href="/" className="hnav-brand">
-          <span className="hnav-mark" aria-hidden="true">
-            {person.initials}
-          </span>
+          <Logo style={logo} />
           <span>{person.name}</span>
         </Link>
       </div>

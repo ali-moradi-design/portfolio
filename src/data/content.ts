@@ -21,7 +21,7 @@ export const nav = [
 ] as const;
 
 export const hero = {
-  bio: "7+ years building B2B enterprise dashboards for big data products — data grids, maps, charts, a Metabase-like dashboard builder, a dynamic form builder, and a company-wide UI kit.",
+  bio: "Senior frontend engineer with 7+ years of turning complex, data-heavy products into interfaces people enjoy using. I build them end to end, from the architecture to the last detail, and ship them fast, accessible and tested.",
   corners: {
     role: { index: "01", label: "Senior Frontend Developer" },
     place: { index: "02", label: "Istanbul · Remote" },
