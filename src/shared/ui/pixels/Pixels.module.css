@@ -1,0 +1,14 @@
+/* Pixel dissolve (after heronaiapp.com): the host fills square by square on hover or focus,
+   then its label switches to the ink color. Hosts set --px-fill and --px-ink. */
+.host { position: relative; isolation: isolate; overflow: hidden; --px-fill: var(--text); --px-ink: var(--bg); }
+.grid { position: absolute; inset: 0; z-index: -1; display: grid; grid-auto-rows: 1fr; pointer-events: none; }
+.grid i { background: var(--px-fill); opacity: 0; transition: opacity 0s linear; }
+.host:hover .grid i, .host:focus-visible .grid i, .host[aria-expanded="true"] .grid i { opacity: 1; }
+.label { transition: color 0s linear 190ms; }
+.host:hover .label, .host:focus-visible .label { color: var(--px-ink); }
+
+/* Rolling label: the text slides up and a copy comes in from below. */
+.roll { position: relative; display: inline-grid; overflow: hidden; height: 1.25em; line-height: 1.25; }
+.roll > span { transition: transform var(--dur-3) var(--ease-out); }
+.roll > span + span { position: absolute; top: 100%; left: 0; }
+.host:hover .roll > span, .host:focus-visible .roll > span { transform: translateY(-100%); }

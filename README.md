@@ -27,22 +27,36 @@ Other scripts:
 | ------------ | ------------------------ |
 | `pnpm build` | Production build         |
 | `pnpm start` | Run the production build |
-| `pnpm lint`  | Run ESLint               |
+| `pnpm lint`  | ESLint and steiger (FSD) |
 
 ## What is inside
 
-- Single page with anchored sections: Work, Experience, Skills, About, Contact
-- Cell nav: ALI/MORADI on the left, hamburger (Menu/X) on the right
-- Hero is a viewport instrument frame with numbered corners. A full-bleed particle ring
-  sits behind a left-aligned glass copy card; the right column is empty
-- Content lives in `src/data/content.ts` so copy is easy to edit
+- Home: a one-viewport hero (name with a WebGL2 fluid trail, bio, and a live sample dashboard
+  inside an inspector that reports design tokens and WCAG contrast). More sections are on the way.
+- Three palettes (Sage, Midnight, Inferno), each light and dark, remembered in localStorage and
+  applied before the first paint
+- Content lives in `src/shared/config/content.ts`
+
+## Structure
+
+[Feature-Sliced Design](https://feature-sliced.design), checked by `steiger` in `pnpm lint`:
+
+| Folder | Holds |
+| --- | --- |
+| `app/` | Next.js routes only; each file re-exports from `src/` |
+| `src/app` | Root layout, global styles, fonts |
+| `src/pages` | Pages (`home`) |
+| `src/widgets` | Page blocks: `header`, `hero`, `sample-dashboard` |
+| `src/features` | `inspect-element`, `switch-theme` |
+| `src/shared` | Config (tokens, content), lib (theme, contrast, logo), UI (button, pixels, chart, ...) |
+
+`pages/README.md` keeps Next.js from reading `src/pages` as the Pages Router.
+Styles are CSS Modules next to each component; there are no global class names.
 
 ## Stack
 
-Next.js 16, React 19, TypeScript, Tailwind CSS 4, Framer Motion, Lenis,
-three.js / React Three Fiber (hero particle ring only, loaded client-side with `ssr: false`).
+Next.js 16, React 19, TypeScript, CSS Modules, Highcharts, TanStack Table, WebGL2.
 
-Font: Inter (light 300, wide tracking, mostly uppercase) via `next/font`.
+Font: Huninn (one weight) via `next/font/local`.
 
-Motion: Framer Motion clip-path and y-reveals, Lenis smooth scroll.
-Reduced-motion turns off the clip tricks, Lenis and the 3D particle ring.
+Reduced motion turns off the trail and all transitions.

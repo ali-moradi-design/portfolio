@@ -10,3 +10,4 @@ tsconfig.tsbuildinfo
 npm-debug.log*
 .DS_Store
 graphify-out
+!pages/README.md

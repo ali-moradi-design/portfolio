@@ -1,0 +1,366 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { contrastRatio, parseColor } from "@/shared/lib/contrast";
+import { Button } from "@/shared/ui/button";
+import { AA_GRAPHICS, AA_TEXT, isGraphicRole, isToken, parseTokens } from "../lib/inspectTokens";
+import styles from "./Inspector.module.css";
+
+type Box = { x: number; y: number; w: number; h: number };
+type TokenItem = {
+  label: string;
+  /** Resolved CSS value, shown when short (e.g. "24px"). */
+  value: string | null;
+  /** Set when the value is a color. */
+  swatch: string | null;
+  /** Graphics contrast against the element background (series colors only). */
+  contrast: number | null;
+};
+type Finding = {
+  id: number;
+  name: string;
+  tokens: { role: string; items: TokenItem[] }[];
+  box: Box;
+  /** Text contrast of the first text inside the element. */
+  contrast: number | null;
+  /** Size in design pixels: the dashboard may be scaled to fit the hero. */
+  size: { w: number; h: number };
+};
+
+const MAX_FINDINGS = 12;
+
+function effectiveBackground(el: Element | null): string | null {
+  for (let node = el; node; node = node.parentElement) {
+    const bg = getComputedStyle(node).backgroundColor;
+    if (parseColor(bg)) return bg;
+  }
+  return null;
+}
+
+function hasOwnText(el: Element): boolean {
+  return Array.from(el.childNodes).some((n) => n.nodeType === Node.TEXT_NODE && n.textContent?.trim());
+}
+
+function textElement(el: Element): Element | null {
+  if (hasOwnText(el)) return el;
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (hasOwnText(n as Element)) return n as Element;
+  }
+  return null;
+}
+
+function resolveItem(el: Element, label: string, graphic: boolean, bg: string | null): TokenItem {
+  if (!isToken(label)) return { label, value: null, swatch: null, contrast: null };
+  const raw = getComputedStyle(el).getPropertyValue(label).trim();
+  const color = raw ? parseColor(raw) : null;
+  const bgColor = bg ? parseColor(bg) : null;
+  return {
+    label,
+    value: !color && raw && raw.length <= 10 ? raw : null,
+    swatch: color ? raw : null,
+    contrast: graphic && color && bgColor ? contrastRatio(color, bgColor) : null,
+  };
+}
+
+function describe(el: Element, id: number, origin: DOMRect): Finding {
+  const r = el.getBoundingClientRect();
+  const scale = parseFloat(el.closest("[data-scale]")?.getAttribute("data-scale") ?? "1") || 1;
+  const textEl = textElement(el);
+  let contrast: number | null = null;
+  if (textEl) {
+    const style = getComputedStyle(textEl);
+    // SVG text is painted with `fill`, HTML text with `color`.
+    const fg = parseColor(textEl instanceof SVGElement ? style.fill : style.color);
+    const bgValue = effectiveBackground(textEl);
+    const bg = bgValue ? parseColor(bgValue) : null;
+    if (fg && bg) contrast = contrastRatio(fg, bg);
+  }
+  const elBg = effectiveBackground(el);
+  return {
+    id,
+    name: el.getAttribute("data-inspect") ?? el.tagName.toLowerCase(),
+    tokens: parseTokens(el.getAttribute("data-tokens")).map((g) => ({
+      role: g.role,
+      items: g.items.map((item) => resolveItem(el, item, isGraphicRole(g.role), elBg)),
+    })),
+    box: { x: r.left - origin.left, y: r.top - origin.top, w: r.width, h: r.height },
+    size: { w: Math.round(r.width / scale), h: Math.round(r.height / scale) },
+    contrast,
+  };
+}
+
+function ratio(n: number) {
+  return `${n.toFixed(2)}:1`;
+}
+
+function FindingRow({ f }: { f: Finding }) {
+  return (
+    <li>
+      <span className={styles.reportName}>{f.name}</span>
+      <span className={styles.reportSize}>
+        {f.size.w} × {f.size.h}
+      </span>
+      {f.tokens.length > 0 ? (
+        <dl className={styles.tokens}>
+          {f.tokens.map((g) => (
+            <div key={g.role} className={styles.tokenRow}>
+              <dt>{g.role}</dt>
+              <dd>
+                {g.items.map((item) => (
+                  <span
+                    key={item.label}
+                    className={`${styles.chip}${item.contrast !== null && item.contrast < AA_GRAPHICS ? ` ${styles.fail}` : ""}`}
+                    title={item.contrast !== null ? `Contrast with the background; WCAG AA asks for at least ${AA_GRAPHICS}:1 for graphics` : undefined}
+                  >
+                    {item.swatch && <i className={styles.swatch} style={{ background: item.swatch }} />}
+                    <code>{item.label}</code>
+                    {item.value && <span className={styles.chipValue}>{item.value}</span>}
+                    {item.contrast !== null && <span className={styles.chipValue}>{ratio(item.contrast)}</span>}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <span className={styles.reportEmpty}>No tokens</span>
+      )}
+      {f.contrast !== null && (
+        <span
+          className={`${styles.badge} ${f.contrast >= AA_TEXT ? styles.pass : styles.fail}`}
+          title={`WCAG AA asks for at least ${AA_TEXT}:1 for body text`}
+        >
+          Text contrast {ratio(f.contrast)} · WCAG AA {f.contrast >= AA_TEXT ? "pass" : "fail"}
+        </span>
+      )}
+    </li>
+  );
+}
+
+function intersects(a: Box, b: Box) {
+  return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+}
+
+export function Inspector({ children, hint }: { children: ReactNode; hint?: string }) {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const crossX = useRef<HTMLDivElement>(null);
+  const crossY = useRef<HTMLDivElement>(null);
+  const coords = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ x: number; y: number; id: number } | null>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  const [hover, setHover] = useState<Finding | null>(null);
+  const [selection, setSelection] = useState<Box | null>(null);
+  const [findings, setFindings] = useState<Finding[]>([]);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setSize({ w: Math.round(entry.contentRect.width), h: Math.round(entry.contentRect.height) });
+    });
+    ro.observe(stage);
+    return () => ro.disconnect();
+  }, []);
+
+  const local = (e: { clientX: number; clientY: number }) => {
+    const r = stageRef.current!.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top, origin: r };
+  };
+
+  const moveCrosshair = (x: number, y: number, visible: boolean) => {
+    if (crossX.current) {
+      crossX.current.style.transform = `translateX(${x}px)`;
+      crossX.current.style.opacity = visible ? "1" : "0";
+    }
+    if (crossY.current) {
+      crossY.current.style.transform = `translateY(${y}px)`;
+      crossY.current.style.opacity = visible ? "1" : "0";
+    }
+    if (coords.current) {
+      const stageW = stageRef.current?.clientWidth ?? 0;
+      const flip = x + 12 + coords.current.offsetWidth > stageW;
+      const cx = flip ? x - 12 - coords.current.offsetWidth : x + 12;
+      coords.current.style.transform = `translate(${cx}px, ${y + 12}px)`;
+      coords.current.style.opacity = visible ? "1" : "0";
+      coords.current.textContent = `X:${Math.round(x)}PX  Y:${Math.round(y)}PX`;
+    }
+  };
+
+  const inspectAt = useCallback((clientX: number, clientY: number) => {
+    const stage = stageRef.current;
+    if (!stage) return null;
+    const hit = document.elementFromPoint(clientX, clientY)?.closest("[data-inspect]");
+    if (!hit || !stage.contains(hit)) return null;
+    return describe(hit, 0, stage.getBoundingClientRect());
+  }, []);
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    const { x, y } = local(e);
+    moveCrosshair(x, y, true);
+    if (drag.current) {
+      const d = drag.current;
+      setSelection({ x: Math.min(d.x, x), y: Math.min(d.y, y), w: Math.abs(x - d.x), h: Math.abs(y - d.y) });
+      return;
+    }
+    if (e.pointerType === "mouse") {
+      const f = inspectAt(e.clientX, e.clientY);
+      setHover((prev) => (prev?.name === f?.name && prev?.box.x === f?.box.x && prev?.box.y === f?.box.y ? prev : f));
+    }
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if ((e.target as Element).closest("button, a, input")) return;
+    const { x, y } = local(e);
+    drag.current = { x, y, id: e.pointerId };
+    stageRef.current?.setPointerCapture(e.pointerId);
+    setSelection({ x, y, w: 0, h: 0 });
+  };
+
+  const onPointerUp = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d) return;
+    drag.current = null;
+    stageRef.current?.releasePointerCapture(d.id);
+    const stage = stageRef.current!;
+    const { x, y, origin } = local(e);
+    const sel = { x: Math.min(d.x, x), y: Math.min(d.y, y), w: Math.abs(x - d.x), h: Math.abs(y - d.y) };
+    setSelection(null);
+    if (sel.w < 4 && sel.h < 4) {
+      const f = inspectAt(e.clientX, e.clientY);
+      setFindings(f ? [f] : []);
+      return;
+    }
+    // Pick the innermost inspectable elements the selection touches, like a design tool does.
+    const els = Array.from(stage.querySelectorAll("[data-inspect]"));
+    const hits = els.filter((el) => {
+      const r = el.getBoundingClientRect();
+      return intersects(sel, { x: r.left - origin.left, y: r.top - origin.top, w: r.width, h: r.height });
+    });
+    const leaves = hits.filter((el) => !hits.some((other) => other !== el && el.contains(other)));
+    setFindings(leaves.slice(0, MAX_FINDINGS).map((el, i) => describe(el, i, origin)));
+  };
+
+  const inspectAll = () => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const origin = stage.getBoundingClientRect();
+    setFindings(
+      Array.from(stage.querySelectorAll("[data-inspect]"))
+        .map((el, i) => describe(el, i, origin))
+        .slice(0, MAX_FINDINGS),
+    );
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFindings([]);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const ticksX = Array.from({ length: Math.floor(size.w / 100) + 1 }, (_, i) => i * 100);
+  const ticksY = Array.from({ length: Math.floor(size.h / 100) + 1 }, (_, i) => i * 100);
+
+  return (
+    <div className={styles.root}>
+      <div className={styles.frame}>
+        <div className={styles.corner} aria-hidden="true">+</div>
+        <div className={`${styles.ruler} ${styles.rulerX}`} aria-hidden="true">
+          {ticksX.map((t) => (
+            <span key={t} style={{ left: t }}>
+              {t}
+            </span>
+          ))}
+        </div>
+        <div className={`${styles.ruler} ${styles.rulerY}`} aria-hidden="true">
+          {ticksY.map((t) => (
+            <span key={t} style={{ top: t }}>
+              {t}
+            </span>
+          ))}
+        </div>
+        <div
+          ref={stageRef}
+          className={styles.stage}
+          onPointerMove={onPointerMove}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => {
+            drag.current = null;
+            setSelection(null);
+          }}
+          onPointerLeave={() => {
+            moveCrosshair(0, 0, false);
+            setHover(null);
+          }}
+        >
+          {children}
+          <div className={styles.overlay} aria-hidden="true">
+            {hover && findings.length === 0 && <Guides box={hover.box} />}
+            {hover && findings.length === 0 && <Outline f={hover} />}
+            {findings.map((f) => (
+              <Outline key={f.id} f={f} />
+            ))}
+            {selection && (
+              <div
+                className={styles.selection}
+                style={{ left: selection.x, top: selection.y, width: selection.w, height: selection.h }}
+              />
+            )}
+            <div ref={crossX} className={styles.crossX} />
+            <div ref={crossY} className={styles.crossY} />
+            <div ref={coords} className={styles.coords} />
+          </div>
+        </div>
+        {findings.length > 0 && (
+          <ul className={styles.report} aria-live="polite">
+            {findings.map((f) => (
+              <FindingRow key={f.id} f={f} />
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className={styles.panel}>
+        <div className={styles.panelHead}>
+          <p>{hint ?? "Drag across the dashboard to inspect it, or click one element."}</p>
+          <div className={styles.actions}>
+            <Button size="small" onClick={inspectAll}>
+              Inspect all
+            </Button>
+            {findings.length > 0 && (
+              <Button size="small" onClick={() => setFindings([])}>
+                Clear
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Outline({ f }: { f: Finding }) {
+  const { x, y, w, h } = f.box;
+  const { w: dw, h: dh } = f.size;
+  return (
+    <div className={styles.outline} style={{ left: x, top: y, width: w, height: h }}>
+      <span className={styles.tag}>
+        {f.name} {dw}×{dh}
+      </span>
+    </div>
+  );
+}
+
+function Guides({ box }: { box: Box }) {
+  return (
+    <>
+      <div className={styles.guideV} style={{ left: box.x }} />
+      <div className={styles.guideV} style={{ left: box.x + box.w }} />
+      <div className={styles.guideH} style={{ top: box.y }} />
+      <div className={styles.guideH} style={{ top: box.y + box.h }} />
+    </>
+  );
+}
