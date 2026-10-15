@@ -11,8 +11,9 @@ const cache = new Map<string, number[]>();
 function delays(cols: number, rows: number) {
   const key = `${cols}x${rows}`;
   if (!cache.has(key)) {
-    const step = 168 / cols;
-    cache.set(key, Array.from({ length: cols * rows }, (_, i) => Math.round((i % cols) * step + noise(i) * 110)));
+    // About 0.6 s from the first to the last square.
+    const step = 360 / cols;
+    cache.set(key, Array.from({ length: cols * rows }, (_, i) => Math.round((i % cols) * step + noise(i) * 240)));
   }
   return cache.get(key)!;
 }

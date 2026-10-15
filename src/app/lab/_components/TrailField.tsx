@@ -107,8 +107,10 @@ void main() {
   col = over(col, vec4(uAccent, 1.0) * ta * ink * 0.9);
   col = over(col, vec4(letter, 1.0) * core);
 
-  float dotR = 3.5 * uDpr;
-  float cursor = (1.0 - smoothstep(dotR - aa, dotR + aa, length(p - uPointer.xy))) * uPointer.z;
+  // Square cursor mark, in the same language as the pixel hovers.
+  float half = 3.5 * uDpr;
+  vec2 q = abs(p - uPointer.xy);
+  float cursor = (1.0 - smoothstep(half - 0.5, half + 0.5, max(q.x, q.y))) * uPointer.z;
   col = over(col, vec4(uAccent, 1.0) * cursor);
   o = col;
 }

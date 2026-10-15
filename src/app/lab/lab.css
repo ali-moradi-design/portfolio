@@ -47,10 +47,10 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 .px-grid { position: absolute; inset: 0; z-index: -1; display: grid; grid-auto-rows: 1fr; pointer-events: none; }
 .px-grid i { background: var(--px-fill); opacity: 0; transition: opacity 0s linear; }
 .px:hover .px-grid i, .px:focus-visible .px-grid i, .px[aria-expanded="true"] .px-grid i { opacity: 1; }
-.px .btn-label, .px .roll { transition: color 0s linear 130ms; }
+.px .btn-label, .px .roll { transition: color 0s linear 280ms; }
 .px:hover .btn-label, .px:focus-visible .btn-label, .px:hover .roll, .px:focus-visible .roll { color: var(--px-ink); }
 .roll { position: relative; display: inline-grid; overflow: hidden; height: 1.25em; line-height: 1.25; }
-.roll > span { transition: transform var(--dur-2) var(--ease-out); }
+.roll > span { transition: transform var(--dur-3) var(--ease-out); }
 .roll > span + span { position: absolute; top: 100%; left: 0; }
 .px:hover .roll > span, .px:focus-visible .roll > span { transform: translateY(-100%); }
 
@@ -89,32 +89,7 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 .sw[aria-checked="true"]::before { border-color: var(--text); }
 .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
 
-/* Dark mode control: four looks to compare (?d=1..4) */
-.mode-words { display: flex; gap: 2px; margin-left: var(--s-2); }
-.mode-words button {
-  font: inherit; text-transform: inherit; letter-spacing: inherit; color: var(--muted);
-  background: none; border: 0; padding: 4px 6px; cursor: pointer; position: relative;
-  transition: color var(--dur-2) var(--ease-out);
-}
-.mode-words button + button::before { content: "/"; position: absolute; left: -4px; color: var(--border-strong); }
-.mode-words button[aria-checked="true"] { color: var(--text); }
-.mode-words button[aria-checked="true"]::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: 0; height: 1px; background: var(--accent); }
-
-.mode-half { width: 28px; height: 28px; padding: 4px; margin-left: var(--s-1); border: 0; background: none; color: var(--text); cursor: pointer; }
-.mode-half svg { width: 100%; height: 100%; transition: transform var(--dur-3) var(--ease-emph); }
-.mode-half circle { fill: none; stroke: currentColor; stroke-width: 1.5; }
-.mode-half path { fill: currentColor; }
-.mode-half[aria-checked="true"] svg { transform: rotate(180deg); }
-
-.mode-square {
-  position: relative; display: grid; grid-template-columns: 1fr 1fr; width: 44px; height: 22px; padding: 0; margin-left: var(--s-1);
-  border: 1px solid var(--border-strong); background: none; cursor: pointer; font: inherit; font-size: 10px; color: var(--muted);
-}
-.mode-square > span { display: grid; place-items: center; position: relative; z-index: 1; transition: color var(--dur-2) var(--ease-out); }
-.mode-square-knob { position: absolute !important; top: 2px; left: 2px; width: calc(50% - 4px); height: calc(100% - 4px); background: var(--text); transition: transform var(--dur-3) var(--ease-emph); z-index: 0 !important; }
-.mode-square[aria-checked="false"] .mode-square-l, .mode-square[aria-checked="true"] .mode-square-d { color: var(--bg); }
-.mode-square[aria-checked="true"] .mode-square-knob { transform: translateX(calc(100% + 4px)); }
-
+/* Dark mode control: a sun that turns into a moon */
 .mode-icon { width: 30px; height: 30px; padding: 3px; margin-left: var(--s-1); border: 0; background: none; color: var(--text); cursor: pointer; }
 .mode-icon svg { width: 100%; height: 100%; overflow: visible; transition: transform var(--dur-3) var(--ease-emph); }
 .mode-icon-body { fill: currentColor; transition: r var(--dur-3) var(--ease-emph); }
@@ -125,16 +100,8 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 .mode-icon[aria-checked="true"] .mode-icon-bite { cx: 16.5px; cy: 8.5px; }
 .mode-icon[aria-checked="true"] .mode-icon-rays line { transform: scale(0.4); opacity: 0; }
 
-/* Lab only: design chooser */
-.lab-variants {
-  position: fixed; left: 64px; bottom: 12px; z-index: 30; display: flex; gap: 2px; padding: 3px;
-  background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--r-md);
-}
-.lab-variants button { font: inherit; font-size: 12px; line-height: 1; width: 26px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: var(--muted); cursor: pointer; }
-.lab-variants button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
-
 .hnav-cta { color: var(--accent); min-width: 150px; --px-fill: var(--accent); --px-ink: var(--on-accent); }
-.hnav-arrow { position: absolute; right: 10px; bottom: 8px; font-size: 14px; transition: color 0s linear 130ms; }
+.hnav-arrow { position: absolute; right: 10px; bottom: 8px; font-size: 14px; transition: color 0s linear 280ms; }
 .hnav-cta:hover .hnav-arrow, .hnav-cta:focus-visible .hnav-arrow { color: var(--on-accent); }
 .hnav-burger { display: none; }
 @media (max-width: 1100px) {

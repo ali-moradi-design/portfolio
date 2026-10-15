@@ -16,6 +16,6 @@ test("theme controls switch the palette and mode", async ({ page }) => {
   await page.goto("/lab");
   await page.getByRole("radio", { name: "Midnight theme" }).click();
   await expect(page).toHaveURL(/p=midnight/);
-  await page.getByRole("radio", { name: "dark" }).click();
+  await page.getByRole("switch", { name: "Dark mode" }).click();
   await expect(page).toHaveURL(/m=(dark|light)/);
 });
