@@ -45,3 +45,8 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# graphify (commit the graph, not local paths or the cache)
+/graphify-out/.graphify_python
+/graphify-out/.graphify_root
+/graphify-out/cache/
