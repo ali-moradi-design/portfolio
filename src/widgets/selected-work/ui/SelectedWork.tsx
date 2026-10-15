@@ -7,6 +7,7 @@ import {
 } from "@/entities/project";
 import { cn } from "@/shared/lib/cn";
 import { Pixels, pixelHost, pixelLabel } from "@/shared/ui/pixels";
+import { Reveal } from "@/shared/ui/reveal";
 import { Section } from "@/shared/ui/section";
 
 /** Six featured demo projects and a clear way to all of them. */
@@ -22,12 +23,14 @@ export function SelectedWork() {
       note={`${featured.length} of ${all.length} projects`}
       title="Selected projects, built end to end and running live."
     >
-      <div className={projectGrid[3]}>
+      <Reveal each className={projectGrid[3]}>
         {featured.map((p) => (
           <ProjectCard key={p.slug} project={p} />
         ))}
-      </div>
-      <AllProjectsLink count={all.length} />
+      </Reveal>
+      <Reveal>
+        <AllProjectsLink count={all.length} />
+      </Reveal>
     </Section>
   );
 }

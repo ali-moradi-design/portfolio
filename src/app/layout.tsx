@@ -6,6 +6,8 @@ import {
   themeCss,
   ThemeProvider,
 } from "@/shared/lib/theme";
+import { motionScript, SmoothScroll } from "@/shared/lib/motion";
+import { CursorTrail } from "@/shared/ui/cursor";
 import { huninn } from "./fonts";
 import "./globals.css";
 
@@ -67,9 +69,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
         <script dangerouslySetInnerHTML={{ __html: paletteScript }} />
+        <script dangerouslySetInnerHTML={{ __html: motionScript }} />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SmoothScroll />
+          <CursorTrail />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

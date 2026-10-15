@@ -74,6 +74,13 @@
     @apply outline-2 outline-offset-2 outline-accent;
   }
 
+  /* Content waiting for a scroll reveal starts hidden (only with motion on;
+     see shared/lib/motion). If scripts fail, it shows after 3 s anyway. */
+  html[data-motion] [data-reveal] {
+    visibility: hidden;
+    animation: reveal-fallback 0s 3s forwards;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     ::before,
@@ -81,5 +88,11 @@
       transition: none !important;
       animation: none !important;
     }
+  }
+}
+
+@keyframes reveal-fallback {
+  to {
+    visibility: visible;
   }
 }

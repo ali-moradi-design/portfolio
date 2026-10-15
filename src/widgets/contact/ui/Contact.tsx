@@ -1,6 +1,7 @@
 import { CopyButton } from "@/features/copy-text";
 import { facts, person } from "@/shared/config";
 import { ButtonLink } from "@/shared/ui/button";
+import { Reveal } from "@/shared/ui/reveal";
 import { Section } from "@/shared/ui/section";
 
 const openTo = facts.find((f) => f.label === "Open to")?.value;
@@ -14,7 +15,7 @@ export function Contact() {
       note={openTo}
       title="Let's build an interface people enjoy using."
     >
-      <div className="grid gap-8">
+      <Reveal each className="grid gap-8">
         <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
           <a
             href={person.emailHref}
@@ -39,7 +40,7 @@ export function Contact() {
             GitHub
           </ButtonLink>
         </div>
-      </div>
+      </Reveal>
     </Section>
   );
 }

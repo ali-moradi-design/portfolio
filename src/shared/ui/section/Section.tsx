@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
+import { RevealText, ScrambleText } from "../reveal";
 
 /** Horizontal padding shared by the hero and every section. */
 export const gutter = "px-[clamp(16px,2.5vw,48px)]";
@@ -41,7 +42,7 @@ export function Section({
         <p>
           <span className="text-accent">{index}</span>
           <span aria-hidden="true"> / </span>
-          {label}
+          <ScrambleText text={label} />
         </p>
         {note && <p className="text-right">{note}</p>}
       </div>
@@ -51,12 +52,13 @@ export function Section({
           gutter,
         )}
       >
-        <h2
+        <RevealText
+          as="h2"
           id={headingId}
           className="max-w-[22ch] text-[clamp(2rem,4.6vw,3.1875rem)] leading-[1.1] tracking-[-0.015em] text-balance"
         >
           {title}
-        </h2>
+        </RevealText>
         <div className="mt-[clamp(32px,5vw,72px)]">{children}</div>
       </div>
     </section>

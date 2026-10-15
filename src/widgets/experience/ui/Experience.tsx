@@ -1,4 +1,5 @@
 import { experience, person, workSamples } from "@/shared/config";
+import { Reveal } from "@/shared/ui/reveal";
 import { Section } from "@/shared/ui/section";
 import { WorkSamples } from "./WorkSamples";
 
@@ -18,7 +19,7 @@ export function Experience() {
       note={`${experience.length} companies`}
       title={`${person.years} years of building products with teams.`}
     >
-      <div className="border-b border-border">
+      <Reveal each className="border-b border-border">
         {experience.map((r, i) => (
           <details
             key={r.id}
@@ -68,7 +69,7 @@ export function Experience() {
             </div>
           </details>
         ))}
-      </div>
+      </Reveal>
     </Section>
   );
 }

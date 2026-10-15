@@ -1,4 +1,5 @@
 import { approach, facts } from "@/shared/config";
+import { Reveal } from "@/shared/ui/reveal";
 import { Section } from "@/shared/ui/section";
 
 /** How Ali works (three principles) and the short facts. */
@@ -10,7 +11,11 @@ export function Approach() {
       label="About"
       title="From the architecture to the last detail."
     >
-      <ol className="grid gap-x-[clamp(24px,3vw,56px)] gap-y-10 md:grid-cols-3">
+      <Reveal
+        as="ol"
+        each
+        className="grid gap-x-[clamp(24px,3vw,56px)] gap-y-10 md:grid-cols-3"
+      >
         {approach.map((a, i) => (
           <li
             key={a.title}
@@ -23,8 +28,12 @@ export function Approach() {
             <p className="text-muted">{a.text}</p>
           </li>
         ))}
-      </ol>
-      <dl className="mt-[clamp(48px,6vw,96px)] grid border-t border-border sm:grid-cols-2 lg:grid-cols-4">
+      </Reveal>
+      <Reveal
+        as="dl"
+        each
+        className="mt-[clamp(48px,6vw,96px)] grid border-t border-border sm:grid-cols-2 lg:grid-cols-4"
+      >
         {facts.map((f) => (
           <div
             key={f.label}
@@ -36,7 +45,7 @@ export function Approach() {
             <dd className="text-body-sm">{f.value}</dd>
           </div>
         ))}
-      </dl>
+      </Reveal>
     </Section>
   );
 }
