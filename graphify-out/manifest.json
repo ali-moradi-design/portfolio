@@ -84,9 +84,9 @@
     "semantic_hash": "3e879a16468175751c62252588c8bb15"
   },
   "src/app/lab/_components/Inspector.tsx": {
-    "mtime": 1792064990.4975865,
-    "seen": 1792065084.3598287,
-    "ast_hash": "7110ced6d8955fe29e6cc8fde0ea291e",
+    "mtime": 1792064683.2389483,
+    "seen": 1792064774.1266277,
+    "ast_hash": "91f4d7f68d78876c4e6816a0a012dfe2",
     "semantic_hash": ""
   },
   "src/app/lab/_components/Lab.tsx": {
@@ -102,10 +102,10 @@
     "semantic_hash": "1d5855b01c918374a7443c5db2660b2a"
   },
   "src/app/lab/_components/MiniDashboard.tsx": {
-    "mtime": 1792065057.1870382,
-    "seen": 1792065084.359835,
-    "ast_hash": "635cd6d5bbe31d33d00639c0b668583c",
-    "semantic_hash": ""
+    "mtime": 1792064025.0698113,
+    "seen": 1792064481.8407142,
+    "ast_hash": "6e61eb1b5e2d29747f1960f2f1aaf5d1",
+    "semantic_hash": "6e61eb1b5e2d29747f1960f2f1aaf5d1"
   },
   "src/app/lab/_components/Pixels.tsx": {
     "mtime": 1792064025.0698113,
@@ -402,15 +402,15 @@
     "semantic_hash": "2eeb2b3ada55f38ae966db32bcb1f92a"
   },
   "src/app/lab/_lib/inspectTokens.test.ts": {
-    "mtime": 1792064990.496913,
-    "seen": 1792065084.359845,
-    "ast_hash": "dfecaa8cdbe85c9b465480b341a194cd",
+    "mtime": 1792064312.5405648,
+    "seen": 1792064481.8407285,
+    "ast_hash": "a14759c152a63e48e9d829804b724011",
     "semantic_hash": ""
   },
   "src/app/lab/_lib/inspectTokens.ts": {
-    "mtime": 1792064990.4573727,
-    "seen": 1792065084.3598464,
-    "ast_hash": "646fd4228b6694d5b118ef73bf23d862",
+    "mtime": 1792064312.5373325,
+    "seen": 1792064481.8407307,
+    "ast_hash": "8151fd3c432f71bda0bbf64c2228f90b",
     "semantic_hash": ""
   }
 }

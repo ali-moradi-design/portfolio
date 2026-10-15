@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isGraphicRole, isToken, parseTokens, typeStep } from "./inspectTokens";
+import { isGraphicRole, isToken, parseTokens } from "./inspectTokens";
 
 describe("parseTokens", () => {
   it("splits roles and alternatives", () => {
@@ -19,14 +19,5 @@ describe("parseTokens", () => {
     expect(isToken("tabular")).toBe(false);
     expect(isGraphicRole("series")).toBe(true);
     expect(isGraphicRole("bg")).toBe(false);
-  });
-});
-
-describe("typeStep", () => {
-  it("names sizes on the scale and rejects others", () => {
-    expect(typeStep(17)).toBe("Body");
-    expect(typeStep(14)).toBe("Body S");
-    expect(typeStep(21.0001)).toBe("Body L");
-    expect(typeStep(11)).toBeNull();
   });
 });
