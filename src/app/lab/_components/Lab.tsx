@@ -2,9 +2,11 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useSyncExternalStore, type CSSProperties } from "react";
-import { PALETTES, PALETTE_LABELS, TOKENS, type Mode, type Palette } from "../_lib/tokens";
+import { TokensContext } from "../_lib/theme";
+import { PALETTES, TOKENS, type Mode } from "../_lib/tokens";
 import { HeroCombined } from "./HeroCombined";
 import { HeroInspector } from "./HeroInspector";
+import { HeroNav } from "./HeroNav";
 import { HeroTrail } from "./HeroTrail";
 
 const VARIANTS = [
@@ -12,7 +14,6 @@ const VARIANTS = [
   { id: "b", label: "Halftone trail" },
   { id: "c", label: "Combined" },
 ] as const;
-type VariantId = (typeof VARIANTS)[number]["id"];
 type ModeChoice = Mode | "system";
 
 const darkQuery = "(prefers-color-scheme: dark)";
@@ -52,7 +53,7 @@ export function Lab() {
 
   // Heroes fill the viewport below the lab toolbar; the toolbar wraps on small screens.
   const rootRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const bar = barRef.current;
     const root = rootRef.current;
@@ -67,67 +68,25 @@ export function Lab() {
   ) as CSSProperties;
 
   return (
-    <div ref={rootRef} className="lab-root" style={{ ...style, colorScheme: mode }} data-mode={mode}>
-      <header ref={barRef} className="lab-bar">
-        <strong className="lab-bar-title">Hero lab</strong>
-        <Segmented
-          label="Variant"
-          value={variant}
-          options={VARIANTS.map((v) => ({ value: v.id, label: v.label }))}
-          onChange={(v) => set("v", v as VariantId)}
-        />
-        <Segmented
-          label="Palette"
-          value={palette}
-          options={PALETTES.map((p) => ({ value: p, label: PALETTE_LABELS[p as Palette] }))}
-          onChange={(v) => set("p", v)}
-        />
-        <Segmented
-          label="Mode"
-          value={modeChoice}
-          options={[
-            { value: "system", label: "System" },
-            { value: "light", label: "Light" },
-            { value: "dark", label: "Dark" },
-          ]}
-          onChange={(v) => set("m", v)}
-        />
-      </header>
-      <main>
-        {variant === "a" && <HeroInspector />}
-        {variant === "b" && <HeroTrail tokens={tokens} />}
-        {variant === "c" && <HeroCombined tokens={tokens} />}
-      </main>
-    </div>
-  );
-}
-
-function Segmented({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: { value: string; label: string }[];
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="lab-ctl">
-      <span>{label}</span>
-      <div className="lab-seg" role="group" aria-label={label}>
-        {options.map((o) => (
-          <button
-            key={o.value}
-            type="button"
-            aria-pressed={o.value === value}
-            onClick={() => onChange(o.value)}
-          >
-            {o.label}
-          </button>
-        ))}
+    <TokensContext.Provider value={{ tokens, mode }}>
+      <div ref={rootRef} className="lab-root" style={{ ...style, colorScheme: mode }} data-mode={mode}>
+        <div ref={barRef}>
+          <HeroNav palette={palette} mode={mode} onPalette={(p) => set("p", p)} onMode={(m) => set("m", m)} />
+        </div>
+        <main>
+          {variant === "a" && <HeroInspector />}
+          {variant === "b" && <HeroTrail tokens={tokens} />}
+          {variant === "c" && <HeroCombined tokens={tokens} />}
+        </main>
+        <div className="lab-variants" role="group" aria-label="Lab variant">
+          {VARIANTS.map((v) => (
+            <button key={v.id} type="button" aria-pressed={v.id === variant} title={v.label} onClick={() => set("v", v.id)}>
+              {v.id.toUpperCase()}
+              <span className="sr-only"> {v.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </TokensContext.Provider>
   );
 }

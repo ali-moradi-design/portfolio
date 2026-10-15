@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { contrastRatio, parseColor } from "../_lib/contrast";
+import { Pixels } from "./Pixels";
 
 type Box = { x: number; y: number; w: number; h: number };
 type Finding = {
@@ -263,12 +264,14 @@ export function Inspector({ children, hint }: { children: ReactNode; hint?: stri
         <div className="insp-panel-head">
           <p>{hint ?? "Drag across the dashboard to inspect it, or click one element."}</p>
           <div className="insp-actions">
-            <button type="button" onClick={inspectAll}>
-              Inspect all
+            <button type="button" className="px" onClick={inspectAll}>
+              <Pixels />
+              <span className="btn-label">Inspect all</span>
             </button>
             {findings.length > 0 && (
-              <button type="button" onClick={() => setFindings([])}>
-                Clear
+              <button type="button" className="px" onClick={() => setFindings([])}>
+                <Pixels />
+                <span className="btn-label">Clear</span>
               </button>
             )}
           </div>

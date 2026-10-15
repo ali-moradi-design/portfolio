@@ -178,7 +178,8 @@ export function TrailField({
       return () => delete wrap.dataset.trailNote;
     };
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return off("Trail is off: this system asks for reduced motion.");
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return off("Trail is off on touch screens.");
+    // Touch screens get the static headline; that is the design, not an error, so no note.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
     // A fresh canvas per effect run: React Strict Mode runs effects twice in development, and a
     // canvas whose context was lost in the first cleanup cannot give a working context again.
@@ -353,8 +354,8 @@ export function TrailField({
         // spot, fast moves a bigger and denser one.
         smoothSpeed += (Math.hypot(dx, dy) / dt - smoothSpeed) * 0.35;
         const k = Math.min(smoothSpeed / 1800, 1);
-        const radiusPx = 16 + 44 * k;
-        const amount = 0.25 + 0.6 * k;
+        const radiusPx = 8 + 22 * k;
+        const amount = 0.14 + 0.32 * k;
         const ux = pointer.x / (width / dpr);
         const uy = 1 - pointer.y / (height / dpr);
         const r = radiusPx / (height / dpr);

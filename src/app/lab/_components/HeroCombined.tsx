@@ -1,4 +1,4 @@
-import { hero } from "@/data/content";
+import { hero, person } from "@/data/content";
 import type { Tokens } from "../_lib/tokens";
 import { HeroActions, HeroKicker, InspectorPanel } from "./HeroInspector";
 import { TrailField } from "./TrailField";
@@ -6,7 +6,7 @@ import { TrailField } from "./TrailField";
 export function HeroCombined({ tokens }: { tokens: Tokens }) {
   return (
     <TrailField
-      headline="I build dashboards for big data"
+      headline={person.name}
       tokens={tokens}
       className="hero-fit hero-c"
       before={<HeroKicker />}

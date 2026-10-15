@@ -1,67 +1,153 @@
 "use client";
 
-import { useState } from "react";
+import type Highcharts from "highcharts";
+import dynamic from "next/dynamic";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import { useTokens } from "../_lib/theme";
+import type { Tokens } from "../_lib/tokens";
+import { ServicesTable } from "./ServicesTable";
 
 // Sample data only. The dashboard shows the kind of UI Ali builds; the numbers are not real.
+
+const HcChart = dynamic(() => import("./HcChart"), { ssr: false, loading: () => <div className="hc hc-loading" /> });
+
+function wave(n: number, base: number, amp: number, seed: number) {
+  return Array.from({ length: n }, (_, i) => Math.round(base + amp * Math.sin(i / 2.3 + seed) + amp * 0.45 * Math.sin(i * 1.7 + seed * 3) + i * base * 0.012));
+}
+
 const RANGES = {
   week: {
     label: "7 days",
-    columns: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    series: [
-      [420, 510, 480, 560, 610, 300, 260],
-      [180, 220, 260, 240, 300, 120, 90],
-      [90, 110, 140, 130, 170, 60, 40],
-    ],
+    categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    dashboards: [420, 510, 480, 560, 610, 300, 260],
+    reports: [180, 220, 260, 240, 300, 120, 90],
     kpis: [
-      { name: "Active users", value: "12,480", delta: "+4.2%", good: true },
-      { name: "p95 load", value: "182 ms", delta: "-12 ms", good: true },
-      { name: "Error rate", value: "0.3%", delta: "+0.1%", good: false },
+      { name: "Active users", value: "12,480", delta: "+4.2%", good: true, spark: wave(14, 40, 8, 1) },
+      { name: "p95 load", value: "182 ms", delta: "-12 ms", good: true, spark: wave(14, 30, 6, 2) },
+      { name: "Error rate", value: "0.3%", delta: "+0.1%", good: false, spark: wave(14, 20, 5, 3) },
     ],
+    devices: [62, 31, 7],
   },
   month: {
     label: "30 days",
-    columns: ["W1", "W2", "W3", "W4"],
-    series: [
-      [2900, 3150, 3320, 3480],
-      [1250, 1380, 1410, 1530],
-      [640, 700, 720, 810],
-    ],
+    categories: Array.from({ length: 30 }, (_, i) => String(i + 1)),
+    dashboards: wave(30, 480, 90, 0.4),
+    reports: wave(30, 200, 50, 1.3),
     kpis: [
-      { name: "Active users", value: "48,920", delta: "+9.8%", good: true },
-      { name: "p95 load", value: "194 ms", delta: "-6 ms", good: true },
-      { name: "Error rate", value: "0.2%", delta: "-0.1%", good: true },
+      { name: "Active users", value: "48,920", delta: "+9.8%", good: true, spark: wave(14, 40, 8, 4) },
+      { name: "p95 load", value: "194 ms", delta: "-6 ms", good: true, spark: wave(14, 30, 6, 5) },
+      { name: "Error rate", value: "0.2%", delta: "-0.1%", good: true, spark: wave(14, 20, 5, 6) },
     ],
+    devices: [58, 35, 7],
   },
 } as const;
 type RangeKey = keyof typeof RANGES;
 
-const SERIES = ["Dashboards", "Forms", "Reports"];
+const reducedQuery = "(prefers-reduced-motion: reduce)";
+const subscribeReduced = (cb: () => void) => {
+  const m = window.matchMedia(reducedQuery);
+  m.addEventListener("change", cb);
+  return () => m.removeEventListener("change", cb);
+};
 
-type Row = { service: string; status: "Healthy" | "Degraded" | "Down"; users: number; p95: number };
-const ROWS: Row[] = [
-  { service: "Customer portal", status: "Healthy", users: 51234, p95: 182 },
-  { service: "Dashboard builder", status: "Healthy", users: 8420, p95: 240 },
-  { service: "Support panel", status: "Degraded", users: 1260, p95: 610 },
-  { service: "Form builder", status: "Healthy", users: 3915, p95: 205 },
-  { service: "Report export", status: "Down", users: 0, p95: 0 },
-];
-type SortKey = keyof Row;
+function alpha(hex: string, a: number) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+}
 
-export function MiniDashboard({ compact = false }: { compact?: boolean }) {
+function baseOptions(t: Tokens, animate: boolean): Highcharts.Options {
+  return {
+    chart: { backgroundColor: "transparent", style: { fontFamily: "inherit" }, spacing: [8, 4, 4, 0], animation: animate },
+    title: { text: undefined },
+    credits: { enabled: false },
+    legend: { enabled: false },
+    accessibility: { enabled: true },
+    tooltip: {
+      backgroundColor: t.surface,
+      borderColor: t["border-strong"],
+      borderRadius: 6,
+      shadow: false,
+      style: { color: t.text, fontSize: "12px" },
+      shared: true,
+    },
+    xAxis: { lineColor: t.border, tickColor: t.border, labels: { style: { color: t.muted, fontSize: "11px" } } },
+    yAxis: { gridLineColor: t.border, title: { text: undefined }, labels: { style: { color: t.muted, fontSize: "11px" } } },
+    plotOptions: { series: { animation: animate ? { duration: 600 } : false } },
+  };
+}
+
+export function MiniDashboard() {
+  const { tokens: t } = useTokens();
   const [range, setRange] = useState<RangeKey>("week");
-  const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "users", dir: -1 });
+  const reduced = useSyncExternalStore(subscribeReduced, () => window.matchMedia(reducedQuery).matches, () => true);
   const data = RANGES[range];
 
-  const rows = [...ROWS].sort((a, b) => (a[sort.key] > b[sort.key] ? 1 : a[sort.key] < b[sort.key] ? -1 : 0) * sort.dir);
-  const toggleSort = (key: SortKey) =>
-    setSort((s) => (s.key === key ? { key, dir: s.dir === 1 ? -1 : 1 } : { key, dir: key === "service" || key === "status" ? 1 : -1 }));
+  const area = useMemo<Highcharts.Options>(() => {
+    const b = baseOptions(t, !reduced);
+    const fill = (c: string) => ({ linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, alpha(c, 0.35)], [1, alpha(c, 0)]] as [number, string][] });
+    return {
+      ...b,
+      chart: { ...b.chart, type: "areaspline", height: 210 },
+      xAxis: { ...b.xAxis, categories: [...data.categories], tickInterval: range === "week" ? 1 : 5 },
+      accessibility: { description: "Sessions per day for dashboards and reports, sample data." },
+      series: [
+        { type: "areaspline", name: "Dashboards", data: [...data.dashboards], color: t["chart-1"], fillColor: fill(t["chart-1"]), lineWidth: 2, marker: { enabled: false } },
+        { type: "areaspline", name: "Reports", data: [...data.reports], color: t["chart-2"], fillColor: fill(t["chart-2"]), lineWidth: 2, marker: { enabled: false } },
+      ],
+    };
+  }, [t, reduced, data, range]);
+
+  const donut = useMemo<Highcharts.Options>(() => {
+    const b = baseOptions(t, !reduced);
+    return {
+      ...b,
+      chart: { ...b.chart, type: "pie", height: 210 },
+      tooltip: { ...b.tooltip, shared: false, pointFormat: "<b>{point.y}%</b>" },
+      title: {
+        text: `<span style="font-size:22px">${data.devices[0]}%</span><br/><span style="font-size:11px;color:${t.muted}">desktop</span>`,
+        useHTML: false,
+        verticalAlign: "middle",
+        y: 6,
+        style: { color: t.text },
+      },
+      accessibility: { description: "Share of sessions by device, sample data." },
+      plotOptions: { pie: { innerSize: "72%", borderWidth: 2, borderColor: t.surface, dataLabels: { enabled: false } } },
+      series: [
+        {
+          type: "pie",
+          name: "Devices",
+          data: [
+            { name: "Desktop", y: data.devices[0], color: t["chart-1"] },
+            { name: "Mobile", y: data.devices[1], color: t["chart-2"] },
+            { name: "Tablet", y: data.devices[2], color: t["chart-3"] },
+          ],
+        },
+      ],
+    };
+  }, [t, reduced, data]);
+
+  const sparks = useMemo(
+    () =>
+      data.kpis.map((k) => {
+        const color = k.good ? t.good : t.bad;
+        return {
+          chart: { type: "areaspline", height: 36, width: 80, backgroundColor: "transparent", margin: [2, 0, 2, 0], animation: !reduced },
+          title: { text: undefined },
+          credits: { enabled: false },
+          legend: { enabled: false },
+          tooltip: { enabled: false },
+          accessibility: { enabled: false },
+          xAxis: { visible: false },
+          yAxis: { visible: false },
+          plotOptions: { series: { animation: !reduced, enableMouseTracking: false, marker: { enabled: false } } },
+          series: [{ type: "areaspline", data: [...k.spark], color, lineWidth: 1.5, fillColor: alpha(color, 0.12) }],
+        } satisfies Highcharts.Options;
+      }),
+    [t, reduced, data],
+  );
 
   return (
-    <div
-      className={`dash${compact ? " dash-compact" : ""}`}
-      data-inspect="Dashboard"
-      data-tokens="bg --surface; border --border; radius --r-lg; padding --s-5; gap --s-4"
-    >
+    <div className="dash" data-inspect="Dashboard" data-tokens="bg --surface; border --border; radius --r-lg; padding --s-5; gap --s-4">
       <div className="dash-head" data-inspect="Toolbar" data-tokens="gap --s-3">
         <div>
           <h2 className="dash-title" data-inspect="Title" data-tokens="color --text; font --step-1">
@@ -81,114 +167,45 @@ export function MiniDashboard({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="dash-kpis">
-        {data.kpis.map((k) => (
+        {data.kpis.map((k, i) => (
           <div key={k.name} className="kpi" data-inspect="KPI tile" data-tokens="bg --raised; radius --r-md; padding --s-4">
-            <span className="kpi-name">{k.name}</span>
-            <span className="kpi-value">{k.value}</span>
-            <span className={`kpi-delta ${k.good ? "is-good" : "is-bad"}`}>{k.delta}</span>
+            <div className="kpi-text">
+              <span className="kpi-name">{k.name}</span>
+              <span className="kpi-value">{k.value}</span>
+              <span className={`kpi-delta ${k.good ? "is-good" : "is-bad"}`}>{k.delta}</span>
+            </div>
+            <div className="kpi-spark" aria-hidden="true">
+              <HcChart options={sparks[i]} />
+            </div>
           </div>
         ))}
       </div>
 
-      <figure className="dash-chart" data-inspect="Stacked bar chart" data-tokens="fill --chart-1 / --chart-2 / --chart-3; grid --border">
-        <Chart columns={data.columns} series={data.series} />
-        <figcaption className="dash-legend">
-          {SERIES.map((s, i) => (
-            <span key={s}>
-              <i style={{ background: `var(--chart-${i + 1})` }} />
-              {s}
+      <div className="dash-charts">
+        <figure className="dash-card" data-inspect="Area chart (Highcharts)" data-tokens="series --chart-1 / --chart-2; grid --border">
+          <figcaption className="dash-card-head">
+            <span>Sessions</span>
+            <span className="dash-legend">
+              <span><i style={{ background: "var(--chart-1)" }} />Dashboards</span>
+              <span><i style={{ background: "var(--chart-2)" }} />Reports</span>
             </span>
-          ))}
-        </figcaption>
-      </figure>
+          </figcaption>
+          <HcChart options={area} />
+        </figure>
+        <figure className="dash-card" data-inspect="Donut chart (Highcharts)" data-tokens="series --chart-1 / --chart-2 / --chart-3">
+          <figcaption className="dash-card-head">
+            <span>Devices</span>
+          </figcaption>
+          <HcChart options={donut} />
+          <span className="dash-legend dash-legend-center">
+            <span><i style={{ background: "var(--chart-1)" }} />Desktop</span>
+            <span><i style={{ background: "var(--chart-2)" }} />Mobile</span>
+            <span><i style={{ background: "var(--chart-3)" }} />Tablet</span>
+          </span>
+        </figure>
+      </div>
 
-      {!compact && (
-        <div className="dash-table-wrap" data-inspect="Data table" data-tokens="divider --border; header --muted; numbers tabular">
-          <table className="dash-table">
-            <thead>
-              <tr>
-                {(
-                  [
-                    ["service", "Service"],
-                    ["status", "Status"],
-                    ["users", "Users"],
-                    ["p95", "p95 ms"],
-                  ] as [SortKey, string][]
-                ).map(([key, label]) => (
-                  <th
-                    key={key}
-                    className={key === "users" || key === "p95" ? "num" : undefined}
-                    aria-sort={sort.key === key ? (sort.dir === 1 ? "ascending" : "descending") : "none"}
-                  >
-                    <button type="button" onClick={() => toggleSort(key)}>
-                      {label}
-                    </button>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.service}>
-                  <td>{r.service}</td>
-                  <td>
-                    <span className={`status status-${r.status.toLowerCase()}`}>{r.status}</span>
-                  </td>
-                  <td className="num">{r.users.toLocaleString("en-US")}</td>
-                  <td className="num">{r.p95 || "n/a"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <ServicesTable />
     </div>
-  );
-}
-
-function Chart({ columns, series }: { columns: readonly string[]; series: readonly (readonly number[])[] }) {
-  const W = 480;
-  const H = 200;
-  const L = 44;
-  const B = 24;
-  const T = 12;
-  const totals = columns.map((_, i) => series.reduce((sum, s) => sum + s[i], 0));
-  const rawMax = Math.max(...totals);
-  const step = 10 ** Math.floor(Math.log10(rawMax));
-  const max = Math.ceil(rawMax / step) * step;
-  const ticks = [0, max / 2, max];
-  const y = (v: number) => T + (H - T - B) * (1 - v / max);
-  const bw = (W - L - 8) / columns.length;
-  const fmt = (v: number) => (v >= 1000 ? `${v / 1000}k` : String(v));
-
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Stacked bar chart of sessions per period, sample data">
-      {ticks.map((v) => (
-        <g key={v}>
-          <line x1={L} x2={W - 4} y1={y(v)} y2={y(v)} stroke="var(--border)" />
-          <text x={L - 8} y={y(v) + 4} textAnchor="end" className="chart-label">
-            {fmt(v)}
-          </text>
-        </g>
-      ))}
-      {columns.map((c, i) => {
-        const x = L + 6 + i * bw;
-        const w = Math.max(bw - 14, 4);
-        let acc = 0;
-        return (
-          <g key={c}>
-            {series.map((s, si) => {
-              const top = y(acc + s[i]);
-              const h = y(acc) - top;
-              acc += s[i];
-              return <rect key={si} x={x} y={top} width={w} height={Math.max(h - 1.5, 0)} rx={2} fill={`var(--chart-${si + 1})`} />;
-            })}
-            <text x={x + w / 2} y={H - 6} textAnchor="middle" className="chart-label">
-              {c}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
   );
 }
