@@ -19,3 +19,11 @@ test("theme controls switch the palette and mode", async ({ page }) => {
   await page.getByRole("switch", { name: "Dark mode" }).click();
   await expect(page).toHaveURL(/m=(dark|light)/);
 });
+
+test("trail shaders compile", async ({ page }) => {
+  // The trail may be off in CI (no WebGL2, reduced motion), but a shader compile error is a bug.
+  await page.goto("/lab");
+  await page.waitForTimeout(500);
+  const note = await page.locator(".trail").getAttribute("data-trail-note");
+  expect(note ?? "").not.toContain("did not compile");
+});

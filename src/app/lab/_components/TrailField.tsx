@@ -108,9 +108,9 @@ void main() {
   col = over(col, vec4(letter, 1.0) * core);
 
   // Square cursor mark, in the same language as the pixel hovers.
-  float half = 3.5 * uDpr;
+  float markHalf = 3.5 * uDpr;
   vec2 q = abs(p - uPointer.xy);
-  float cursor = (1.0 - smoothstep(half - 0.5, half + 0.5, max(q.x, q.y))) * uPointer.z;
+  float cursor = (1.0 - smoothstep(markHalf - 0.5, markHalf + 0.5, max(q.x, q.y))) * uPointer.z;
   col = over(col, vec4(uAccent, 1.0) * cursor);
   o = col;
 }
@@ -192,7 +192,9 @@ export function TrailField({
     let progs: { splat: ReturnType<typeof link>; advect: ReturnType<typeof link>; display: ReturnType<typeof link> };
     try {
       progs = { splat: link(gl, SPLAT), advect: link(gl, ADVECT), display: link(gl, DISPLAY) };
-    } catch {
+    } catch (error) {
+      // Log the compiler message so a broken shader is easy to find in the browser console.
+      console.error(error);
       return off("Trail is off: the WebGL shaders did not compile.");
     }
 
