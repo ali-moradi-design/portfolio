@@ -1,8 +1,31 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { TOKENS } from "@/app/lab/_lib/tokens";
+import { hero, person } from "@/data/content";
+import { logoSvg } from "@/lib/logo";
 
-export const alt = "Ali Moradi — Senior Frontend Developer";
+export const alt = `${person.name}, ${person.role}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+// Social preview in the Sage light palette: the [AM] logo, the name in Huninn, the role and the bio,
+// framed by the corner ticks of the hero inspector. Read once at module scope; nothing depends on the request.
+const t = TOKENS.sage.light;
+const huninn = await readFile(join(process.cwd(), "src/app/fonts/huninn-latin.ttf"));
+const logo = `data:image/svg+xml;base64,${Buffer.from(logoSvg({ text: t.text, accent: t.accent })).toString("base64")}`;
+
+const tick = (pos: Record<string, number>, sides: string[]) => (
+  <div
+    style={{
+      position: "absolute",
+      width: 28,
+      height: 28,
+      ...pos,
+      ...Object.fromEntries(sides.map((s) => [`border${s}`, `3px solid ${t.accent}`])),
+    }}
+  />
+);
 
 export default function OpenGraphImage() {
   return new ImageResponse(
@@ -14,126 +37,33 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "#1C1C1C",
-          color: "#E6E6E6",
-          padding: "56px 64px",
+          padding: "72px 84px",
+          background: t.bg,
+          backgroundImage: `radial-gradient(circle, ${t.border} 1.4px, transparent 1.6px)`,
+          backgroundSize: "24px 24px",
+          color: t.text,
+          fontFamily: "Huninn",
           position: "relative",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(to right, #282727 1px, transparent 1px), linear-gradient(to bottom, #282727 1px, transparent 1px)",
-            backgroundSize: "86px 86px",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 16,
-            letterSpacing: 5,
-            textTransform: "uppercase",
-            color: "#8A8A8A",
-            fontWeight: 300,
-          }}
-        >
-          <span>01. SENIOR FRONT-END DEVELOPER</span>
-          <span>02. TEHRAN BASED</span>
+        {tick({ left: 40, top: 40 }, ["Left", "Top"])}
+        {tick({ right: 40, top: 40 }, ["Right", "Top"])}
+        {tick({ left: 40, bottom: 40 }, ["Left", "Bottom"])}
+        {tick({ right: 40, bottom: 40 }, ["Right", "Bottom"])}
+        <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 26 }}>
+          <img src={logo} width={76} height={56} alt="" />
+          <span style={{ color: t.muted }}>{person.role}, {person.location}</span>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 48,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              width: 430,
-              flexShrink: 0,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 72,
-                fontWeight: 300,
-                letterSpacing: -2,
-                lineHeight: 0.92,
-                color: "#E6E6E6",
-              }}
-            >
-              Ali
-            </div>
-            <div
-              style={{
-                fontSize: 72,
-                fontWeight: 300,
-                letterSpacing: -2,
-                lineHeight: 0.92,
-                color: "#E6E6E6",
-              }}
-            >
-              Moradi
-            </div>
-            <div
-              style={{
-                marginTop: 18,
-                fontSize: 16,
-                fontWeight: 300,
-                letterSpacing: 4,
-                textTransform: "uppercase",
-                color: "#3FD0B8",
-              }}
-            >
-              Senior Frontend Developer
-            </div>
-            <div
-              style={{
-                marginTop: 16,
-                fontSize: 18,
-                fontWeight: 300,
-                lineHeight: 1.45,
-                color: "#D4D4D4",
-              }}
-            >
-              7+ years building enterprise dashboards for big data products.
-            </div>
-          </div>
-          <div
-            style={{
-              width: 520,
-              height: 360,
-              borderRadius: 220,
-              background:
-                "radial-gradient(ellipse 70% 58% at 48% 52%, rgba(230,230,230,0.38) 0%, rgba(230,230,230,0.08) 46%, transparent 72%)",
-              flexShrink: 0,
-            }}
-          />
+        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+          <div style={{ fontSize: 124, lineHeight: 1, letterSpacing: -3 }}>{person.name}</div>
+          <div style={{ fontSize: 30, lineHeight: 1.4, color: t.muted, maxWidth: 900 }}>{hero.bio}</div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 18,
-            letterSpacing: 4,
-            textTransform: "uppercase",
-            color: "#8A8A8A",
-            fontWeight: 300,
-          }}
-        >
-          <span>
-            <span style={{ color: "#3FD0B8" }}>ALI</span>MORADI
-          </span>
-          <span>04. OPEN TO WORK</span>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 22, color: t.muted }}>
+          <span>ali-moradi-develop.com</span>
+          <span style={{ color: t.accent }}>Open to remote roles</span>
         </div>
       </div>
     ),
-    { ...size },
+    { ...size, fonts: [{ name: "Huninn", data: huninn, weight: 400, style: "normal" }] },
   );
 }

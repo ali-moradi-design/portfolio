@@ -6,7 +6,6 @@ import { TokensContext } from "../_lib/theme";
 import { PALETTES, TOKENS, type Mode } from "../_lib/tokens";
 import { HeroCombined } from "./HeroCombined";
 import { HeroNav } from "./HeroNav";
-import type { LogoStyle } from "./Logo";
 
 type ModeChoice = Mode | "system";
 
@@ -36,7 +35,7 @@ export function Lab() {
   const tokens = TOKENS[palette][mode];
 
   const set = useCallback(
-    (key: "p" | "m" | "logo", value: string) => {
+    (key: "p" | "m", value: string) => {
       const next = new URLSearchParams(params.toString());
       next.set(key, value);
       router.replace(`?${next.toString()}`, { scroll: false });
@@ -57,8 +56,6 @@ export function Lab() {
   }, []);
 
   const theme = { palette, mode, onPalette: (p: string) => set("p", p), onMode: (m: string) => set("m", m) };
-  // Lab only: compare logo candidates.
-  const logo = pick(params.get("logo"), ["1", "2", "3"] as const, "1") as LogoStyle;
 
   const style = Object.fromEntries(
     Object.entries(tokens).map(([k, v]) => [`--${k}`, v]),
@@ -68,18 +65,11 @@ export function Lab() {
     <TokensContext.Provider value={{ tokens, mode }}>
       <div ref={rootRef} className="lab-root" style={{ ...style, colorScheme: mode }} data-mode={mode}>
         <div ref={barRef}>
-          <HeroNav {...theme} logo={logo} />
+          <HeroNav {...theme} />
         </div>
         <main>
           <HeroCombined tokens={tokens} />
         </main>
-        <div className="lab-variants" role="group" aria-label="Logo candidate">
-          {(["1", "2", "3"] as const).map((l) => (
-            <button key={l} type="button" aria-pressed={l === logo} onClick={() => set("logo", l)}>
-              {l}
-            </button>
-          ))}
-        </div>
       </div>
     </TokensContext.Provider>
   );

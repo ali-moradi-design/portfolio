@@ -1,27 +1,19 @@
 import { ImageResponse } from "next/og";
+import { TOKENS } from "@/app/lab/_lib/tokens";
+import { logoSvg } from "@/lib/logo";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
+// Favicon: the [AM] logo on a dark Sage tile, which stays readable on light and dark browser tabs.
+const t = TOKENS.sage.dark;
+const src = `data:image/svg+xml;base64,${Buffer.from(logoSvg({ text: t.text, accent: t.accent })).toString("base64")}`;
+
 export default function Icon() {
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#1C1C1C",
-          color: "#3FD0B8",
-          fontSize: 12,
-          fontWeight: 300,
-          letterSpacing: 1,
-          fontFamily: "ui-sans-serif, system-ui, sans-serif",
-        }}
-      >
-        AM
+      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: t.bg, borderRadius: 6 }}>
+        <img src={src} width={29} height={21.5} alt="" />
       </div>
     ),
     { ...size },
