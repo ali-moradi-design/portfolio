@@ -161,7 +161,7 @@ export function MiniDashboard() {
 
       <div className="dash-kpis">
         {data.kpis.map((k, i) => (
-          <div key={k.name} className="kpi" data-inspect="KPI tile" data-tokens="bg --raised; radius --r-md; padding --s-4">
+          <div key={k.name} className="kpi" data-inspect="KPI tile" data-tokens="bg --raised; radius --r-md; padding --s-3 / --s-4">
             <div className="kpi-text">
               <span className="kpi-name">{k.name}</span>
               <span className="kpi-value">{k.value}</span>
