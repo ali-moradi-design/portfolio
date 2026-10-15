@@ -32,7 +32,7 @@ export type Project = {
    * still `<slug>.jpg`. Leave out for a plain placeholder.
    */
   preview?: { webm?: string; mp4?: string; poster: string };
-  /** Shown on the home page (3 or 4 of them). */
+  /** Shown on the home page (the first six). */
   featured?: boolean;
   /** Sample data for development; never in a production build. */
   placeholder?: boolean;

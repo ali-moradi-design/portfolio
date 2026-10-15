@@ -2,8 +2,12 @@ export {
   applyFilters,
   facets,
   filtersToQuery,
+  isFiltered,
+  NO_FILTERS,
   parseFilters,
+  SORTS,
   type ProjectFilters,
+  type Sort,
 } from "./model/filters";
 export {
   PROJECT_TYPES,
@@ -11,5 +15,9 @@ export {
   type Project,
   type ProjectType,
 } from "./model/types";
-export { featuredProjects, visibleProjects } from "./model/visible";
-export { ProjectCard, ProjectRow } from "./ui/ProjectCard";
+export {
+  FEATURED_MAX,
+  featuredProjects,
+  visibleProjects,
+} from "./model/visible";
+export { ProjectCard, projectGrid } from "./ui/ProjectCard";

@@ -18,11 +18,9 @@ test("home shows featured projects and links to all of them", async ({
   await expect(
     work.getByRole("link", { name: /Open live/ }).first(),
   ).toHaveAttribute("href", /^https:\/\/[a-z0-9-]+\.ali-moradi-develop\.com$/);
-  await work.getByRole("link", { name: "All projects →" }).click();
+  await work.getByRole("link", { name: /Browse every project/ }).click();
   await expect(page).toHaveURL(/\/projects$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "All projects",
-  );
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Projects");
 });
 
 test("projects page filters by type and tech through the URL", async ({
@@ -45,7 +43,7 @@ test("projects page filters by type and tech through the URL", async ({
     types.getByRole("button", { name: /^Dashboard/ }),
   ).toHaveAttribute("aria-pressed", "true");
 
-  await page.getByRole("button", { name: "Clear filters" }).first().click();
+  await page.getByRole("button", { name: "Clear all" }).click();
   await expect(rows).toHaveCount(total);
   await expect(page).toHaveURL(/\/projects$/);
 });
@@ -88,4 +86,14 @@ test("the CV downloads as a PDF", async ({ page, request }) => {
   const response = await request.get((await link.getAttribute("href"))!);
   expect(response.ok()).toBe(true);
   expect(response.headers()["content-type"]).toContain("application/pdf");
+});
+
+test("each filter design preview renders and filters", async ({ page }) => {
+  for (let i = 1; i <= 6; i++) {
+    await page.goto(`/projects/designs/${i}?type=dashboard`);
+    await expect(page.locator("main article").first()).toBeVisible();
+    await expect(page.getByRole("status").first()).toContainText(
+      /of \d+ projects/,
+    );
+  }
 });

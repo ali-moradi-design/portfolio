@@ -1,12 +1,15 @@
+import Link from "next/link";
 import {
   featuredProjects,
   ProjectCard,
+  projectGrid,
   visibleProjects,
 } from "@/entities/project";
-import { ButtonLink } from "@/shared/ui/button";
+import { cn } from "@/shared/lib/cn";
+import { Pixels, pixelHost, pixelLabel } from "@/shared/ui/pixels";
 import { Section } from "@/shared/ui/section";
 
-/** Three or four featured demo projects and a link to all of them. */
+/** Six featured demo projects and a clear way to all of them. */
 export function SelectedWork() {
   const all = visibleProjects();
   const featured = featuredProjects(all);
@@ -17,21 +20,46 @@ export function SelectedWork() {
       index="01"
       label="Selected work"
       note={`${featured.length} of ${all.length} projects`}
-      title="Projects you can open and try, each live on its own subdomain."
+      title="Selected projects, built end to end and running live."
     >
-      <div className="grid gap-x-[clamp(24px,3vw,48px)] gap-y-14 md:grid-cols-2">
+      <div className={projectGrid[3]}>
         {featured.map((p) => (
           <ProjectCard key={p.slug} project={p} />
         ))}
       </div>
-      <div className="mt-[clamp(40px,5vw,72px)] flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
-        <p className="text-muted">
-          Filter all {all.length} projects by type and tech.
-        </p>
-        <ButtonLink href="/projects" variant="primary">
-          All projects →
-        </ButtonLink>
-      </div>
+      <AllProjectsLink count={all.length} />
     </Section>
+  );
+}
+
+/** A full-width ruled row that fills with pixels on hover, like the menu. */
+function AllProjectsLink({ count }: { count: number }) {
+  return (
+    <Link
+      href="/projects"
+      className={cn(
+        pixelHost,
+        "group/all mt-[clamp(48px,6vw,88px)] flex items-center justify-between gap-6 border-y border-text px-[clamp(16px,2vw,28px)] py-[clamp(20px,3vw,40px)] text-text no-underline [--px-fill:var(--accent)] [--px-ink:var(--on-accent)]",
+      )}
+    >
+      <Pixels cols={48} rows={6} />
+      <span className={cn(pixelLabel, "grid gap-1")}>
+        <span className="text-xs tracking-[0.06em] uppercase">
+          All projects · {count}
+        </span>
+        <span className="text-[clamp(1.75rem,4.4vw,3.1875rem)] leading-none tracking-[-0.015em]">
+          Browse every project
+        </span>
+      </span>
+      <span
+        aria-hidden="true"
+        className={cn(
+          pixelLabel,
+          "text-[clamp(1.75rem,4.4vw,3.1875rem)] leading-none transition-transform duration-320 ease-out-soft group-hover/all:translate-x-2",
+        )}
+      >
+        →
+      </span>
+    </Link>
   );
 }

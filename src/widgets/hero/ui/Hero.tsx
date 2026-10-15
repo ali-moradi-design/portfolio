@@ -38,7 +38,7 @@ export function Hero({ showcase }: { showcase: ReactNode }) {
         {hero.bio}
       </p>
       <div className="flex flex-wrap gap-3">
-        <ButtonLink href="/#work" variant="primary">
+        <ButtonLink href="/projects" variant="primary">
           See projects
         </ButtonLink>
         <ButtonLink href={person.emailHref}>Email me</ButtonLink>

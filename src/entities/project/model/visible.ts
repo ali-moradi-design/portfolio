@@ -16,5 +16,8 @@ export function visibleProjects(
     .toSorted((a, b) => b.year - a.year);
 }
 
+/** How many projects the home page shows. */
+export const FEATURED_MAX = 6;
+
 export const featuredProjects = (list = visibleProjects()) =>
-  list.filter((p) => p.featured).slice(0, 4);
+  list.filter((p) => p.featured).slice(0, FEATURED_MAX);

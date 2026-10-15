@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { applyFilters, facets, filtersToQuery, parseFilters } from "./filters";
+import {
+  applyFilters,
+  facets,
+  filtersToQuery,
+  NO_FILTERS,
+  parseFilters,
+} from "./filters";
 import type { Project } from "./types";
 import { visibleProjects } from "./visible";
 
@@ -26,6 +32,7 @@ describe("project filters", () => {
       "type=dashboard&tech=React&tech=React&tech=Nope",
     );
     expect(parseFilters(params, list)).toEqual({
+      ...NO_FILTERS,
       type: "dashboard",
       tech: ["React"],
     });
@@ -33,19 +40,27 @@ describe("project filters", () => {
   });
 
   it("round-trips through the query string", () => {
-    const filters = { type: "website" as const, tech: ["React", "Zod"] };
+    const filters = {
+      ...NO_FILTERS,
+      type: "website" as const,
+      tech: ["React", "Zod"],
+      q: "map",
+      sort: "title" as const,
+    };
     const query = filtersToQuery(filters);
-    expect(query).toBe("?type=website&tech=React&tech=Zod");
+    expect(query).toBe("?type=website&tech=React&tech=Zod&q=map&sort=title");
     expect(parseFilters(new URLSearchParams(query), list)).toEqual(filters);
-    expect(filtersToQuery({ type: null, tech: [] })).toBe("");
+    expect(filtersToQuery(NO_FILTERS)).toBe("");
   });
 
   it("matches the type and every picked tech", () => {
-    const slugs = (f: Parameters<typeof applyFilters>[1]) =>
-      applyFilters(list, f).map((x) => x.slug);
-    expect(slugs({ type: null, tech: ["React"] })).toEqual(["a", "b"]);
+    const slugs = (f: Partial<typeof NO_FILTERS>) =>
+      applyFilters(list, { ...NO_FILTERS, ...f }).map((x) => x.slug);
+    expect(slugs({ tech: ["React"] })).toEqual(["b", "a"]);
     expect(slugs({ type: "dashboard", tech: ["React", "Zod"] })).toEqual(["a"]);
-    expect(slugs({ type: "tool", tech: [] })).toEqual([]);
+    expect(slugs({ type: "tool" })).toEqual([]);
+    expect(slugs({ q: "zod" })).toEqual(["a"]);
+    expect(slugs({ sort: "oldest", tech: ["React"] })).toEqual(["a", "b"]);
   });
 
   it("counts the options", () => {

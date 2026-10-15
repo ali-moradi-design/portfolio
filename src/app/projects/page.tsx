@@ -4,7 +4,7 @@ import { ProjectsPage } from "@/views/projects";
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Demo projects by Ali Moradi, each live on its own subdomain. Filter them by type and tech.",
+    "Complete products by Ali Moradi, designed and built end to end, each running on its own subdomain. Filter by type or technology.",
 };
 
 export default function Page() {
