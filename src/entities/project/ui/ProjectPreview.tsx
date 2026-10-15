@@ -1,20 +1,34 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { cn } from "@/shared/lib/cn";
 import type { Project } from "../model/types";
 
 const reducedQuery = "(prefers-reduced-motion: reduce)";
-const subscribeReduced = (cb: () => void) => {
-  const m = window.matchMedia(reducedQuery);
+const hoverQuery = "(hover: hover) and (pointer: fine)";
+const subscribe = (query: string) => (cb: () => void) => {
+  const m = window.matchMedia(query);
   m.addEventListener("change", cb);
   return () => m.removeEventListener("change", cb);
 };
 
+// Decoding several videos at once halves the frame rate on ordinary machines,
+// so at most one preview plays at any time.
+let playing: HTMLVideoElement | null = null;
+function play(video: HTMLVideoElement) {
+  if (playing && playing !== video) playing.pause();
+  playing = video;
+  video.play().catch(() => {});
+}
+function stop(video: HTMLVideoElement) {
+  video.pause();
+  if (playing === video) playing = null;
+}
+
 /**
- * A muted looping preview. With preload="none" nothing but the poster loads
- * until it plays; it plays while it is on screen and pauses off screen. With reduced motion it stays still until
- * the visitor presses play.
+ * A muted looping preview that shows its poster until it plays. With a mouse
+ * it plays while the card is hovered or focused; on touch screens while it is
+ * mostly in view. Only one plays at a time, and none with reduced motion.
  */
 export function ProjectPreview({
   project,
@@ -24,31 +38,48 @@ export function ProjectPreview({
   className?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const [userPlay, setUserPlay] = useState(false);
   const reduced = useSyncExternalStore(
-    subscribeReduced,
+    subscribe(reducedQuery),
     () => window.matchMedia(reducedQuery).matches,
+    () => true,
+  );
+  const hover = useSyncExternalStore(
+    subscribe(hoverQuery),
+    () => window.matchMedia(hoverQuery).matches,
     () => true,
   );
   const preview = project.preview;
 
   useEffect(() => {
     const video = ref.current;
-    if (!video) return;
+    const card = video?.closest("article");
+    if (!video || !card || reduced) return;
+    if (hover) {
+      const on = () => play(video);
+      const off = () => stop(video);
+      card.addEventListener("pointerenter", on);
+      card.addEventListener("pointerleave", off);
+      card.addEventListener("focusin", on);
+      card.addEventListener("focusout", off);
+      return () => {
+        stop(video);
+        card.removeEventListener("pointerenter", on);
+        card.removeEventListener("pointerleave", off);
+        card.removeEventListener("focusin", on);
+        card.removeEventListener("focusout", off);
+      };
+    }
     const io = new IntersectionObserver(
-      ([entry]) => {
-        const visible = entry.intersectionRatio >= 0.4;
-        if (visible && (!reduced || userPlay)) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      },
-      { threshold: [0, 0.4] },
+      ([entry]) =>
+        entry.intersectionRatio >= 0.75 ? play(video) : stop(video),
+      { threshold: [0, 0.75] },
     );
     io.observe(video);
-    return () => io.disconnect();
-  }, [reduced, userPlay]);
+    return () => {
+      io.disconnect();
+      stop(video);
+    };
+  }, [reduced, hover]);
 
   const frame = cn(
     "relative aspect-16/10 overflow-hidden rounded-md border border-border bg-raised",
@@ -83,23 +114,9 @@ export function ProjectPreview({
         aria-hidden="true"
         className="size-full object-cover"
       >
-        {preview.webm && <source src={preview.webm} type="video/webm" />}
         {preview.mp4 && <source src={preview.mp4} type="video/mp4" />}
+        {preview.webm && <source src={preview.webm} type="video/webm" />}
       </video>
-      {reduced && (
-        <button
-          type="button"
-          onClick={() => {
-            const next = !userPlay;
-            setUserPlay(next);
-            if (next) ref.current?.play().catch(() => {});
-            else ref.current?.pause();
-          }}
-          className="absolute right-2 bottom-2 cursor-pointer rounded-sm bg-surface/90 px-2 py-1 text-xs text-text"
-        >
-          {userPlay ? "Pause preview" : "Play preview"}
-        </button>
-      )}
     </div>
   );
 }

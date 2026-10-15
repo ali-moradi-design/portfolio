@@ -28,8 +28,9 @@ export type Project = {
   /** Source code, if public. */
   repo?: string;
   /**
-   * Looping preview in public/projects/: `<slug>.webm`, `<slug>.mp4` and the
-   * still `<slug>.jpg`. Leave out for a plain placeholder.
+   * Looping preview in public/projects/: `<slug>.mp4` (H.264, played first),
+   * `<slug>.webm` and the still `<slug>.jpg`. It plays on hover, one at a
+   * time. Leave out for a plain placeholder.
    */
   preview?: { webm?: string; mp4?: string; poster: string };
   /** Shown on the home page (the first six). */

@@ -576,9 +576,9 @@
     "semantic_hash": ""
   },
   "src/entities/project/model/types.ts": {
-    "mtime": 1792072317.6540844,
-    "seen": 1792072777.9846663,
-    "ast_hash": "40335b7a4ae23588fc31d23e94ae53f9",
+    "mtime": 1792081766.1659632,
+    "seen": 1792081877.7496753,
+    "ast_hash": "c9302f4e3167d54d8c421e49204dc989",
     "semantic_hash": ""
   },
   "src/entities/project/model/visible.ts": {
@@ -606,9 +606,9 @@
     "semantic_hash": ""
   },
   "src/entities/project/ui/ProjectPreview.tsx": {
-    "mtime": 1792070515.4289863,
-    "seen": 1792070751.0638113,
-    "ast_hash": "a3fa338c1e5e00810aa877f57e2b4060",
+    "mtime": 1792081766.1269724,
+    "seen": 1792081877.749689,
+    "ast_hash": "a051892ae5c51263f5904aff81629bec",
     "semantic_hash": ""
   },
   "src/features/filter-projects/index.ts": {
