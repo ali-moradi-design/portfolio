@@ -1,4 +1,0 @@
-/* [AM] logo: letters in the text color, brackets in the accent */
-.logo { display: block; flex: none; width: 42px; height: auto; aspect-ratio: 54 / 40; }
-.letters { fill: none; stroke: var(--text); stroke-linecap: round; stroke-linejoin: round; }
-.brackets { fill: none; stroke: var(--accent); stroke-linecap: square; }

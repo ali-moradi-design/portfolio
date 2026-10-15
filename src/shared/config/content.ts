@@ -227,7 +227,15 @@ export const skillGroups = [
   },
   {
     title: "State / data",
-    items: ["Redux Toolkit", "Zustand", "TanStack Query", "SWR", "GraphQL", "WebSocket", "REST APIs"],
+    items: [
+      "Redux Toolkit",
+      "Zustand",
+      "TanStack Query",
+      "SWR",
+      "GraphQL",
+      "WebSocket",
+      "REST APIs",
+    ],
   },
   {
     title: "Auth",
@@ -235,19 +243,48 @@ export const skillGroups = [
   },
   {
     title: "UI",
-    items: ["Tailwind CSS", "shadcn/ui", "Radix UI", "Material UI", "Ant Design", "Bootstrap", "Storybook"],
+    items: [
+      "Tailwind CSS",
+      "shadcn/ui",
+      "Radix UI",
+      "Material UI",
+      "Ant Design",
+      "Bootstrap",
+      "Storybook",
+    ],
   },
   {
     title: "Data viz / maps",
-    items: ["AG Grid", "TanStack Table", "Highcharts", "Recharts", "Chart.js", "React Flow", "Mapbox", "Leaflet"],
+    items: [
+      "AG Grid",
+      "TanStack Table",
+      "Highcharts",
+      "Recharts",
+      "Chart.js",
+      "React Flow",
+      "Mapbox",
+      "Leaflet",
+    ],
   },
   {
     title: "Forms",
-    items: ["React Hook Form", "Zod", "Yup", "Dynamic form builders", "File upload"],
+    items: [
+      "React Hook Form",
+      "Zod",
+      "Yup",
+      "Dynamic form builders",
+      "File upload",
+    ],
   },
   {
     title: "Architecture",
-    items: ["Turborepo monorepo", "Micro-frontends", "Feature-Sliced Design", "Atomic Design", "Clean Architecture"],
+    items: [
+      "Turborepo monorepo",
+      "Micro-frontends",
+      "Feature-Sliced Design",
+      "Atomic Design",
+      "Clean Architecture",
+    ],
   },
   {
     title: "Testing",
@@ -255,7 +292,14 @@ export const skillGroups = [
   },
   {
     title: "Quality",
-    items: ["Core Web Vitals", "Lighthouse", "Code splitting", "Lazy loading", "SEO", "Accessibility (WCAG)"],
+    items: [
+      "Core Web Vitals",
+      "Lighthouse",
+      "Code splitting",
+      "Lazy loading",
+      "SEO",
+      "Accessibility (WCAG)",
+    ],
   },
   {
     title: "Backend",

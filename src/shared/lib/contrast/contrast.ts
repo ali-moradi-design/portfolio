@@ -9,9 +9,15 @@ export function parseColor(value: string): Rgb | null {
     const n = parseInt(hex[1], 16);
     return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
   }
-  const rgb = /^rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s/]+([\d.]+%?))?\s*\)$/i.exec(v);
+  const rgb =
+    /^rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s/]+([\d.]+%?))?\s*\)$/i.exec(
+      v,
+    );
   if (rgb) {
-    const alpha = rgb[4] === undefined ? 1 : parseFloat(rgb[4]) / (rgb[4].endsWith("%") ? 100 : 1);
+    const alpha =
+      rgb[4] === undefined
+        ? 1
+        : parseFloat(rgb[4]) / (rgb[4].endsWith("%") ? 100 : 1);
     if (alpha === 0) return null;
     return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]) };
   }

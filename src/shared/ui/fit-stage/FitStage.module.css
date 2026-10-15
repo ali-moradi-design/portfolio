@@ -1,6 +1,0 @@
-.box { position: absolute; inset: var(--s-5); display: grid; place-items: center; }
-.sizer { position: relative; }
-.inner { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
-@media (max-width: 600px), (max-aspect-ratio: 5/6) {
-  .box { inset: var(--s-2); }
-}

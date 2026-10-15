@@ -1,15 +1,28 @@
-import { PALETTES, TOKENS, type Mode, type Palette, type Tokens } from "@/shared/config";
+import {
+  PALETTES,
+  TOKENS,
+  type Mode,
+  type Palette,
+  type Tokens,
+} from "@/shared/config";
 
 export type ModeChoice = Mode | "system";
 export const DEFAULT_PALETTE: Palette = "sage";
-export const STORAGE_KEYS = { palette: "theme-palette", mode: "theme-mode" } as const;
+export const STORAGE_KEYS = {
+  palette: "theme-palette",
+  mode: "theme-mode",
+} as const;
 
 const vars = (t: Tokens) =>
   Object.entries(t)
     .map(([k, v]) => `--${k}:${v}`)
     .join(";");
 
-/** Color variables for every palette and mode, keyed on <html data-palette data-mode>. */
+/**
+ * Color variables for every palette and mode, keyed on <html data-palette
+ * data-mode>. Without JavaScript there is no data-mode, so the system setting
+ * decides.
+ */
 export function themeCss(): string {
   return PALETTES.map((p) => {
     const light = `${vars(TOKENS[p].light)};color-scheme:light`;
@@ -18,10 +31,10 @@ export function themeCss(): string {
     return [
       `${sel}{${light}}`,
       `${sel}[data-mode="dark"]{${dark}}`,
-      `@media (prefers-color-scheme: dark){${sel}:not([data-mode="light"]){${dark}}}`,
+      `@media (prefers-color-scheme: dark){${sel}:not([data-mode]){${dark}}}`,
     ].join("");
   }).join("");
 }
 
-/** Runs before the first paint, so a stored theme never flashes the default one. */
-export const themeScript = `(function(){try{var d=document.documentElement,p=localStorage.getItem("${STORAGE_KEYS.palette}"),m=localStorage.getItem("${STORAGE_KEYS.mode}");if(${JSON.stringify(PALETTES)}.indexOf(p)>-1)d.dataset.palette=p;if(m==="light"||m==="dark")d.dataset.mode=m;}catch(e){}})();`;
+/** Sets the stored palette before the first paint (next-themes does the mode). */
+export const paletteScript = `(function(){try{var p=localStorage.getItem("${STORAGE_KEYS.palette}");if(${JSON.stringify(PALETTES)}.indexOf(p)>-1)document.documentElement.dataset.palette=p;}catch(e){}})();`;

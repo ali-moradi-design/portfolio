@@ -3,14 +3,13 @@ import { Inspector } from "@/features/inspect-element";
 import { hero, person } from "@/shared/config";
 import { ButtonLink } from "@/shared/ui/button";
 import { FitStage } from "@/shared/ui/fit-stage";
-import styles from "./Hero.module.css";
 import { TrailField } from "./TrailField";
 
 // Portrait: approved for the hero, waiting for a real photo of Ali (transparent PNG, chest-up,
 // three-quarter view). When it arrives:
 //   1. save it as src/widgets/hero/assets/portrait.png
 //   2. uncomment the import and <Portrait /> below and the Portrait component at the end
-//   3. the `.portrait` styles in Hero.module.css frame it like a selected layer and fade its lower edge
+//   3. the Portrait classes frame it like a selected layer and fade its lower edge
 // import Image from "next/image";
 // import portrait from "../assets/portrait.png";
 
@@ -22,21 +21,23 @@ export function Hero({ showcase }: { showcase: ReactNode }) {
       before={
         <>
           {/* <Portrait /> */}
-          <p className={styles.kicker}>
+          <p className="text-body-sm tracking-[0.02em] text-muted">
             {person.role}, {person.location}
           </p>
         </>
       }
       aside={
-        <div className={styles.panel}>
+        <div className="grid min-h-0 min-w-0">
           <Inspector hint="This dashboard is live. Drag across it to see its spacing, tokens and contrast.">
             <FitStage width={720}>{showcase}</FitStage>
           </Inspector>
         </div>
       }
     >
-      <p className={styles.lede}>{hero.bio}</p>
-      <div className={styles.actions}>
+      <p className="max-w-[52ch] text-[clamp(0.9rem,min(1.25vw,2.1vh),1.125rem)] text-muted [@media(max-height:640px)]:hidden">
+        {hero.bio}
+      </p>
+      <div className="flex flex-wrap gap-3">
         <ButtonLink href="/#work" variant="primary">
           See projects
         </ButtonLink>
@@ -47,13 +48,20 @@ export function Hero({ showcase }: { showcase: ReactNode }) {
 }
 
 // function Portrait() {
+//   const handle = "absolute size-1.75 border border-accent bg-bg";
 //   return (
-//     <figure className={styles.portrait}>
-//       <Image src={portrait} alt={person.name} sizes="(max-width: 600px) 96px, 260px" priority />
-//       <span className={`${styles.handle} ${styles.tl}`} aria-hidden="true" />
-//       <span className={`${styles.handle} ${styles.tr}`} aria-hidden="true" />
-//       <span className={`${styles.handle} ${styles.bl}`} aria-hidden="true" />
-//       <span className={`${styles.handle} ${styles.br}`} aria-hidden="true" />
+//     <figure className="relative mb-2 aspect-640/794 h-[clamp(120px,34vh,360px)] border border-dashed border-accent/70 stacked:h-24">
+//       <Image
+//         src={portrait}
+//         alt={person.name}
+//         sizes="(max-width: 600px) 96px, 260px"
+//         priority
+//         className="size-full object-contain object-bottom mask-[linear-gradient(#000_78%,transparent)]"
+//       />
+//       <span className={`${handle} -top-1 -left-1`} aria-hidden="true" />
+//       <span className={`${handle} -top-1 -right-1`} aria-hidden="true" />
+//       <span className={`${handle} -bottom-1 -left-1`} aria-hidden="true" />
+//       <span className={`${handle} -right-1 -bottom-1`} aria-hidden="true" />
 //     </figure>
 //   );
 // }

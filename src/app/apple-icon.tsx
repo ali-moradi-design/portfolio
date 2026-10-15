@@ -11,11 +11,18 @@ const src = `data:image/svg+xml;base64,${Buffer.from(logoSvg({ text: t.text, acc
 
 export default function AppleIcon() {
   return new ImageResponse(
-    (
-      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: t.bg }}>
-        <img src={src} width={124} height={92} alt="" />
-      </div>
-    ),
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: t.bg,
+      }}
+    >
+      <img src={src} width={124} height={92} alt="" />
+    </div>,
     { ...size },
   );
 }

@@ -11,11 +11,19 @@ const src = `data:image/svg+xml;base64,${Buffer.from(logoSvg({ text: t.text, acc
 
 export default function Icon() {
   return new ImageResponse(
-    (
-      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: t.bg, borderRadius: 6 }}>
-        <img src={src} width={29} height={21.5} alt="" />
-      </div>
-    ),
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: t.bg,
+        borderRadius: 6,
+      }}
+    >
+      <img src={src} width={29} height={21.5} alt="" />
+    </div>,
     { ...size },
   );
 }

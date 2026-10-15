@@ -23,39 +23,47 @@ Then open http://localhost:3000. The dev server uses Turbopack.
 
 Other scripts:
 
-| Command      | What it does             |
-| ------------ | ------------------------ |
-| `pnpm build` | Production build         |
-| `pnpm start` | Run the production build |
-| `pnpm lint`  | ESLint and steiger (FSD) |
+| Command                 | What it does                                       |
+| ----------------------- | -------------------------------------------------- |
+| `pnpm build`            | Production build (standalone output)               |
+| `pnpm start:standalone` | Run the standalone build with `public/` and assets |
+| `pnpm lint`             | ESLint (with FSD import rules) and steiger         |
+| `pnpm typecheck`        | Generate route types and run `tsc`                 |
+| `pnpm format`           | Prettier with the Tailwind class sorter            |
+| `pnpm format:check`     | Check formatting (runs in CI)                      |
+| `pnpm test`             | Vitest unit tests                                  |
+| `pnpm test:e2e`         | Playwright E2E tests against the production build  |
 
 ## What is inside
 
 - Home: a one-viewport hero (name with a WebGL2 fluid trail, bio, and a live sample dashboard
   inside an inspector that reports design tokens and WCAG contrast). More sections are on the way.
-- Three palettes (Sage, Midnight, Inferno), each light and dark, remembered in localStorage and
-  applied before the first paint
+- Three palettes (Sage, Midnight, Inferno), each light and dark (mode by next-themes),
+  remembered in localStorage and applied before the first paint
 - Content lives in `src/shared/config/content.ts`
 
 ## Structure
 
-[Feature-Sliced Design](https://feature-sliced.design), checked by `steiger` in `pnpm lint`:
+App Router in `src/app`, with [Feature-Sliced Design](https://feature-sliced.design)
+layers next to it in `src/`:
 
-| Folder | Holds |
-| --- | --- |
-| `app/` | Next.js routes only; each file re-exports from `src/` |
-| `src/app` | Root layout, global styles, fonts |
-| `src/pages` | Pages (`home`) |
-| `src/widgets` | Page blocks: `header`, `hero`, `sample-dashboard` |
-| `src/features` | `inspect-element`, `switch-theme` |
-| `src/shared` | Config (tokens, content), lib (theme, contrast, logo), UI (button, pixels, chart, ...) |
+| Folder         | Holds                                                                    |
+| -------------- | ------------------------------------------------------------------------ |
+| `src/app`      | Routes (`layout.tsx`, `page.tsx`, icons, OG image), global CSS, fonts    |
+| `src/views`    | Page compositions (`home`); the FSD pages layer                          |
+| `src/widgets`  | Page blocks: `header`, `hero`, `sample-dashboard`                        |
+| `src/features` | `inspect-element`, `switch-theme`                                        |
+| `src/shared`   | Config (tokens, content), lib (theme, cn, contrast, logo), UI components |
 
-`pages/README.md` keeps Next.js from reading `src/pages` as the Pages Router.
-Styles are CSS Modules next to each component; there are no global class names.
+The pages layer is called `views` because Next.js reads a `src/pages` folder as
+the Pages Router. Each slice exposes a public `index.ts`. `pnpm lint` checks the
+layer import direction (`eslint-plugin-boundaries`) and the slice structure
+(`steiger`).
 
 ## Stack
 
-Next.js 16, React 19, TypeScript, CSS Modules, Highcharts, TanStack Table, WebGL2.
+Next.js 16 (App Router, React Compiler, Cache Components), React 19, TypeScript,
+Tailwind CSS 4, next-themes, Highcharts, TanStack Table, WebGL2.
 
 Font: Huninn (one weight) via `next/font/local`.
 

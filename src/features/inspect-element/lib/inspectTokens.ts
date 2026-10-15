@@ -17,7 +17,11 @@ export function parseTokens(attr: string | null): TokenGroup[] {
     .filter(Boolean)
     .map((part) => {
       const [role, ...rest] = part.split(/\s+/);
-      const items = rest.join(" ").split("/").map((t) => t.trim()).filter(Boolean);
+      const items = rest
+        .join(" ")
+        .split("/")
+        .map((t) => t.trim())
+        .filter(Boolean);
       return { role, items };
     });
 }
@@ -28,4 +32,16 @@ export function isGraphicRole(role: string): boolean {
 
 export function isToken(item: string): boolean {
   return item.startsWith("--");
+}
+
+const SPACING_CLASS =
+  /^-?(?:p|px|py|pt|pr|pb|pl|m|mx|my|gap|gap-x|gap-y)-(\d+(?:\.\d+)?)$/;
+
+/**
+ * Size of a Tailwind spacing class in px ("p-6" is 24px with the default
+ * 4px step), or null for other words.
+ */
+export function spacingPx(item: string, step = 4): number | null {
+  const match = SPACING_CLASS.exec(item);
+  return match ? Number(match[1]) * step : null;
 }

@@ -3,7 +3,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { hexToVec3 } from "@/shared/lib/contrast";
 import { useTheme } from "@/shared/lib/theme";
-import styles from "./Hero.module.css";
 
 // A WebGL2 layer behind a hero, modelled on a small fluid: the cursor pushes "ink" into a
 // low-resolution dye texture with a velocity field. Slow moves leave a small spot, fast moves a
@@ -124,7 +123,8 @@ function compile(gl: WebGL2RenderingContext, type: number, src: string) {
   const s = gl.createShader(type)!;
   gl.shaderSource(s, src);
   gl.compileShader(s);
-  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) ?? "shader error");
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
+    throw new Error(gl.getShaderInfoLog(s) ?? "shader error");
   return s;
 }
 
@@ -134,7 +134,8 @@ function link(gl: WebGL2RenderingContext, frag: string) {
   gl.attachShader(p, compile(gl, gl.FRAGMENT_SHADER, frag));
   gl.bindAttribLocation(p, 0, "aPos");
   gl.linkProgram(p);
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) ?? "link error");
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS))
+    throw new Error(gl.getProgramInfoLog(p) ?? "link error");
   const cache = new Map<string, WebGLUniformLocation | null>();
   const u = (name: string) => {
     if (!cache.has(name)) cache.set(name, gl.getUniformLocation(p, name));
@@ -177,19 +178,34 @@ export function TrailField({
       wrap.dataset.trailNote = note;
       return () => delete wrap.dataset.trailNote;
     };
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return off("Trail is off: this system asks for reduced motion.");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return off("Trail is off: this system asks for reduced motion.");
     // Touch screens get the static headline; that is the design, not an error, so no note.
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+      return;
 
     // A fresh canvas per effect run: React Strict Mode runs effects twice in development, and a
     // canvas whose context was lost in the first cleanup cannot give a working context again.
     const canvas = document.createElement("canvas");
-    const gl = canvas.getContext("webgl2", { premultipliedAlpha: true, alpha: true, antialias: false });
-    if (!gl || !gl.getExtension("EXT_color_buffer_float")) return off("Trail is off: WebGL2 is not available in this browser.");
+    const gl = canvas.getContext("webgl2", {
+      premultipliedAlpha: true,
+      alpha: true,
+      antialias: false,
+    });
+    if (!gl || !gl.getExtension("EXT_color_buffer_float"))
+      return off("Trail is off: WebGL2 is not available in this browser.");
 
-    let progs: { splat: ReturnType<typeof link>; advect: ReturnType<typeof link>; display: ReturnType<typeof link> };
+    let progs: {
+      splat: ReturnType<typeof link>;
+      advect: ReturnType<typeof link>;
+      display: ReturnType<typeof link>;
+    };
     try {
-      progs = { splat: link(gl, SPLAT), advect: link(gl, ADVECT), display: link(gl, DISPLAY) };
+      progs = {
+        splat: link(gl, SPLAT),
+        advect: link(gl, ADVECT),
+        display: link(gl, DISPLAY),
+      };
     } catch (error) {
       // Log the compiler message so a broken shader is easy to find in the browser console.
       console.error(error);
@@ -198,11 +214,22 @@ export function TrailField({
 
     const quad = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, quad);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW,
+    );
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
-    const makeTex = (w: number, h: number, internal: number, format: number, type: number, data: TexImageSource | null = null) => {
+    const makeTex = (
+      w: number,
+      h: number,
+      internal: number,
+      format: number,
+      type: number,
+      data: TexImageSource | null = null,
+    ) => {
       const tex = gl.createTexture()!;
       gl.bindTexture(gl.TEXTURE_2D, tex);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -210,14 +237,21 @@ export function TrailField({
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       if (data) gl.texImage2D(gl.TEXTURE_2D, 0, internal, format, type, data);
-      else gl.texImage2D(gl.TEXTURE_2D, 0, internal, w, h, 0, format, type, null);
+      else
+        gl.texImage2D(gl.TEXTURE_2D, 0, internal, w, h, 0, format, type, null);
       return tex;
     };
     const makeFbo = (w: number, h: number): Fbo => {
       const tex = makeTex(w, h, gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT);
       const fb = gl.createFramebuffer()!;
       gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+      gl.framebufferTexture2D(
+        gl.FRAMEBUFFER,
+        gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D,
+        tex,
+        0,
+      );
       gl.clearColor(0, 0, 0, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
       return { tex, fb };
@@ -275,17 +309,33 @@ export function TrailField({
       ctx.clearRect(0, 0, width, height);
       const cs = getComputedStyle(h1);
       ctx.font = `${cs.fontWeight} ${parseFloat(cs.fontSize) * dpr}px ${cs.fontFamily}`;
-      if ("letterSpacing" in ctx) (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = `${(parseFloat(cs.letterSpacing) || 0) * dpr}px`;
+      if ("letterSpacing" in ctx)
+        (
+          ctx as CanvasRenderingContext2D & { letterSpacing: string }
+        ).letterSpacing = `${(parseFloat(cs.letterSpacing) || 0) * dpr}px`;
       ctx.fillStyle = "#fff";
       ctx.textBaseline = "alphabetic";
-      for (const span of Array.from(h1.querySelectorAll<HTMLSpanElement>("[data-word]"))) {
+      for (const span of Array.from(
+        h1.querySelectorAll<HTMLSpanElement>("[data-word]"),
+      )) {
         const r = span.getBoundingClientRect();
         const m = ctx.measureText(span.textContent ?? "");
-        ctx.fillText(span.textContent ?? "", (r.left - rect.left) * dpr, (r.top - rect.top) * dpr + m.fontBoundingBoxAscent);
+        ctx.fillText(
+          span.textContent ?? "",
+          (r.left - rect.left) * dpr,
+          (r.top - rect.top) * dpr + m.fontBoundingBoxAscent,
+        );
       }
       if (textTex) gl.deleteTexture(textTex);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-      textTex = makeTex(width, height, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
+      textTex = makeTex(
+        width,
+        height,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        textCanvas,
+      );
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     };
 
@@ -300,7 +350,13 @@ export function TrailField({
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
 
-    const splat = (d: Double, x: number, y: number, value: [number, number, number], radius: number) => {
+    const splat = (
+      d: Double,
+      x: number,
+      y: number,
+      value: [number, number, number],
+      radius: number,
+    ) => {
       const { p, u } = progs.splat;
       gl.useProgram(p);
       gl.uniform1i(u("uTarget"), bindTex(0, d.read.tex));
@@ -337,7 +393,12 @@ export function TrailField({
       gl.uniform3fv(u("uAccent"), hexToVec3(t.accent));
       gl.uniform3fv(u("uSplit"), hexToVec3(t["chart-2"]));
       gl.uniform3fv(u("uMuted"), hexToVec3(t.muted));
-      gl.uniform3f(u("uPointer"), pointer.x * dpr, height - pointer.y * dpr, pointer.inside ? 1 : 0);
+      gl.uniform3f(
+        u("uPointer"),
+        pointer.x * dpr,
+        height - pointer.y * dpr,
+        pointer.inside ? 1 : 0,
+      );
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       gl.viewport(0, 0, width, height);
       gl.clearColor(0, 0, 0, 0);
@@ -361,7 +422,17 @@ export function TrailField({
         const ux = pointer.x / (width / dpr);
         const uy = 1 - pointer.y / (height / dpr);
         const r = radiusPx / (height / dpr);
-        splat(velocity, ux, uy, [(dx / (width / dpr)) / dt * 0.6, (-dy / (height / dpr)) / dt * 0.6, 0], r);
+        splat(
+          velocity,
+          ux,
+          uy,
+          [
+            (dx / (width / dpr) / dt) * 0.6,
+            (-dy / (height / dpr) / dt) * 0.6,
+            0,
+          ],
+          r,
+        );
         splat(dye, ux, uy, [amount, 0, 0], r);
         energy = Math.min(energy + amount, 3);
       } else {
@@ -420,11 +491,22 @@ export function TrailField({
 
   const words = headline.split(" ");
   return (
-    <section ref={wrapRef} className={styles.hero} data-trail>
-      <div ref={hostRef} className={styles.canvas} aria-hidden="true" />
-      <div className={styles.copy}>
+    <section
+      ref={wrapRef}
+      className="relative isolate grid h-[calc(100svh-var(--spacing-header))] min-h-80 grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-[clamp(16px,3vw,56px)] overflow-hidden p-[clamp(16px,2.5vw,48px)] stacked:grid-cols-[minmax(0,1fr)] stacked:grid-rows-[auto_minmax(0,1fr)]"
+      data-trail
+    >
+      <div
+        ref={hostRef}
+        className="pointer-events-none absolute inset-0 -z-10 [&_canvas]:block [&_canvas]:size-full"
+        aria-hidden="true"
+      />
+      <div className="grid min-h-0 content-center gap-[clamp(10px,2.2vh,24px)] stacked:content-start">
         {before}
-        <h1 ref={h1Ref} className={styles.title}>
+        <h1
+          ref={h1Ref}
+          className="text-[clamp(2rem,min(5.4vw,9.5vh),5.5rem)] leading-none tracking-[-0.02em] text-balance data-gl:text-transparent data-gl:selection:bg-accent/30 data-gl:selection:text-text"
+        >
           {words.map((w, i) => (
             <span key={i}>
               <span data-word>{w}</span>

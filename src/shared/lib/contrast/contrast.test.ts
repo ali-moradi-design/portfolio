@@ -9,6 +9,8 @@ describe("contrast", () => {
   });
 
   it("gives 21:1 for black on white", () => {
-    expect(contrastRatio({ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 })).toBeCloseTo(21, 5);
+    expect(
+      contrastRatio({ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 }),
+    ).toBeCloseTo(21, 5);
   });
 });

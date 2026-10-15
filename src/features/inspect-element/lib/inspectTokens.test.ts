@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { isGraphicRole, isToken, parseTokens } from "./inspectTokens";
+import {
+  isGraphicRole,
+  isToken,
+  parseTokens,
+  spacingPx,
+} from "./inspectTokens";
 
 describe("parseTokens", () => {
   it("splits roles and alternatives", () => {
@@ -10,7 +15,9 @@ describe("parseTokens", () => {
   });
 
   it("keeps plain words and ignores empty parts", () => {
-    expect(parseTokens("numbers tabular; ;")).toEqual([{ role: "numbers", items: ["tabular"] }]);
+    expect(parseTokens("numbers tabular; ;")).toEqual([
+      { role: "numbers", items: ["tabular"] },
+    ]);
     expect(parseTokens(null)).toEqual([]);
   });
 
@@ -19,5 +26,14 @@ describe("parseTokens", () => {
     expect(isToken("tabular")).toBe(false);
     expect(isGraphicRole("series")).toBe(true);
     expect(isGraphicRole("bg")).toBe(false);
+  });
+});
+
+describe("spacingPx", () => {
+  it("reads Tailwind spacing classes", () => {
+    expect(spacingPx("p-6")).toBe(24);
+    expect(spacingPx("gap-x-2.5")).toBe(10);
+    expect(spacingPx("py-3", 5)).toBe(15);
+    expect(spacingPx("tabular")).toBeNull();
   });
 });
