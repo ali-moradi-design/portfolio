@@ -29,11 +29,11 @@ export function HeroActions() {
   return (
     <div className="hero-actions">
       <Link className="btn btn-primary px" href="/#work">
-        <Pixels cols={24} rows={6} />
+        <Pixels cols={16} rows={4} />
         <span className="btn-label">See projects</span>
       </Link>
       <a className="btn btn-secondary px" href={person.emailHref}>
-        <Pixels cols={24} rows={6} />
+        <Pixels cols={16} rows={4} />
         <span className="btn-label">Email me</span>
       </a>
     </div>

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useSyncExternalStore, type CSSPropertie
 import { TokensContext } from "../_lib/theme";
 import { PALETTES, TOKENS, type Mode } from "../_lib/tokens";
 import { HeroCombined } from "./HeroCombined";
-import { HeroNav } from "./HeroNav";
+import { HeroNav, type ModeStyle } from "./HeroNav";
 
 type ModeChoice = Mode | "system";
 
@@ -35,7 +35,7 @@ export function Lab() {
   const tokens = TOKENS[palette][mode];
 
   const set = useCallback(
-    (key: "p" | "m", value: string) => {
+    (key: "p" | "m" | "d", value: string) => {
       const next = new URLSearchParams(params.toString());
       next.set(key, value);
       router.replace(`?${next.toString()}`, { scroll: false });
@@ -56,6 +56,8 @@ export function Lab() {
   }, []);
 
   const theme = { palette, mode, onPalette: (p: string) => set("p", p), onMode: (m: string) => set("m", m) };
+  // Lab only: compare the dark mode control designs.
+  const modeStyle = pick(params.get("d"), ["1", "2", "3", "4"] as const, "1") as ModeStyle;
 
   const style = Object.fromEntries(
     Object.entries(tokens).map(([k, v]) => [`--${k}`, v]),
@@ -65,11 +67,18 @@ export function Lab() {
     <TokensContext.Provider value={{ tokens, mode }}>
       <div ref={rootRef} className="lab-root" style={{ ...style, colorScheme: mode }} data-mode={mode}>
         <div ref={barRef}>
-          <HeroNav {...theme} />
+          <HeroNav {...theme} modeStyle={modeStyle} />
         </div>
         <main>
           <HeroCombined tokens={tokens} />
         </main>
+        <div className="lab-variants" role="group" aria-label="Dark mode control design">
+          {(["1", "2", "3", "4"] as const).map((d) => (
+            <button key={d} type="button" aria-pressed={d === modeStyle} onClick={() => set("d", d)}>
+              {d}
+            </button>
+          ))}
+        </div>
       </div>
     </TokensContext.Provider>
   );

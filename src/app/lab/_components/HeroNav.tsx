@@ -11,7 +11,7 @@ import { Pixels } from "./Pixels";
 const ITEMS = nav.filter((n) => n.href !== "#contact");
 
 type ThemeProps = { palette: Palette; mode: Mode; onPalette: (p: Palette) => void; onMode: (m: Mode) => void };
-export function HeroNav(theme: ThemeProps) {
+export function HeroNav({ modeStyle, ...theme }: ThemeProps & { modeStyle: ModeStyle }) {
   const [open, setOpen] = useState(false);
 
   const track = (e: React.PointerEvent<HTMLElement>) => {
@@ -38,7 +38,7 @@ export function HeroNav(theme: ThemeProps) {
           {ITEMS.map((item) => (
             <li key={item.href}>
               <Link href={`/${item.href}`} className="hnav-cell px" onClick={() => setOpen(false)}>
-                <Pixels cols={20} rows={9} />
+                <Pixels cols={13} rows={6} />
                 <Label text={item.label} />
                 <span className="hnav-corner" aria-hidden="true" />
               </Link>
@@ -48,18 +48,18 @@ export function HeroNav(theme: ThemeProps) {
       </nav>
 
       <button type="button" className="hnav-cell hnav-burger px" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <Pixels cols={20} rows={9} />
+        <Pixels cols={13} rows={6} />
         <Label text={open ? "Close" : "Menu"} />
       </button>
 
       <Link href="/#contact" className="hnav-cell hnav-cta px">
-        <Pixels cols={20} rows={9} />
+        <Pixels cols={13} rows={6} />
         <Label text="Contact" />
         <span className="hnav-arrow" aria-hidden="true">
           →
         </span>
       </Link>
-      <ThemeTools {...theme} />
+      <ThemeTools {...theme} modeStyle={modeStyle} />
     </header>
   );
 }
@@ -73,19 +73,12 @@ function Label({ text }: { text: string }) {
   );
 }
 
-// 9 x 9 pixel-art icons for the mode cell, in the same pixel language as the hover dissolve.
-const SUN = ["....#....", ".#.....#.", "...###...", "..#####..", "#.#####.#", "..#####..", "...###...", ".#.....#.", "....#...."];
-const MOON = ["...###...", "..##.....", ".##......", ".##......", ".##......", ".###...#.", "..######.", "...####..", "........."];
+/** Dark mode control looks to compare (?d=1..4): words, half circle, square switch, sun/moon icon. */
+export type ModeStyle = "1" | "2" | "3" | "4";
 
-function PixelIcon({ rows }: { rows: string[] }) {
-  return (
-    <svg className="pxicon" viewBox="0 0 9 9" aria-hidden="true" shapeRendering="crispEdges">
-      {rows.flatMap((row, y) => [...row].map((c, x) => (c === "#" ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" /> : null)))}
-    </svg>
-  );
-}
-
-function ThemeTools({ palette, mode, onPalette, onMode }: ThemeProps) {
+function ThemeTools({ palette, mode, onPalette, onMode, modeStyle }: ThemeProps & { modeStyle: ModeStyle }) {
+  const dark = mode === "dark";
+  const toggle = () => onMode(dark ? "light" : "dark");
   return (
     <>
       <div className="hnav-tools">
@@ -100,26 +93,51 @@ function ThemeTools({ palette, mode, onPalette, onMode }: ThemeProps) {
               className="sw"
               style={{ "--sw": TOKENS[p][mode].accent } as React.CSSProperties}
               onClick={() => onPalette(p)}
-            >
-              {Array.from({ length: 9 }, (_, i) => (
-                <i key={i} />
-              ))}
-            </button>
+            />
           ))}
         </div>
+        {modeStyle === "1" && (
+          <div className="mode-words" role="radiogroup" aria-label="Color mode">
+            {(["light", "dark"] as const).map((m) => (
+              <button key={m} type="button" role="radio" aria-checked={mode === m} onClick={() => onMode(m)}>
+                {m}
+              </button>
+            ))}
+          </div>
+        )}
+        {modeStyle === "2" && (
+          <button type="button" role="switch" aria-checked={dark} aria-label="Dark mode" className="mode-half" onClick={toggle}>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.25" />
+              <path d="M10 1.75a8.25 8.25 0 0 1 0 16.5z" />
+            </svg>
+          </button>
+        )}
+        {modeStyle === "3" && (
+          <button type="button" role="switch" aria-checked={dark} aria-label="Dark mode" className="mode-square" onClick={toggle}>
+            <span className="mode-square-l" aria-hidden="true">L</span>
+            <span className="mode-square-d" aria-hidden="true">D</span>
+            <span className="mode-square-knob" aria-hidden="true" />
+          </button>
+        )}
+        {modeStyle === "4" && (
+          <button type="button" role="switch" aria-checked={dark} aria-label="Dark mode" className="mode-icon" onClick={toggle}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <mask id="mode-moon-mask">
+                <rect width="24" height="24" fill="#fff" />
+                <circle className="mode-icon-bite" cx="24" cy="4" r="7" fill="#000" />
+              </mask>
+              <circle className="mode-icon-body" cx="12" cy="12" r="5" mask="url(#mode-moon-mask)" />
+              <g className="mode-icon-rays">
+                {Array.from({ length: 8 }, (_, i) => {
+                  const a = (i * Math.PI) / 4;
+                  return <line key={i} x1={12 + Math.cos(a) * 8} y1={12 + Math.sin(a) * 8} x2={12 + Math.cos(a) * 10} y2={12 + Math.sin(a) * 10} />;
+                })}
+              </g>
+            </svg>
+          </button>
+        )}
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={mode === "dark"}
-        aria-label="Dark mode"
-        className="hnav-cell hnav-mode px"
-        onClick={() => onMode(mode === "dark" ? "light" : "dark")}
-      >
-        <Pixels cols={20} rows={9} />
-        <Label text={mode === "dark" ? "Dark" : "Light"} />
-        <PixelIcon rows={mode === "dark" ? MOON : SUN} />
-      </button>
     </>
   );
 }
