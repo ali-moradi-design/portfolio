@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ProjectCard, projectGrid, visibleProjects } from "@/entities/project";
 import { ProjectsBrowser } from "@/features/filter-projects";
@@ -10,6 +11,8 @@ import { Header } from "@/widgets/header";
 /** All demo projects with filters. */
 export function ProjectsPage() {
   const projects = visibleProjects();
+  // Hidden until the first real project is in.
+  if (projects.length === 0) notFound();
   return (
     <>
       <Header />
@@ -37,24 +40,18 @@ export function ProjectsPage() {
             technology.
           </RevealText>
         </div>
-        {projects.length === 0 ? (
-          <p className="border-t border-border py-16 text-muted">
-            The first projects are on their way.
-          </p>
-        ) : (
-          // Without JavaScript, or before the URL is read, the full list shows.
-          <Suspense
-            fallback={
-              <div className={projectGrid[2]}>
-                {projects.map((p) => (
-                  <ProjectCard key={p.slug} project={p} detailed />
-                ))}
-              </div>
-            }
-          >
-            <ProjectsBrowser projects={projects} />
-          </Suspense>
-        )}
+        {/* Without JavaScript, or before the URL is read, the full list shows. */}
+        <Suspense
+          fallback={
+            <div className={projectGrid[2]}>
+              {projects.map((p) => (
+                <ProjectCard key={p.slug} project={p} detailed />
+              ))}
+            </div>
+          }
+        >
+          <ProjectsBrowser projects={projects} />
+        </Suspense>
       </main>
       <Footer />
     </>

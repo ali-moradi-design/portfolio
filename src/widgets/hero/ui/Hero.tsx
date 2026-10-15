@@ -14,7 +14,14 @@ import { TrailField } from "./TrailField";
 // import portrait from "../assets/portrait.png";
 
 /** The first screen: the name with the fluid trail, the bio, and a live sample UI in the inspector. */
-export function Hero({ showcase }: { showcase: ReactNode }) {
+export function Hero({
+  showcase,
+  hasProjects = true,
+}: {
+  showcase: ReactNode;
+  /** Without projects yet, the first button leads to the experience. */
+  hasProjects?: boolean;
+}) {
   return (
     <TrailField
       headline={person.name}
@@ -38,8 +45,11 @@ export function Hero({ showcase }: { showcase: ReactNode }) {
         {hero.bio}
       </p>
       <div className="flex flex-wrap gap-3">
-        <ButtonLink href="/projects" variant="primary">
-          See projects
+        <ButtonLink
+          href={hasProjects ? "/projects" : "/#experience"}
+          variant="primary"
+        >
+          {hasProjects ? "See projects" : "See experience"}
         </ButtonLink>
         <ButtonLink href={person.emailHref}>Email me</ButtonLink>
       </div>

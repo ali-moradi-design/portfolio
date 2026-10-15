@@ -3,7 +3,6 @@
   "1": "opengraph-image.tsx",
   "2": "package.json",
   "3": "Header.tsx",
-  "4": "ref_node_child_process",
   "5": "Deploy Job (SSH, compose pull/up --wait)",
   "6": "SampleDashboard.tsx",
   "7": "compilerOptions",
@@ -19,6 +18,5 @@
   "17": "cn",
   "18": "@playwright/test",
   "19": "engines",
-  "20": "layout.tsx",
   "21": "react"
 }

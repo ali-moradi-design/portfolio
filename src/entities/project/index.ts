@@ -18,6 +18,7 @@ export {
 export {
   FEATURED_MAX,
   featuredProjects,
+  hasProjects,
   visibleProjects,
 } from "./model/visible";
 export { ProjectCard, projectGrid } from "./ui/ProjectCard";

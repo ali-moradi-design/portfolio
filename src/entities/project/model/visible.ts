@@ -19,5 +19,8 @@ export function visibleProjects(
 /** How many projects the home page shows. */
 export const FEATURED_MAX = 6;
 
+/** False until the first real project is in (placeholders aside). */
+export const hasProjects = () => visibleProjects().length > 0;
+
 export const featuredProjects = (list = visibleProjects()) =>
   list.filter((p) => p.featured).slice(0, FEATURED_MAX);

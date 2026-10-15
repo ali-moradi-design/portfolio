@@ -1,3 +1,4 @@
+import { hasProjects } from "@/entities/project";
 import { Approach } from "@/widgets/approach";
 import { Contact } from "@/widgets/contact";
 import { Experience } from "@/widgets/experience";
@@ -9,11 +10,12 @@ import { SelectedWork } from "@/widgets/selected-work";
 import { Skills } from "@/widgets/skills";
 
 export function HomePage() {
+  const projects = hasProjects();
   return (
     <>
-      <Header />
+      <Header showWork={projects} />
       <main id="main">
-        <Hero showcase={<SampleDashboard />} />
+        <Hero showcase={<SampleDashboard />} hasProjects={projects} />
         <SelectedWork />
         <Experience />
         <Skills />

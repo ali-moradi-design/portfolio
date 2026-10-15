@@ -11,7 +11,6 @@ import { Pixels, pixelHost, RollLabel } from "@/shared/ui/pixels";
 // Menu after heronaiapp.com: equal cells divided by rules, uppercase labels, a
 // pixel dissolve on hover, a rolling label and an accent square that follows
 // the cursor inside the cell.
-const ITEMS = nav.filter((n) => n.href !== "#contact");
 
 const cell = cn(
   pixelHost,
@@ -20,7 +19,11 @@ const cell = cn(
   "focus-visible:-outline-offset-2",
 );
 
-export function Header() {
+/** `showWork` hides the Work link while there are no projects to show. */
+export function Header({ showWork = true }: { showWork?: boolean }) {
+  const items = nav.filter(
+    (n) => n.href !== "#contact" && (showWork || n.href !== "#work"),
+  );
   const [open, setOpen] = useState(false);
 
   const track = (e: React.PointerEvent<HTMLElement>) => {
@@ -61,7 +64,7 @@ export function Header() {
           )}
         >
           <ul className="m-0 flex h-full list-none p-0 max-[1100px]:h-auto max-[1100px]:flex-col">
-            {ITEMS.map((item) => (
+            {items.map((item) => (
               <li key={item.href} className="flex">
                 <Link
                   href={`/${item.href}`}

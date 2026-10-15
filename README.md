@@ -1,14 +1,10 @@
 # Ali Moradi — Personal portfolio
 
-A 3D personal portfolio built with Next.js (App Router) and TypeScript.
-Dark instrument-panel layout on `#1C1C1C` with a hairline grid and a teal accent (`#3FD0B8`).
+Portfolio of Ali Moradi, Senior Frontend Developer: https://ali-moradi-develop.com
 
-> **Status: early prototype.** The design, content and structure are not final and
-> will change a lot. Final URL: https://ali-moradi-develop.com
-
-Visual language is inspired by [vanlent.dev](https://vanlent.dev/) as look and feel only
-(numbered hero corners, grid cells, clip-path title reveals). None of Tim van Lent's copy,
-projects, name, phone, logo or branding is used.
+Built with Next.js 16 (App Router) on Feature-Sliced Design. The visual language is a
+design-tool inspector: ruled cells, rulers and coordinates, a pixel dissolve on hover, and
+three palettes (Sage, Midnight, Inferno), each light and dark.
 
 ## Local setup
 
@@ -21,59 +17,91 @@ pnpm dev
 
 Then open http://localhost:3000. The dev server uses Turbopack.
 
-Other scripts:
-
-| Command             | What it does                                      |
-| ------------------- | ------------------------------------------------- |
-| `pnpm build`        | Production build (standalone output)              |
-| `pnpm lint`         | ESLint (with FSD import rules) and steiger        |
-| `pnpm typecheck`    | Generate route types and run `tsc`                |
-| `pnpm format`       | Prettier with the Tailwind class sorter           |
-| `pnpm format:check` | Check formatting (runs in CI)                     |
-| `pnpm test`         | Vitest unit tests                                 |
-| `pnpm test:e2e`     | Playwright E2E tests against the production build |
+| Command             | What it does                                         |
+| ------------------- | ---------------------------------------------------- |
+| `pnpm build`        | Production build (standalone output, used by Docker) |
+| `pnpm start`        | Run the production build                             |
+| `pnpm lint`         | ESLint (with FSD import rules) and steiger           |
+| `pnpm typecheck`    | Generate route types and run `tsc`                   |
+| `pnpm format`       | Prettier with the Tailwind class sorter              |
+| `pnpm format:check` | Check formatting (runs in CI)                        |
+| `pnpm test`         | Vitest unit tests                                    |
+| `pnpm test:e2e`     | Playwright E2E tests against the production build    |
 
 ## What is inside
 
-- Home: a one-viewport hero (name with a WebGL2 fluid trail, bio, and a live sample dashboard
-  inside an inspector that reports design tokens and WCAG contrast). More sections are on the way.
-- Three palettes (Sage, Midnight, Inferno), each light and dark (mode by next-themes),
-  remembered in localStorage and applied before the first paint
-- Content lives in `src/shared/config/content.ts` (copy from the CV)
-- `/projects`: demo projects, each on its own subdomain, filtered by type and tech in the URL
+- **Home** (`/`):
+  - Hero, one viewport tall: the name with a WebGL2 fluid trail, the bio, and a live sample
+    dashboard (Highcharts, TanStack Table) inside an inspector that reports design tokens and
+    WCAG contrast.
+  - Selected work: six featured demo projects and a link to all of them.
+  - Experience: four roles as rows that open one at a time. The Neor and Asiatech rows hold
+    small working samples of the company products (dashboard builder, form builder with a Zod
+    schema, UI kit, customer portal); the real products are private.
+  - Skills, About (how Ali works, education, languages) and Contact (email, CV download,
+    LinkedIn, GitHub).
+- **Projects** (`/projects`): every demo project in one list, filtered by type, tech and text,
+  and sorted; the filters live in the URL query.
+- **Motion**: line-by-line text reveals and fades on scroll (GSAP with SplitText and
+  ScrambleText), Lenis smooth scrolling, and a cursor with a short trail outside the hero.
+  Reduced motion turns all of it off.
+- **Theme**: palette and light/dark mode (next-themes) are remembered in localStorage and
+  applied before the first paint.
 
-## Adding a project
+All copy lives in `src/shared/config/content.ts` and uses only facts from the CV. The CV PDF is
+`public/ali-moradi-cv.pdf`.
+
+## Projects
+
+Each demo project runs on its own subdomain (`<slug>.ali-moradi-develop.com`). There are no
+detail pages.
 
 1. Add an entry to `src/entities/project/model/projects.ts` (fields are documented in
-   `types.ts`). `featured: true` puts it on the home page (up to four).
-2. Put its preview in `public/projects/`: `<slug>.webm`, `<slug>.mp4` and a `<slug>.jpg` poster
-   (16:10, a few seconds, muted; it loops).
-3. Delete the `placeholder` sample entries once real projects are in. They show only in
-   `pnpm dev` and in builds with `SHOW_SAMPLE_PROJECTS=1` (the CI build for E2E tests).
+   `types.ts`). `featured: true` puts it on the home page (the first six).
+2. Put its images in `public/projects/`: a `<slug>.jpg` still (16:10) and, if wanted, a short
+   muted loop as `<slug>.mp4` (H.264, about 720 px wide, under 2 MB) and `<slug>.webm`.
+   Videos play only while their card is hovered, one at a time.
+3. Delete the `placeholder` sample entries once real projects are in.
+
+Placeholder entries show only in `pnpm dev` and in builds with `SHOW_SAMPLE_PROJECTS=1` (the CI
+build that the E2E tests run against). Until a real project exists, the live site hides the
+Work section and its menu link, the hero button leads to Experience, and `/projects` returns
+404; all of it comes back with the first real project.
+
+Temporary switches to find which effect slows a machine down: `?fx=off`, or any of
+`?fx=nocursor,nolenis,noreveal,notrail` (`src/shared/lib/debug`).
 
 ## Structure
 
-App Router in `src/app`, with [Feature-Sliced Design](https://feature-sliced.design)
-layers next to it in `src/`:
+App Router in `src/app`, with [Feature-Sliced Design](https://feature-sliced.design) layers
+next to it in `src/`:
 
-| Folder         | Holds                                                                    |
-| -------------- | ------------------------------------------------------------------------ |
-| `src/app`      | Routes (`layout.tsx`, `page.tsx`, icons, OG image), global CSS, fonts    |
-| `src/views`    | Page compositions (`home`); the FSD pages layer                          |
-| `src/widgets`  | Page blocks: `header`, `hero`, `sample-dashboard`                        |
-| `src/features` | `inspect-element`, `switch-theme`                                        |
-| `src/shared`   | Config (tokens, content), lib (theme, cn, contrast, logo), UI components |
+| Folder         | Holds                                                                                                          |
+| -------------- | -------------------------------------------------------------------------------------------------------------- |
+| `src/app`      | Routes (`layout.tsx`, `page.tsx`, `projects/`, icons, OG image), global CSS, fonts                             |
+| `src/views`    | Page compositions: `home`, `projects` (the FSD pages layer)                                                    |
+| `src/widgets`  | `header`, `hero`, `sample-dashboard`, `selected-work`, `experience`, `skills`, `approach`, `contact`, `footer` |
+| `src/features` | `inspect-element`, `switch-theme`, `filter-projects`, `copy-text`                                              |
+| `src/entities` | `project`: the demo project model, filters and cards                                                           |
+| `src/shared`   | Config (tokens, content), lib (theme, motion, cn, contrast, logo), UI (button, section, reveal, cursor, …)     |
 
-The pages layer is called `views` because Next.js reads a `src/pages` folder as
-the Pages Router. Each slice exposes a public `index.ts`. `pnpm lint` checks the
-layer import direction (`eslint-plugin-boundaries`) and the slice structure
-(`steiger`).
+The pages layer is called `views` because Next.js reads a `src/pages` folder as the Pages
+Router. Each slice exposes a public `index.ts`. `pnpm lint` checks the layer import direction
+(`eslint-plugin-boundaries`) and the slice structure (`steiger`).
+
+Styling is Tailwind CSS 4 only; the design tokens (palette colors, radii, type scale, easing)
+are in the `@theme` blocks of `src/app/globals.css`.
+
+## Deploy
+
+- **CI** (`.github/workflows/ci.yml`, required check `ci`): format, lint, typecheck, unit
+  tests, build and E2E tests on every pull request and push to `main`.
+- **CD** (`.github/workflows/docker.yml`): every push to `main` builds the Docker image,
+  pushes it to `ghcr.io/ali-moradi-design/portfolio` (tagged `main` and the commit SHA), then
+  the server pulls it over SSH (`docker compose pull && up -d`) and the site is checked.
 
 ## Stack
 
-Next.js 16 (App Router, React Compiler, Cache Components), React 19, TypeScript,
-Tailwind CSS 4, next-themes, Highcharts, TanStack Table, WebGL2.
-
-Font: Huninn (one weight) via `next/font/local`.
-
-Reduced motion turns off the trail and all transitions.
+Next.js 16 (App Router, React Compiler, Cache Components), React 19, TypeScript, Tailwind CSS 4,
+next-themes, GSAP, Lenis, Highcharts, TanStack Table, Zod, WebGL2. Font: Huninn (one weight)
+via `next/font/local`. Vitest and Playwright for tests.
