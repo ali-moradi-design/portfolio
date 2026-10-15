@@ -1,22 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
-import { seo, person } from "@/data/content";
-import { CustomCursor } from "@/components/ui/CustomCursor";
+import { person, seo, TOKENS } from "@/shared/config";
+import {
+  DEFAULT_PALETTE,
+  paletteScript,
+  themeCss,
+  ThemeProvider,
+} from "@/shared/lib/theme";
+import { motionScript, SmoothScroll } from "@/shared/lib/motion";
+import { CursorTrail } from "@/shared/ui/cursor";
+import { huninn } from "./fonts";
 import "./globals.css";
-
-const inter = localFont({
-  src: "./fonts/inter-latin-wght-normal.woff2",
-  variable: "--font-inter",
-  display: "swap",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ali-moradi-develop.com"),
-  title: {
-    default: seo.title,
-    template: "%s — Ali Moradi",
-  },
+  title: { default: seo.title, template: "%s — Ali Moradi" },
   description: seo.description,
   keywords: [
     "Ali Moradi",
@@ -42,25 +39,44 @@ export const metadata: Metadata = {
     title: seo.title,
     description: seo.description,
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1C1C1C",
-  colorScheme: "dark",
-  width: "device-width",
-  initialScale: 1,
+  themeColor: [
+    {
+      media: "(prefers-color-scheme: light)",
+      color: TOKENS[DEFAULT_PALETTE].light.bg,
+    },
+    {
+      media: "(prefers-color-scheme: dark)",
+      color: TOKENS[DEFAULT_PALETTE].dark.bg,
+    },
+  ],
 };
+
+const themeStyles = themeCss();
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full overflow-x-hidden bg-bg text-ink">
-        <CustomCursor />
-        {children}
+    // Inline scripts set data-palette and data-mode before React hydrates.
+    <html
+      lang="en"
+      className={huninn.variable}
+      data-palette={DEFAULT_PALETTE}
+      suppressHydrationWarning
+    >
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
+        <script dangerouslySetInnerHTML={{ __html: paletteScript }} />
+        <script dangerouslySetInnerHTML={{ __html: motionScript }} />
+      </head>
+      <body>
+        <ThemeProvider>
+          <SmoothScroll />
+          <CursorTrail />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -10,6 +10,9 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
+    // Scroll reveals hide content until it is scrolled into view; tests check
+    // the content, so they run with reduced motion (reveals off).
+    reducedMotion: "reduce",
   },
   projects: [
     {
