@@ -42,9 +42,10 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 
 /* Lab-only variant switch */
 .lab-variants {
-  position: fixed; left: 12px; bottom: 64px; z-index: 30; display: flex; gap: 2px; padding: 3px;
+  position: fixed; left: 50%; bottom: 10px; transform: translateX(-50%); z-index: 30; display: flex; gap: 8px; padding: 3px;
   background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--r-md);
 }
+.lab-variants > div { display: flex; gap: 2px; }
 .lab-variants button { font: inherit; font-size: 12px; line-height: 1; width: 26px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: var(--muted); cursor: pointer; }
 .lab-variants button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 
@@ -67,6 +68,7 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
   height: var(--nav-h); border-bottom: 1px solid var(--border); background: var(--bg);
   font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
 }
+.hnav-left { display: flex; align-items: stretch; min-width: 0; }
 .hnav-brand { display: flex; align-items: center; gap: 10px; padding: 0 var(--s-4); color: var(--text); text-decoration: none; text-transform: none; letter-spacing: 0; font-size: var(--step-0); }
 .hnav-mark { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--text); border-radius: 6px; font-size: 12px; letter-spacing: 0.02em; }
 .hnav-menu ul { display: flex; height: 100%; margin: 0; padding: 0; list-style: none; }
@@ -83,7 +85,17 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 }
 .hnav-cell:hover::after { opacity: 1; }
 .hnav-corner { position: absolute; right: 4px; bottom: 4px; width: 5px; height: 5px; border-right: 1px solid var(--border-strong); border-bottom: 1px solid var(--border-strong); }
-.hnav-tools { display: flex; align-items: center; gap: var(--s-3); padding: 0 var(--s-4); border-left: 1px solid var(--border); }
+.hnav-tools, .theme-inline, .theme-dock { display: flex; align-items: center; gap: var(--s-3); }
+.hnav-tools { padding: 0 var(--s-4); border-left: 1px solid var(--border); }
+.hnav-tools-brand { border-right: 1px solid var(--border); }
+.theme-inline { padding-top: var(--s-2); }
+.theme-dock {
+  position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 25; flex-direction: column;
+  padding: 10px 7px; background: var(--surface); border: 1px solid var(--border-strong); border-right: 0;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+}
+.theme-dock .hnav-swatches { flex-direction: column; }
+.theme-dock .hnav-toggle { transform: rotate(90deg); margin: 8px 0 4px; }
 .hnav-swatches { display: flex; gap: 6px; }
 .hnav-swatch { width: 14px; height: 14px; padding: 0; border-radius: 50%; border: 1px solid var(--border-strong); cursor: pointer; }
 .hnav-swatch[aria-checked="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--text); }
@@ -231,6 +243,10 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 .dash-card-head { display: flex; justify-content: space-between; align-items: center; gap: var(--s-2); font-size: var(--step--1); }
 .dash-legend-center { justify-content: center; }
 .hc { width: 100%; min-height: 36px; }
+.donut { position: relative; }
+.donut-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; pointer-events: none; line-height: 1.1; }
+.donut-value { font-size: 22px; font-variant-numeric: tabular-nums; }
+.donut-label { font-size: 11px; color: var(--muted); }
 .hc-loading { height: 210px; }
 .kpi-spark .hc-loading { height: 36px; }
 .users-cell { position: relative; display: inline-flex; justify-content: flex-end; min-width: 110px; }
@@ -298,4 +314,19 @@ html.has-custom-cursor .lab-root .insp-stage *:not(button) { cursor: crosshair !
 }
 @media (prefers-reduced-motion: reduce) {
   .lab-root, .lab-root * { transition: none !important; }
+}
+
+/* Variant D: portrait in the copy column */
+.portrait { position: relative; margin: 0 0 var(--s-2); height: clamp(110px, 30vh, 320px); aspect-ratio: 4 / 5; }
+.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; border: 1px solid var(--border-strong); }
+.portrait-tag {
+  position: absolute; left: -1px; bottom: 100%; font-size: 10px; line-height: 1; padding: 3px 5px;
+  background: var(--accent); color: var(--on-accent); letter-spacing: 0.04em; text-transform: uppercase;
+}
+.portrait-corner { position: absolute; width: 10px; height: 10px; border: 0 solid var(--accent); }
+.portrait-corner.tl { left: -5px; top: -5px; border-left-width: 1px; border-top-width: 1px; }
+.portrait-corner.br { right: -5px; bottom: -5px; border-right-width: 1px; border-bottom-width: 1px; }
+.has-photo .trail-title { font-size: clamp(2rem, min(5vw, 8.5vh), 5rem); }
+@media (max-width: 600px), (max-aspect-ratio: 5/6) {
+  .portrait { height: 96px; }
 }

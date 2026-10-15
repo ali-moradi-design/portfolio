@@ -2,23 +2,26 @@
 // switch on one by one, left to right with some noise, when the parent is hovered or focused.
 // The parent needs the `px` class. Delays are deterministic so server and client markup match.
 
-const COLS = 12;
-const ROWS = 4;
-
 function noise(i: number) {
   const x = Math.sin(i * 12.9898) * 43758.5453;
   return x - Math.floor(x);
 }
 
-const CELLS = Array.from({ length: COLS * ROWS }, (_, i) => {
-  const col = i % COLS;
-  return Math.round(col * 14 + noise(i) * 110);
-});
+const cache = new Map<string, number[]>();
+function delays(cols: number, rows: number) {
+  const key = `${cols}x${rows}`;
+  if (!cache.has(key)) {
+    const step = 168 / cols;
+    cache.set(key, Array.from({ length: cols * rows }, (_, i) => Math.round((i % cols) * step + noise(i) * 110)));
+  }
+  return cache.get(key)!;
+}
 
-export function Pixels() {
+/** Menu cells use 12 x 4 squares; buttons use smaller ones (20 x 5). */
+export function Pixels({ cols = 12, rows = 4 }: { cols?: number; rows?: number }) {
   return (
-    <span className="px-grid" aria-hidden="true" style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}>
-      {CELLS.map((d, i) => (
+    <span className="px-grid" aria-hidden="true" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+      {delays(cols, rows).map((d, i) => (
         <i key={i} style={{ transitionDelay: `${d}ms` }} />
       ))}
     </span>

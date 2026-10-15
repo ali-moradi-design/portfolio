@@ -265,12 +265,12 @@ export function Inspector({ children, hint }: { children: ReactNode; hint?: stri
           <p>{hint ?? "Drag across the dashboard to inspect it, or click one element."}</p>
           <div className="insp-actions">
             <button type="button" className="px" onClick={inspectAll}>
-              <Pixels />
+              <Pixels cols={20} rows={5} />
               <span className="btn-label">Inspect all</span>
             </button>
             {findings.length > 0 && (
               <button type="button" className="px" onClick={() => setFindings([])}>
-                <Pixels />
+                <Pixels cols={20} rows={5} />
                 <span className="btn-label">Clear</span>
               </button>
             )}

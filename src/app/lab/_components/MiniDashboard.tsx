@@ -101,17 +101,10 @@ export function MiniDashboard() {
     const b = baseOptions(t, !reduced);
     return {
       ...b,
-      chart: { ...b.chart, type: "pie", height: 210 },
+      chart: { ...b.chart, type: "pie", height: 210, spacing: [6, 6, 6, 6] },
       tooltip: { ...b.tooltip, shared: false, pointFormat: "<b>{point.y}%</b>" },
-      title: {
-        text: `<span style="font-size:22px">${data.devices[0]}%</span><br/><span style="font-size:11px;color:${t.muted}">desktop</span>`,
-        useHTML: false,
-        verticalAlign: "middle",
-        y: 6,
-        style: { color: t.text },
-      },
       accessibility: { description: "Share of sessions by device, sample data." },
-      plotOptions: { pie: { innerSize: "72%", borderWidth: 2, borderColor: t.surface, dataLabels: { enabled: false } } },
+      plotOptions: { pie: { innerSize: "72%", borderWidth: 2, borderColor: t.surface, dataLabels: { enabled: false }, center: ["50%", "50%"], size: "100%" } },
       series: [
         {
           type: "pie",
@@ -196,7 +189,14 @@ export function MiniDashboard() {
           <figcaption className="dash-card-head">
             <span>Devices</span>
           </figcaption>
-          <HcChart options={donut} />
+          <div className="donut">
+            <HcChart options={donut} />
+            {/* HTML overlay: Highcharts titles do not sit exactly in the middle of the ring. */}
+            <span className="donut-center" aria-hidden="true">
+              <span className="donut-value">{data.devices[0]}%</span>
+              <span className="donut-label">desktop</span>
+            </span>
+          </div>
           <span className="dash-legend dash-legend-center">
             <span><i style={{ background: "var(--chart-1)" }} />Desktop</span>
             <span><i style={{ background: "var(--chart-2)" }} />Mobile</span>
