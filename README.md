@@ -68,9 +68,6 @@ build that the E2E tests run against). Until a real project exists, the live sit
 Work section and its menu link, the hero button leads to Experience, and `/projects` returns
 404; all of it comes back with the first real project.
 
-Temporary switches to find which effect slows a machine down: `?fx=off`, or any of
-`?fx=nocursor,nolenis,noreveal,notrail` (`src/shared/lib/debug`).
-
 ## Structure
 
 App Router in `src/app`, with [Feature-Sliced Design](https://feature-sliced.design) layers

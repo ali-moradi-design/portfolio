@@ -2,7 +2,6 @@
   "0": "scripts",
   "1": "opengraph-image.tsx",
   "2": "package.json",
-  "3": "Header.tsx",
   "5": "Deploy Job (SSH, compose pull/up --wait)",
   "6": "SampleDashboard.tsx",
   "7": "compilerOptions",
@@ -15,8 +14,6 @@
   "14": "HomePage.tsx",
   "15": "dependencies",
   "16": "eslint.config.mjs",
-  "17": "cn",
   "18": "@playwright/test",
-  "19": "engines",
   "21": "react"
 }
