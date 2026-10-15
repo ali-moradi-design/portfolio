@@ -94,8 +94,6 @@ function ratio(n: number) {
 }
 
 function FindingRow({ f }: { f: Finding }) {
-  const graphics = f.tokens.flatMap((g) => g.items).filter((i) => i.contrast !== null);
-  const minGraphics = graphics.length ? Math.min(...graphics.map((i) => i.contrast!)) : null;
   return (
     <li>
       <span className="insp-report-name">{f.name}</span>
@@ -112,6 +110,7 @@ function FindingRow({ f }: { f: Finding }) {
                   <span
                     key={item.label}
                     className={`insp-chip${item.contrast !== null && item.contrast < AA_GRAPHICS ? " is-fail" : ""}`}
+                    title={item.contrast !== null ? `Contrast with the background; WCAG AA asks for at least ${AA_GRAPHICS}:1 for graphics` : undefined}
                   >
                     {item.swatch && <i className="insp-swatch" style={{ background: item.swatch }} />}
                     <code>{item.label}</code>
@@ -126,19 +125,13 @@ function FindingRow({ f }: { f: Finding }) {
       ) : (
         <span className="insp-report-empty">No tokens</span>
       )}
-      {(f.contrast !== null || minGraphics !== null) && (
-        <div className="insp-checks">
-          {f.contrast !== null && (
-            <span className={`insp-badge ${f.contrast >= AA_TEXT ? "is-pass" : "is-fail"}`}>
-              Text {ratio(f.contrast)} · {f.contrast >= AA_TEXT ? "AA pass" : "AA fail"}
-            </span>
-          )}
-          {minGraphics !== null && (
-            <span className={`insp-badge ${minGraphics >= AA_GRAPHICS ? "is-pass" : "is-fail"}`}>
-              Graphics min {ratio(minGraphics)} · {minGraphics >= AA_GRAPHICS ? "AA pass" : "AA fail"}
-            </span>
-          )}
-        </div>
+      {f.contrast !== null && (
+        <span
+          className={`insp-badge ${f.contrast >= AA_TEXT ? "is-pass" : "is-fail"}`}
+          title={`WCAG AA asks for at least ${AA_TEXT}:1 for body text`}
+        >
+          Text contrast {ratio(f.contrast)} · WCAG AA {f.contrast >= AA_TEXT ? "pass" : "fail"}
+        </span>
       )}
     </li>
   );
