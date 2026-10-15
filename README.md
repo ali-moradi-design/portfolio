@@ -23,16 +23,15 @@ Then open http://localhost:3000. The dev server uses Turbopack.
 
 Other scripts:
 
-| Command                 | What it does                                       |
-| ----------------------- | -------------------------------------------------- |
-| `pnpm build`            | Production build (standalone output)               |
-| `pnpm start:standalone` | Run the standalone build with `public/` and assets |
-| `pnpm lint`             | ESLint (with FSD import rules) and steiger         |
-| `pnpm typecheck`        | Generate route types and run `tsc`                 |
-| `pnpm format`           | Prettier with the Tailwind class sorter            |
-| `pnpm format:check`     | Check formatting (runs in CI)                      |
-| `pnpm test`             | Vitest unit tests                                  |
-| `pnpm test:e2e`         | Playwright E2E tests against the production build  |
+| Command             | What it does                                      |
+| ------------------- | ------------------------------------------------- |
+| `pnpm build`        | Production build (standalone output)              |
+| `pnpm lint`         | ESLint (with FSD import rules) and steiger        |
+| `pnpm typecheck`    | Generate route types and run `tsc`                |
+| `pnpm format`       | Prettier with the Tailwind class sorter           |
+| `pnpm format:check` | Check formatting (runs in CI)                     |
+| `pnpm test`         | Vitest unit tests                                 |
+| `pnpm test:e2e`     | Playwright E2E tests against the production build |
 
 ## What is inside
 

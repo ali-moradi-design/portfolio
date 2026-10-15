@@ -222,47 +222,6 @@ export function SampleDashboard() {
     };
   }, [t, reduced, data]);
 
-  const sparks = useMemo(
-    () =>
-      data.kpis.map((k) => {
-        const color = k.good ? t.good : t.bad;
-        return {
-          chart: {
-            type: "areaspline",
-            height: 36,
-            width: 80,
-            backgroundColor: "transparent",
-            margin: [2, 0, 2, 0],
-            animation: !reduced,
-          },
-          title: { text: undefined },
-          credits: { enabled: false },
-          legend: { enabled: false },
-          tooltip: { enabled: false },
-          accessibility: { enabled: false },
-          xAxis: { visible: false },
-          yAxis: { visible: false },
-          plotOptions: {
-            series: {
-              animation: !reduced,
-              enableMouseTracking: false,
-              marker: { enabled: false },
-            },
-          },
-          series: [
-            {
-              type: "areaspline",
-              data: [...k.spark],
-              color,
-              lineWidth: 1.5,
-              fillColor: alpha(color, 0.12),
-            },
-          ],
-        } satisfies Highcharts.Options;
-      }),
-    [t, reduced, data],
-  );
-
   return (
     <div
       className="grid gap-4 rounded-lg border border-border bg-surface p-6 shadow-[0_1px_0_var(--border),0_18px_40px_-24px_color-mix(in_srgb,var(--text)_30%,transparent)]"
@@ -312,7 +271,7 @@ export function SampleDashboard() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        {data.kpis.map((k, i) => (
+        {data.kpis.map((k) => (
           <div
             key={k.name}
             className="flex items-end justify-between gap-2 rounded-md bg-raised px-4 py-3"
@@ -333,9 +292,10 @@ export function SampleDashboard() {
                 {k.delta}
               </span>
             </div>
-            <div className="h-9 w-20 flex-none" aria-hidden="true">
-              <Chart options={sparks[i]} height={36} />
-            </div>
+            <Spark
+              values={k.spark}
+              color={k.good ? "var(--good)" : "var(--bad)"}
+            />
           </div>
         ))}
       </div>
@@ -391,6 +351,47 @@ export function SampleDashboard() {
 
       <ServicesTable />
     </div>
+  );
+}
+
+/**
+ * A KPI sparkline: plain SVG, scaled from the lowest to the highest value. A
+ * Highcharts chart for each of these tiny lines cost more than the rest of the
+ * dashboard on load.
+ */
+function Spark({
+  values,
+  color,
+}: {
+  values: readonly number[];
+  color: string;
+}) {
+  const w = 80;
+  const h = 36;
+  const min = Math.min(...values);
+  const span = Math.max(...values) - min || 1;
+  const points = values.map((v, i) => [
+    (i / (values.length - 1)) * w,
+    h - 2 - ((v - min) / span) * (h - 4),
+  ]);
+  const line = points
+    .map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`)
+    .join(" ");
+  return (
+    <svg
+      viewBox={`0 0 ${w} ${h}`}
+      className="h-9 w-20 flex-none overflow-visible"
+      aria-hidden="true"
+    >
+      <path d={`${line} L${w} ${h} L0 ${h} Z`} fill={color} opacity={0.12} />
+      <path
+        d={line}
+        fill="none"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 

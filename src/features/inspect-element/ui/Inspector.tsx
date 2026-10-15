@@ -240,6 +240,7 @@ export function Inspector({
   const crossY = useRef<HTMLDivElement>(null);
   const coords = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; y: number; id: number } | null>(null);
+  const hovered = useRef<Element | null>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [hover, setHover] = useState<Finding | null>(null);
   const [selection, setSelection] = useState<Box | null>(null);
@@ -306,13 +307,14 @@ export function Inspector({
       return;
     }
     if (e.pointerType === "mouse") {
-      const f = inspectAt(e.clientX, e.clientY);
-      setHover((prev) =>
-        prev?.name === f?.name &&
-        prev?.box.x === f?.box.x &&
-        prev?.box.y === f?.box.y
-          ? prev
-          : f,
+      // Measuring reads styles and layout, so only when the element changes.
+      const hit = (e.target as Element).closest("[data-inspect]");
+      if (hit === hovered.current) return;
+      hovered.current = hit;
+      setHover(
+        hit && stageRef.current?.contains(hit)
+          ? describe(hit, 0, stageRef.current.getBoundingClientRect())
+          : null,
       );
     }
   };
@@ -442,6 +444,7 @@ export function Inspector({
           }}
           onPointerLeave={() => {
             moveCrosshair(0, 0, false);
+            hovered.current = null;
             setHover(null);
           }}
         >

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { cn } from "@/shared/lib/cn";
 import type { Project } from "../model/types";
@@ -105,13 +106,12 @@ export function ProjectPreview({
   if (!preview.mp4 && !preview.webm) {
     return (
       <div className={frame}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- a small still; next/image adds nothing here */}
-        <img
+        <Image
           src={preview.poster}
           alt=""
-          loading="lazy"
-          decoding="async"
-          className="size-full object-cover"
+          fill
+          sizes="(min-width: 640px) 50vw, 100vw"
+          className="object-cover"
         />
       </div>
     );

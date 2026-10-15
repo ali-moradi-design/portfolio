@@ -13,6 +13,7 @@ import {
   ScrollTrigger,
   SplitText,
   useGSAP,
+  watchPageHeight,
 } from "@/shared/lib/motion";
 import { fxOff } from "@/shared/lib/debug";
 
@@ -43,6 +44,7 @@ export function RevealText<T extends ElementType = "p">({
       if (!el) return;
       gsap.set(el, { autoAlpha: 1 });
       if (prefersReducedMotion() || fxOff("reveal")) return;
+      watchPageHeight();
       SplitText.create(el, {
         type: "lines",
         mask: "lines",
@@ -87,6 +89,7 @@ export function Reveal<T extends ElementType = "div">({
       if (!el) return;
       gsap.set(el, { autoAlpha: 1 });
       if (prefersReducedMotion() || fxOff("reveal")) return;
+      watchPageHeight();
       const from = { y, autoAlpha: 0 };
       const to = {
         y: 0,
@@ -140,6 +143,7 @@ export function ScrambleText({
       if (!el) return;
       gsap.set(el, { autoAlpha: 1 });
       if (prefersReducedMotion() || fxOff("reveal")) return;
+      watchPageHeight();
       gsap.from(el, {
         duration: 0.9,
         delay,

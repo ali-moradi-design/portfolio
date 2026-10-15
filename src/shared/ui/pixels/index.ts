@@ -1,1 +1,3 @@
-export { Pixels, pixelHost, pixelLabel, RollLabel } from "./Pixels";
+export { pixelHost, pixelLabel } from "./classes";
+export { Pixels } from "./Pixels";
+export { RollLabel } from "./RollLabel";

@@ -1,4 +1,24 @@
 {
-  "5": "CI/CD Workflows",
-  "7": "TypeScript Config"
+  "0": "scripts",
+  "1": "opengraph-image.tsx",
+  "2": "package.json",
+  "3": "Header.tsx",
+  "4": "ref_node_child_process",
+  "5": "Deploy Job (SSH, compose pull/up --wait)",
+  "6": "SampleDashboard.tsx",
+  "7": "compilerOptions",
+  "8": "devDependencies",
+  "9": "config/index.ts",
+  "10": "project/index.ts",
+  "11": "Inspector.tsx",
+  "12": ".prettierrc.json",
+  "13": "Code style",
+  "14": "HomePage.tsx",
+  "15": "dependencies",
+  "16": "eslint.config.mjs",
+  "17": "cn",
+  "18": "@playwright/test",
+  "19": "engines",
+  "20": "layout.tsx",
+  "21": "react"
 }

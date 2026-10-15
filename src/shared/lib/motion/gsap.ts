@@ -20,4 +20,23 @@ export const EASE = {
 export const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+let watching = false;
+
+/**
+ * Recomputes where scroll reveals start whenever the page height changes: a
+ * row of the experience list opens or closes, an image or a font loads.
+ * ScrollTrigger does this only on window resize, so content that moved up
+ * stayed hidden, waiting for a scroll position it had before. One observer
+ * for the whole page; reveals call this when they set up.
+ */
+export function watchPageHeight() {
+  if (watching) return;
+  watching = true;
+  let frame = 0;
+  new ResizeObserver(() => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(() => ScrollTrigger.refresh());
+  }).observe(document.body);
+}
+
 export { gsap, ScrollTrigger, SplitText, useGSAP };

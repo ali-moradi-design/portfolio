@@ -1,15 +1,17 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 // Pixel dissolve fill for buttons and menu cells (after heronaiapp.com): a grid
 // of squares that switch on one by one, left to right with some noise, when the
 // host is hovered or focused; then the label switches to the ink color. The host
 // gets `pixelHost` and sets --px-fill and --px-ink. Delays are deterministic so
 // server and client markup match.
-
-/** Classes for the element that holds <Pixels />. */
-export const pixelHost =
-  "group/px relative isolate overflow-hidden [--px-fill:var(--text)] [--px-ink:var(--bg)]";
-/** Classes for the host's label: it changes color once the squares are in. */
-export const pixelLabel =
-  "transition-colors delay-190 duration-0 group-hover/px:text-(--px-ink) group-focus-visible/px:text-(--px-ink)";
+//
+// The squares are added on the host's first hover or focus, not with the page:
+// every button and menu cell has 64 to 78 of them, about half of all the nodes
+// on the home page. @starting-style (`starting:`) lets the first dissolve run
+// from transparent, as later ones do.
 
 function noise(i: number) {
   const x = Math.sin(i * 12.9898) * 43758.5453;
@@ -40,35 +42,36 @@ export function Pixels({
   cols?: number;
   rows?: number;
 }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [on, setOn] = useState(false);
+
+  useEffect(() => {
+    const host = ref.current?.parentElement;
+    if (on || !host) return;
+    const wake = () => setOn(true);
+    host.addEventListener("pointerenter", wake);
+    host.addEventListener("focusin", wake);
+    return () => {
+      host.removeEventListener("pointerenter", wake);
+      host.removeEventListener("focusin", wake);
+    };
+  }, [on]);
+
   return (
     <span
+      ref={ref}
       className="pointer-events-none absolute inset-0 -z-10 grid auto-rows-fr"
       aria-hidden="true"
       style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
     >
-      {delays(cols, rows).map((d, i) => (
-        <i
-          key={i}
-          className="bg-(--px-fill) opacity-0 group-hover/px:opacity-100 group-focus-visible/px:opacity-100 group-aria-expanded/px:opacity-100"
-          style={{ transitionDelay: `${d}ms` }}
-        />
-      ))}
-    </span>
-  );
-}
-
-/** A label that rolls up on hover, a copy coming in from below (menu cells). */
-export function RollLabel({ text }: { text: string }) {
-  const part =
-    "transition-transform duration-320 ease-out-soft group-hover/px:-translate-y-full group-focus-visible/px:-translate-y-full";
-  return (
-    <span
-      className={`relative inline-grid h-[1.25em] overflow-hidden leading-[1.25] ${pixelLabel}`}
-    >
-      <span className={part}>{text}</span>
-      <span aria-hidden="true" className={`absolute top-full left-0 ${part}`}>
-        {text}
-      </span>
+      {on &&
+        delays(cols, rows).map((d, i) => (
+          <i
+            key={i}
+            className="bg-(--px-fill) opacity-0 group-hover/px:opacity-100 group-focus-visible/px:opacity-100 group-aria-expanded/px:opacity-100 starting:opacity-0!"
+            style={{ transitionDelay: `${d}ms` }}
+          />
+        ))}
     </span>
   );
 }
