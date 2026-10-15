@@ -17,7 +17,7 @@ function delays(cols: number, rows: number) {
   return cache.get(key)!;
 }
 
-/** Menu cells use 12 x 4 squares; buttons use smaller ones (20 x 5). */
+/** Menu cells use 12 x 4 squares; buttons use smaller ones (32 x 8, about 5 px each). */
 export function Pixels({ cols = 12, rows = 4 }: { cols?: number; rows?: number }) {
   return (
     <span className="px-grid" aria-hidden="true" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>

@@ -11,10 +11,10 @@ import { Pixels } from "./Pixels";
 const ITEMS = nav.filter((n) => n.href !== "#contact");
 
 type ThemeProps = { palette: Palette; mode: Mode; onPalette: (p: Palette) => void; onMode: (m: Mode) => void };
-/** Where the theme controls sit, so the user can compare: end of the menu, next to the name, or elsewhere. */
-export type ToolsAt = "end" | "brand" | "none";
+/** Palette picker looks to compare: dots, split circles, pixel tiles, stripes. */
+export type SwatchStyle = "s1" | "s2" | "s3" | "s4";
 
-export function HeroNav({ toolsAt, ...theme }: ThemeProps & { toolsAt: ToolsAt }) {
+export function HeroNav({ swatchStyle, ...theme }: ThemeProps & { swatchStyle: SwatchStyle }) {
   const [open, setOpen] = useState(false);
 
   const track = (e: React.PointerEvent<HTMLElement>) => {
@@ -34,7 +34,6 @@ export function HeroNav({ toolsAt, ...theme }: ThemeProps & { toolsAt: ToolsAt }
           </span>
           <span>{person.name}</span>
         </Link>
-        {toolsAt === "brand" && <ThemeTools {...theme} className="hnav-tools hnav-tools-brand" />}
       </div>
 
       <nav aria-label="Primary" className={`hnav-menu${open ? " is-open" : ""}`}>
@@ -63,7 +62,7 @@ export function HeroNav({ toolsAt, ...theme }: ThemeProps & { toolsAt: ToolsAt }
           →
         </span>
       </Link>
-      {toolsAt === "end" && <ThemeTools {...theme} className="hnav-tools hnav-tools-end" />}
+      <ThemeTools {...theme} swatchStyle={swatchStyle} />
     </header>
   );
 }
@@ -77,32 +76,46 @@ function Label({ text }: { text: string }) {
   );
 }
 
-export function ThemeTools({ palette, mode, onPalette, onMode, className }: ThemeProps & { className?: string }) {
+function ThemeTools({ palette, mode, onPalette, onMode, swatchStyle }: ThemeProps & { swatchStyle: SwatchStyle }) {
   return (
-    <div className={className}>
-      <div className="hnav-swatches" role="radiogroup" aria-label="Color theme">
-        {PALETTES.map((p) => (
-          <button
-            key={p}
-            type="button"
-            role="radio"
-            aria-checked={p === palette}
-            aria-label={`${PALETTE_LABELS[p]} theme`}
-            className="hnav-swatch"
-            style={{ background: TOKENS[p][mode].accent }}
-            onClick={() => onPalette(p)}
-          />
-        ))}
+    <div className="hnav-tools">
+      <div className={`hnav-swatches ${swatchStyle}`} role="radiogroup" aria-label="Color theme">
+        {PALETTES.map((p) => {
+          const t = TOKENS[p][mode];
+          return (
+            <button
+              key={p}
+              type="button"
+              role="radio"
+              aria-checked={p === palette}
+              aria-label={`${PALETTE_LABELS[p]} theme`}
+              className="sw"
+              style={{ "--sw-bg": t.bg, "--sw-accent": t.accent, "--sw-second": t["chart-2"], "--sw-text": t.text } as React.CSSProperties}
+              onClick={() => onPalette(p)}
+            >
+              <span className="sw-a" />
+              <span className="sw-b" />
+              <span className="sw-c" />
+              <span className="sw-d" />
+            </button>
+          );
+        })}
       </div>
       <button
         type="button"
         role="switch"
         aria-checked={mode === "dark"}
         aria-label="Dark mode"
-        className="hnav-toggle"
+        className="dn"
         onClick={() => onMode(mode === "dark" ? "light" : "dark")}
       >
-        <span className="hnav-knob" />
+        <span className="dn-stars" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="dn-cloud" aria-hidden="true" />
+        <span className="dn-knob" aria-hidden="true" />
       </button>
     </div>
   );

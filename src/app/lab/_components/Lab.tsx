@@ -5,18 +5,18 @@ import { useCallback, useEffect, useRef, useSyncExternalStore, type CSSPropertie
 import { TokensContext } from "../_lib/theme";
 import { PALETTES, TOKENS, type Mode } from "../_lib/tokens";
 import { HeroCombined } from "./HeroCombined";
-import { HeroNav, ThemeTools } from "./HeroNav";
+import { HeroNav, type SwatchStyle } from "./HeroNav";
 
 const VARIANTS = [
   { id: "c", label: "Combined" },
   { id: "d", label: "Combined with photo" },
 ] as const;
-// Where the theme controls sit; the user compares these and picks one.
-const TOOL_SPOTS = [
-  { id: "1", label: "End of the menu" },
-  { id: "2", label: "Next to the name" },
-  { id: "3", label: "Floating dock on the right edge" },
-  { id: "4", label: "In the hero, under the buttons" },
+// Styles for the palette picker; the user compares these and picks one.
+const SWATCH_STYLES = [
+  { id: "1", label: "Dots" },
+  { id: "2", label: "Split circles" },
+  { id: "3", label: "Pixel tiles" },
+  { id: "4", label: "Stripes" },
 ] as const;
 type ModeChoice = Mode | "system";
 
@@ -47,7 +47,7 @@ export function Lab() {
   const tokens = TOKENS[palette][mode];
 
   const set = useCallback(
-    (key: "v" | "p" | "m" | "t", value: string) => {
+    (key: "v" | "p" | "m" | "r", value: string) => {
       const next = new URLSearchParams(params.toString());
       next.set(key, value);
       router.replace(`?${next.toString()}`, { scroll: false });
@@ -67,9 +67,8 @@ export function Lab() {
     return () => ro.disconnect();
   }, []);
 
-  const spot = pick(params.get("t"), TOOL_SPOTS.map((s) => s.id), "1");
+  const swatch = pick(params.get("r"), SWATCH_STYLES.map((s) => s.id), "1");
   const theme = { palette, mode, onPalette: (p: string) => set("p", p), onMode: (m: string) => set("m", m) };
-  const extra = spot === "4" ? <ThemeTools {...theme} className="theme-inline" /> : null;
 
   const style = Object.fromEntries(
     Object.entries(tokens).map(([k, v]) => [`--${k}`, v]),
@@ -79,12 +78,11 @@ export function Lab() {
     <TokensContext.Provider value={{ tokens, mode }}>
       <div ref={rootRef} className="lab-root" style={{ ...style, colorScheme: mode }} data-mode={mode}>
         <div ref={barRef}>
-          <HeroNav toolsAt={spot === "1" ? "end" : spot === "2" ? "brand" : "none"} {...theme} />
+          <HeroNav swatchStyle={`s${swatch}` as SwatchStyle} {...theme} />
         </div>
         <main>
-          <HeroCombined key={variant} tokens={tokens} photo={variant === "d"} extra={extra} />
+          <HeroCombined key={variant} tokens={tokens} photo={variant === "d"} />
         </main>
-        {spot === "3" && <ThemeTools {...theme} className="theme-dock" />}
         <div className="lab-variants">
           <div role="group" aria-label="Lab variant">
             {VARIANTS.map((v) => (
@@ -94,9 +92,9 @@ export function Lab() {
               </button>
             ))}
           </div>
-          <div role="group" aria-label="Theme controls position">
-            {TOOL_SPOTS.map((s) => (
-              <button key={s.id} type="button" aria-pressed={s.id === spot} title={s.label} onClick={() => set("t", s.id)}>
+          <div role="group" aria-label="Palette picker style">
+            {SWATCH_STYLES.map((s) => (
+              <button key={s.id} type="button" aria-pressed={s.id === swatch} title={s.label} onClick={() => set("r", s.id)}>
                 {s.id}
                 <span className="sr-only"> {s.label}</span>
               </button>
