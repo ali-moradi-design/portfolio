@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { contrastRatio, parseColor } from "../_lib/contrast";
-import { AA_GRAPHICS, AA_TEXT, isGraphicRole, isToken, parseTokens } from "../_lib/inspectTokens";
+import { AA_GRAPHICS, AA_TEXT, isGraphicRole, isToken, parseTokens, typeStep } from "../_lib/inspectTokens";
 import { Pixels } from "./Pixels";
 
 type Box = { x: number; y: number; w: number; h: number };
@@ -15,8 +15,14 @@ type TokenItem = {
   /** Graphics contrast against the element background (series colors only). */
   contrast: number | null;
 };
+/** A measured space drawn over the stage: `box` in stage pixels, `value` in design pixels. */
+type Space = { box: Box; value: number };
+type Typography = { size: number; lineHeight: number | null; step: string | null };
 type Finding = {
   id: number;
+  type: Typography | null;
+  padding: Space[];
+  gaps: Space[];
   name: string;
   tokens: { role: string; items: TokenItem[] }[];
   box: Box;
@@ -62,6 +68,67 @@ function resolveItem(el: Element, label: string, graphic: boolean, bg: string | 
   };
 }
 
+function typography(el: Element): Typography {
+  const style = getComputedStyle(el);
+  const size = parseFloat(style.fontSize);
+  const lh = parseFloat(style.lineHeight);
+  return { size: Math.round(size * 10) / 10, lineHeight: Number.isFinite(lh) ? Math.round(lh) : null, step: typeStep(size) };
+}
+
+function paddingSpaces(el: Element, r: DOMRect, origin: DOMRect, scale: number): Space[] {
+  const s = getComputedStyle(el);
+  const px = (v: string) => parseFloat(v) || 0;
+  const [bt, br, bb, bl] = [s.borderTopWidth, s.borderRightWidth, s.borderBottomWidth, s.borderLeftWidth].map(px);
+  const [pt, pr, pb, pl] = [s.paddingTop, s.paddingRight, s.paddingBottom, s.paddingLeft].map(px);
+  // Inner box (inside the border) in stage pixels; computed values are in design pixels.
+  const x = r.left - origin.left + bl * scale;
+  const y = r.top - origin.top + bt * scale;
+  const w = r.width - (bl + br) * scale;
+  const h = r.height - (bt + bb) * scale;
+  return [
+    { box: { x, y, w, h: pt * scale }, value: pt },
+    { box: { x, y: y + h - pb * scale, w, h: pb * scale }, value: pb },
+    { box: { x, y: y + pt * scale, w: pl * scale, h: h - (pt + pb) * scale }, value: pl },
+    { box: { x: x + w - pr * scale, y: y + pt * scale, w: pr * scale, h: h - (pt + pb) * scale }, value: pr },
+  ].filter((sp) => sp.value > 0);
+}
+
+/** Spaces between neighbouring children of a flex or grid container. */
+function gapSpaces(el: Element, origin: DOMRect, scale: number): Space[] {
+  const s = getComputedStyle(el);
+  if (!/flex|grid/.test(s.display)) return [];
+  const rects = Array.from(el.children)
+    .map((c) => c.getBoundingClientRect())
+    .filter((r) => r.width > 0 && r.height > 0);
+  const spaces: Space[] = [];
+  for (const a of rects) {
+    // Nearest neighbour to the right that shares a row, and below that shares a column.
+    const right = rects
+      .filter((b) => b.left >= a.right - 0.5 && b.top < a.bottom && a.top < b.bottom)
+      .sort((p, q) => p.left - q.left)[0];
+    const below = rects
+      .filter((b) => b.top >= a.bottom - 0.5 && b.left < a.right && a.left < b.right)
+      .sort((p, q) => p.top - q.top)[0];
+    if (right && right.left - a.right > 0.5) {
+      const top = Math.max(a.top, right.top);
+      const bottom = Math.min(a.bottom, right.bottom);
+      spaces.push({
+        box: { x: a.right - origin.left, y: top - origin.top, w: right.left - a.right, h: bottom - top },
+        value: Math.round((right.left - a.right) / scale),
+      });
+    }
+    if (below && below.top - a.bottom > 0.5) {
+      const left = Math.max(a.left, below.left);
+      const rightEdge = Math.min(a.right, below.right);
+      spaces.push({
+        box: { x: left - origin.left, y: a.bottom - origin.top, w: rightEdge - left, h: below.top - a.bottom },
+        value: Math.round((below.top - a.bottom) / scale),
+      });
+    }
+  }
+  return spaces;
+}
+
 function describe(el: Element, id: number, origin: DOMRect): Finding {
   const r = el.getBoundingClientRect();
   const scale = parseFloat(el.closest("[data-scale]")?.getAttribute("data-scale") ?? "1") || 1;
@@ -78,6 +145,9 @@ function describe(el: Element, id: number, origin: DOMRect): Finding {
   const elBg = effectiveBackground(el);
   return {
     id,
+    type: textEl ? typography(textEl) : null,
+    padding: paddingSpaces(el, r, origin, scale),
+    gaps: gapSpaces(el, origin, scale),
     name: el.getAttribute("data-inspect") ?? el.tagName.toLowerCase(),
     tokens: parseTokens(el.getAttribute("data-tokens")).map((g) => ({
       role: g.role,
@@ -124,6 +194,15 @@ function FindingRow({ f }: { f: Finding }) {
         </dl>
       ) : (
         <span className="insp-report-empty">No tokens</span>
+      )}
+      {f.type && (
+        <div className="insp-token-row insp-type">
+          <span>type</span>
+          <span>
+            {f.type.step ?? "Off scale"} · {f.type.size}px
+            {f.type.lineHeight !== null && <span className="insp-chip-value"> / {f.type.lineHeight}px line</span>}
+          </span>
+        </div>
       )}
       {f.contrast !== null && (
         <span
@@ -298,7 +377,9 @@ export function Inspector({ children, hint }: { children: ReactNode; hint?: stri
           {children}
           <div className="insp-overlay" aria-hidden="true">
             {hover && findings.length === 0 && <Guides box={hover.box} />}
+            {hover && findings.length === 0 && <Spacing f={hover} />}
             {hover && findings.length === 0 && <Outline f={hover} />}
+            {findings.length === 1 && <Spacing f={findings[0]} />}
             {findings.map((f) => (
               <Outline key={f.id} f={f} />
             ))}
@@ -351,6 +432,28 @@ function Outline({ f }: { f: Finding }) {
       <span className="insp-tag">
         {f.name} {dw}×{dh}
       </span>
+    </div>
+  );
+}
+
+function Spacing({ f }: { f: Finding }) {
+  return (
+    <>
+      {f.padding.map((sp, i) => (
+        <SpaceBox key={`p${i}`} sp={sp} kind="padding" />
+      ))}
+      {f.gaps.map((sp, i) => (
+        <SpaceBox key={`g${i}`} sp={sp} kind="gap" />
+      ))}
+    </>
+  );
+}
+
+function SpaceBox({ sp, kind }: { sp: Space; kind: "padding" | "gap" }) {
+  const { x, y, w, h } = sp.box;
+  return (
+    <div className={`insp-space is-${kind}`} style={{ left: x, top: y, width: w, height: h }}>
+      {Math.min(w, h) >= 6 && Math.max(w, h) >= 18 && <span className="insp-space-label">{sp.value}</span>}
     </div>
   );
 }

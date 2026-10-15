@@ -29,3 +29,20 @@ export function isGraphicRole(role: string): boolean {
 export function isToken(item: string): boolean {
   return item.startsWith("--");
 }
+
+/** The type scale in px (see notes: Display 76 … Body S 14). */
+const TYPE_SCALE: [number, string][] = [
+  [76, "Display"],
+  [51, "Heading XL"],
+  [41, "Heading L"],
+  [33, "Heading M"],
+  [26, "Heading S"],
+  [21, "Body L"],
+  [17, "Body"],
+  [14, "Body S"],
+];
+
+/** Name of the type step for a computed font size, or null when the size is off the scale. */
+export function typeStep(px: number): string | null {
+  return TYPE_SCALE.find(([size]) => Math.abs(size - px) < 0.5)?.[1] ?? null;
+}
