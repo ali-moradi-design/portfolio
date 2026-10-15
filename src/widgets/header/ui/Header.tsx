@@ -32,85 +32,93 @@ export function Header() {
   };
 
   return (
-    <header
-      className="sticky top-0 z-30 grid h-header auto-cols-auto grid-flow-col grid-cols-[minmax(0,1fr)] items-stretch border-b border-border bg-bg text-xs tracking-[0.06em] uppercase"
-      onPointerMove={track}
-    >
-      <div className="flex min-w-0 items-stretch">
+    <>
+      <a
+        href="#main"
+        className="absolute -top-25 left-3 z-50 bg-accent px-3 py-2 text-on-accent no-underline focus:top-3"
+      >
+        Skip to content
+      </a>
+      <header
+        className="sticky top-0 z-30 grid h-header auto-cols-auto grid-flow-col grid-cols-[minmax(0,1fr)] items-stretch border-b border-border bg-bg text-xs tracking-[0.06em] uppercase"
+        onPointerMove={track}
+      >
+        <div className="flex min-w-0 items-stretch">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 px-4 text-body tracking-normal text-text normal-case no-underline"
+          >
+            <Logo />
+            <span className="max-[560px]:hidden">{person.name}</span>
+          </Link>
+        </div>
+
+        <nav
+          aria-label="Primary"
+          className={cn(
+            "max-[1100px]:absolute max-[1100px]:top-full max-[1100px]:right-0 max-[1100px]:z-40 max-[1100px]:border max-[1100px]:border-border max-[1100px]:bg-bg",
+            !open && "max-[1100px]:hidden",
+          )}
+        >
+          <ul className="m-0 flex h-full list-none p-0 max-[1100px]:h-auto max-[1100px]:flex-col">
+            {ITEMS.map((item) => (
+              <li key={item.href} className="flex">
+                <Link
+                  href={`/${item.href}`}
+                  className={cn(
+                    cell,
+                    "max-[1100px]:h-header max-[1100px]:min-w-55 max-[1100px]:border-t max-[1100px]:border-l-0",
+                  )}
+                  data-cell
+                  onClick={() => setOpen(false)}
+                >
+                  <Pixels cols={13} rows={6} />
+                  <RollLabel text={item.label} />
+                  <span
+                    className="absolute right-1 bottom-1 size-1.25 border-r border-b border-border-strong"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <button
+          type="button"
+          className={cn(
+            cell,
+            "hidden max-[1100px]:block max-[1100px]:min-w-24 max-[560px]:min-w-0",
+          )}
+          data-cell
+          aria-expanded={open}
+          onClick={() => setOpen((o) => !o)}
+        >
+          <Pixels cols={13} rows={6} />
+          <RollLabel text={open ? "Close" : "Menu"} />
+        </button>
+
         <Link
-          href="/"
-          className="flex items-center gap-2.5 px-4 text-body tracking-normal text-text normal-case no-underline"
+          href="/#contact"
+          className={cn(
+            cell,
+            "group/cta min-w-37.5 text-accent [--px-fill:var(--accent)] [--px-ink:var(--on-accent)] max-[1100px]:min-w-28 max-[560px]:min-w-0 max-[560px]:pr-7.5",
+          )}
+          data-cell
         >
-          <Logo />
-          <span className="max-[560px]:hidden">{person.name}</span>
+          <Pixels cols={13} rows={6} />
+          <RollLabel text="Contact" />
+          <span
+            className="absolute right-2.5 bottom-2 text-sm transition-colors delay-190 duration-0 group-hover/cta:text-on-accent group-focus-visible/cta:text-on-accent"
+            aria-hidden="true"
+          >
+            →
+          </span>
         </Link>
-      </div>
-
-      <nav
-        aria-label="Primary"
-        className={cn(
-          "max-[1100px]:absolute max-[1100px]:top-full max-[1100px]:right-0 max-[1100px]:z-40 max-[1100px]:border max-[1100px]:border-border max-[1100px]:bg-bg",
-          !open && "max-[1100px]:hidden",
-        )}
-      >
-        <ul className="m-0 flex h-full list-none p-0 max-[1100px]:h-auto max-[1100px]:flex-col">
-          {ITEMS.map((item) => (
-            <li key={item.href} className="flex">
-              <Link
-                href={`/${item.href}`}
-                className={cn(
-                  cell,
-                  "max-[1100px]:h-header max-[1100px]:min-w-55 max-[1100px]:border-t max-[1100px]:border-l-0",
-                )}
-                data-cell
-                onClick={() => setOpen(false)}
-              >
-                <Pixels cols={13} rows={6} />
-                <RollLabel text={item.label} />
-                <span
-                  className="absolute right-1 bottom-1 size-1.25 border-r border-b border-border-strong"
-                  aria-hidden="true"
-                />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <button
-        type="button"
-        className={cn(
-          cell,
-          "hidden max-[1100px]:block max-[1100px]:min-w-24 max-[560px]:min-w-0",
-        )}
-        data-cell
-        aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <Pixels cols={13} rows={6} />
-        <RollLabel text={open ? "Close" : "Menu"} />
-      </button>
-
-      <Link
-        href="/#contact"
-        className={cn(
-          cell,
-          "group/cta min-w-37.5 text-accent [--px-fill:var(--accent)] [--px-ink:var(--on-accent)] max-[1100px]:min-w-28 max-[560px]:min-w-0 max-[560px]:pr-7.5",
-        )}
-        data-cell
-      >
-        <Pixels cols={13} rows={6} />
-        <RollLabel text="Contact" />
-        <span
-          className="absolute right-2.5 bottom-2 text-sm transition-colors delay-190 duration-0 group-hover/cta:text-on-accent group-focus-visible/cta:text-on-accent"
-          aria-hidden="true"
-        >
-          →
-        </span>
-      </Link>
-      <div className="flex items-center border-l border-border px-4 max-[560px]:px-3">
-        <ThemeSwitcher />
-      </div>
-    </header>
+        <div className="flex items-center border-l border-border px-4 max-[560px]:px-3">
+          <ThemeSwitcher />
+        </div>
+      </header>
+    </>
   );
 }

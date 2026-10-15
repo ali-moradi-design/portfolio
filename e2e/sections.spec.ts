@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 
+// Runs against a build made with SHOW_SAMPLE_PROJECTS=1 (see the CI workflow).
+
 test("every menu link has a section", async ({ page }) => {
   await page.goto("/");
   for (const id of ["work", "experience", "skills", "about", "contact"]) {
@@ -7,22 +9,60 @@ test("every menu link has a section", async ({ page }) => {
   }
 });
 
-test("dashboard builder adds and removes widgets", async ({ page }) => {
+test("home shows featured projects and links to all of them", async ({
+  page,
+}) => {
   await page.goto("/");
-  const canvas = page.getByRole("figure", {
-    name: "Working sample of the Dynamic dashboard builder",
-  });
-  const cards = canvas.locator("article");
-  await expect(cards).toHaveCount(3);
-  await canvas.getByRole("button", { name: "+ KPI" }).click();
-  await expect(cards).toHaveCount(4);
-  await canvas.getByRole("button", { name: "Remove Sessions" }).click();
-  await expect(cards).toHaveCount(3);
+  const work = page.locator("#work");
+  await expect(work.locator("article")).not.toHaveCount(0);
+  await expect(
+    work.getByRole("link", { name: /Open live/ }).first(),
+  ).toHaveAttribute("href", /^https:\/\/[a-z0-9-]+\.ali-moradi-develop\.com$/);
+  await work.getByRole("link", { name: "All projects →" }).click();
+  await expect(page).toHaveURL(/\/projects$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "All projects",
+  );
 });
 
-test("form builder validates the generated form", async ({ page }) => {
+test("projects page filters by type and tech through the URL", async ({
+  page,
+}) => {
+  await page.goto("/projects");
+  const rows = page.locator("main article");
+  const total = await rows.count();
+  expect(total).toBeGreaterThan(1);
+
+  const types = page.getByRole("group", { name: "Type" });
+  await types.getByRole("button", { name: /^Dashboard/ }).click();
+  await expect(page).toHaveURL(/type=dashboard/);
+  const dashboards = await rows.count();
+  expect(dashboards).toBeLessThan(total);
+
+  await page.reload();
+  await expect(rows).toHaveCount(dashboards);
+  await expect(
+    types.getByRole("button", { name: /^Dashboard/ }),
+  ).toHaveAttribute("aria-pressed", "true");
+
+  await page.getByRole("button", { name: "Clear filters" }).first().click();
+  await expect(rows).toHaveCount(total);
+  await expect(page).toHaveURL(/\/projects$/);
+});
+
+test("Neor's work samples sit in its experience row", async ({ page }) => {
   await page.goto("/");
-  const form = page.getByRole("form", { name: "Generated form" });
+  const neor = page.locator("#experience details").first();
+  const builder = neor.getByRole("figure", {
+    name: "Working sample of the Dynamic dashboard builder",
+  });
+  const cards = builder.locator("article");
+  await expect(cards).toHaveCount(3);
+  await builder.getByRole("button", { name: "+ KPI" }).click();
+  await expect(cards).toHaveCount(4);
+
+  await neor.getByRole("tab", { name: "Dynamic form builder" }).click();
+  const form = neor.getByRole("form", { name: "Generated form" });
   await form.getByRole("button", { name: "Submit" }).click();
   await expect(form.getByText("This field is required.")).toHaveCount(2);
   await form.getByLabel("Company").fill("Acme");

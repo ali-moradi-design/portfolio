@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { series } from "../../lib/series";
-import { MiniBars } from "../MiniCharts";
+import { MiniBars } from "./MiniCharts";
 
 const PLAN = { name: "LTE 100 GB", used: 68, total: 100, daysLeft: 12 };
 const USAGE = series(14, 0.6, 5, 3);

@@ -1,7 +1,14 @@
-import { experience, person } from "@/shared/config";
+import { experience, person, workSamples } from "@/shared/config";
 import { Section } from "@/shared/ui/section";
+import { WorkSamples } from "./WorkSamples";
 
-/** Roles as ruled rows; each opens to show what was done there. */
+/**
+ * Roles as ruled rows; each opens to show what was done there and, for the
+ * private products, a small working sample of each.
+ */
+const samplesOf = (roleId: string) =>
+  workSamples.filter((w) => w.roleId === roleId);
+
 export function Experience() {
   return (
     <Section
@@ -44,16 +51,21 @@ export function Experience() {
                 </span>
               </span>
             </summary>
-            <ul className="grid gap-2 pb-8 md:ml-[calc(180px+1.5rem)] md:max-w-[70ch]">
-              {r.bullets.map((b) => (
-                <li
-                  key={b}
-                  className="relative pl-5 text-muted before:absolute before:top-[0.7em] before:left-0 before:size-1.5 before:bg-accent before:content-['']"
-                >
-                  {b}
-                </li>
-              ))}
-            </ul>
+            <div className="grid gap-10 pb-10 md:ml-[calc(180px+1.5rem)]">
+              <ul className="grid max-w-[70ch] gap-2">
+                {r.bullets.map((b) => (
+                  <li
+                    key={b}
+                    className="relative pl-5 text-muted before:absolute before:top-[0.7em] before:left-0 before:size-1.5 before:bg-accent before:content-['']"
+                  >
+                    {b}
+                  </li>
+                ))}
+              </ul>
+              {samplesOf(r.id).length > 0 && (
+                <WorkSamples items={samplesOf(r.id)} />
+              )}
+            </div>
           </details>
         ))}
       </div>

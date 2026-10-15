@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { nav, projects } from "./content";
+import { experience, nav, workSamples } from "./content";
 
 describe("nav", () => {
   it("links only to in-page sections", () => {
@@ -14,15 +14,11 @@ describe("nav", () => {
   });
 });
 
-describe("projects", () => {
-  it("features exactly four projects, each with its own sample", () => {
-    const samples = projects.flatMap((p) => (p.sample ? [p.sample] : []));
-    expect(samples).toHaveLength(4);
-    expect(new Set(samples).size).toBe(4);
-  });
-
-  it("has unique ids", () => {
-    const ids = projects.map((p) => p.id);
-    expect(new Set(ids).size).toBe(ids.length);
+describe("workSamples", () => {
+  it("has one entry per sample, each on a known role", () => {
+    const samples = workSamples.map((w) => w.sample);
+    expect(new Set(samples).size).toBe(samples.length);
+    const roles = new Set(experience.map((r) => r.id));
+    for (const w of workSamples) expect(roles.has(w.roleId)).toBe(true);
   });
 });

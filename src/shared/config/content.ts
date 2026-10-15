@@ -33,86 +33,50 @@ export const hero = {
 export type SampleKey =
   "dashboard-builder" | "form-builder" | "ui-kit" | "ecare";
 
-export type Project = {
-  id: string;
+/** Company products shown with a small working sample in the Experience rows. */
+export type WorkSample = {
+  sample: SampleKey;
+  /** The Experience row it belongs to. */
+  roleId: string;
   title: string;
-  company: string;
-  period: string;
   /** One sentence: what it is and who uses it. */
   summary: string;
   /** Key parts or tools, each named in the CV. */
   tags: readonly string[];
-  /** Featured on the home page with a live sample. */
-  sample?: SampleKey;
 };
 
-export const projects: readonly Project[] = [
+export const workSamples: readonly WorkSample[] = [
   {
-    id: "dashboard-builder",
+    sample: "dashboard-builder",
+    roleId: "neor",
     title: "Dynamic dashboard builder",
-    company: "Neor",
-    period: "2024 – present",
     summary:
       "A builder, similar to Metabase, where users compose their own dashboards from drag-and-drop widgets, chart types and filters.",
     tags: ["Drag-and-drop widgets", "Chart types", "Filters"],
-    sample: "dashboard-builder",
   },
   {
-    id: "form-builder",
+    sample: "form-builder",
+    roleId: "neor",
     title: "Dynamic form builder",
-    company: "Neor",
-    period: "2024 – present",
     summary:
       "Generates complex forms from configuration, with schema-based validation and file upload.",
     tags: ["React Hook Form", "Zod", "Yup", "File upload"],
-    sample: "form-builder",
   },
   {
-    id: "ui-kit",
-    title: "Company-wide UI kit",
-    company: "Neor",
-    period: "2024 – present",
-    summary:
-      "A UI kit on shadcn/ui and Radix UI, used across all of the company's dashboard products.",
-    tags: ["shadcn/ui", "Radix UI", "Turborepo", "Storybook"],
     sample: "ui-kit",
+    roleId: "neor",
+    title: "Company-wide UI kit",
+    summary:
+      "A UI kit on shadcn/ui and Radix UI in a Turborepo monorepo, documented in Storybook and used across all of the company's dashboard products.",
+    tags: ["shadcn/ui", "Radix UI", "Turborepo", "Storybook"],
   },
   {
-    id: "ecare",
+    sample: "ecare",
+    roleId: "asiatech",
     title: "eCare customer portal",
-    company: "Asiatech",
-    period: "2023 – 2024",
     summary:
       "The self-service portal, rebuilt from scratch, where 500K+ registered customers purchase services and track their own usage statistics.",
     tags: ["500K+ customers", "JWT", "Refresh tokens", "Protected routes"],
-    sample: "ecare",
-  },
-  {
-    id: "enterprise-dashboards",
-    title: "Enterprise big data dashboards",
-    company: "Neor",
-    period: "2024 – present",
-    summary:
-      "Multiple B2B dashboards built from the ground up that display big data through data grids, charts and interactive maps, with performance as a core requirement.",
-    tags: ["AG Grid", "TanStack Query", "Mapbox", "Leaflet", "Highcharts"],
-  },
-  {
-    id: "asiatech-bss",
-    title: "Business Support System",
-    company: "Asiatech",
-    period: "2023 – 2024",
-    summary:
-      "A panel built from scratch to manage ADSL, LTE and other internet services, each with its own business rules and workflows.",
-    tags: ["React Table", "Material UI", "Bootstrap"],
-  },
-  {
-    id: "coach-athlete",
-    title: "Coach and athlete platform",
-    company: "Homa Pharmed",
-    period: "2020 – 2022",
-    summary:
-      "A startup product where coaches create training and diet plans and athletes view and follow their personalized programs.",
-    tags: ["Reusable UI components", "Node.js", "Express", "MongoDB"],
   },
 ];
 

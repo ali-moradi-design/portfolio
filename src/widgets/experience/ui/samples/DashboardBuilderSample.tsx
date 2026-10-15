@@ -3,7 +3,7 @@
 import { useId, useState, type DragEvent } from "react";
 import { cn } from "@/shared/lib/cn";
 import { series } from "../../lib/series";
-import { MiniBars, MiniLine } from "../MiniCharts";
+import { MiniBars, MiniLine } from "./MiniCharts";
 
 type Kind = "kpi" | "bars" | "line";
 type Widget = { id: number; kind: Kind };

@@ -1,4 +1,4 @@
-import { linePath } from "../lib/series";
+import { linePath } from "../../lib/series";
 
 /** Bars in the first chart color; height follows the box. */
 export function MiniBars({ values }: { values: readonly number[] }) {

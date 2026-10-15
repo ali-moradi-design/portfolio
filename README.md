@@ -40,7 +40,17 @@ Other scripts:
   inside an inspector that reports design tokens and WCAG contrast). More sections are on the way.
 - Three palettes (Sage, Midnight, Inferno), each light and dark (mode by next-themes),
   remembered in localStorage and applied before the first paint
-- Content lives in `src/shared/config/content.ts`
+- Content lives in `src/shared/config/content.ts` (copy from the CV)
+- `/projects`: demo projects, each on its own subdomain, filtered by type and tech in the URL
+
+## Adding a project
+
+1. Add an entry to `src/entities/project/model/projects.ts` (fields are documented in
+   `types.ts`). `featured: true` puts it on the home page (up to four).
+2. Put its preview in `public/projects/`: `<slug>.webm`, `<slug>.mp4` and a `<slug>.jpg` poster
+   (16:10, a few seconds, muted; it loops).
+3. Delete the `placeholder` sample entries once real projects are in. They show only in
+   `pnpm dev` and in builds with `SHOW_SAMPLE_PROJECTS=1` (the CI build for E2E tests).
 
 ## Structure
 
