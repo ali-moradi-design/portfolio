@@ -11,10 +11,7 @@ import { Pixels } from "./Pixels";
 const ITEMS = nav.filter((n) => n.href !== "#contact");
 
 type ThemeProps = { palette: Palette; mode: Mode; onPalette: (p: Palette) => void; onMode: (m: Mode) => void };
-/** Palette picker looks to compare: dots, split circles, pixel tiles, stripes. */
-export type SwatchStyle = "s1" | "s2" | "s3" | "s4";
-
-export function HeroNav({ swatchStyle, ...theme }: ThemeProps & { swatchStyle: SwatchStyle }) {
+export function HeroNav(theme: ThemeProps) {
   const [open, setOpen] = useState(false);
 
   const track = (e: React.PointerEvent<HTMLElement>) => {
@@ -41,7 +38,7 @@ export function HeroNav({ swatchStyle, ...theme }: ThemeProps & { swatchStyle: S
           {ITEMS.map((item) => (
             <li key={item.href}>
               <Link href={`/${item.href}`} className="hnav-cell px" onClick={() => setOpen(false)}>
-                <Pixels />
+                <Pixels cols={20} rows={9} />
                 <Label text={item.label} />
                 <span className="hnav-corner" aria-hidden="true" />
               </Link>
@@ -51,18 +48,18 @@ export function HeroNav({ swatchStyle, ...theme }: ThemeProps & { swatchStyle: S
       </nav>
 
       <button type="button" className="hnav-cell hnav-burger px" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <Pixels />
+        <Pixels cols={20} rows={9} />
         <Label text={open ? "Close" : "Menu"} />
       </button>
 
       <Link href="/#contact" className="hnav-cell hnav-cta px">
-        <Pixels />
+        <Pixels cols={20} rows={9} />
         <Label text="Contact" />
         <span className="hnav-arrow" aria-hidden="true">
           →
         </span>
       </Link>
-      <ThemeTools {...theme} swatchStyle={swatchStyle} />
+      <ThemeTools {...theme} />
     </header>
   );
 }
@@ -76,13 +73,24 @@ function Label({ text }: { text: string }) {
   );
 }
 
-function ThemeTools({ palette, mode, onPalette, onMode, swatchStyle }: ThemeProps & { swatchStyle: SwatchStyle }) {
+// 9 x 9 pixel-art icons for the mode cell, in the same pixel language as the hover dissolve.
+const SUN = ["....#....", ".#.....#.", "...###...", "..#####..", "#.#####.#", "..#####..", "...###...", ".#.....#.", "....#...."];
+const MOON = ["...###...", "..##.....", ".##......", ".##......", ".##......", ".###...#.", "..######.", "...####..", "........."];
+
+function PixelIcon({ rows }: { rows: string[] }) {
   return (
-    <div className="hnav-tools">
-      <div className={`hnav-swatches ${swatchStyle}`} role="radiogroup" aria-label="Color theme">
-        {PALETTES.map((p) => {
-          const t = TOKENS[p][mode];
-          return (
+    <svg className="pxicon" viewBox="0 0 9 9" aria-hidden="true" shapeRendering="crispEdges">
+      {rows.flatMap((row, y) => [...row].map((c, x) => (c === "#" ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" /> : null)))}
+    </svg>
+  );
+}
+
+function ThemeTools({ palette, mode, onPalette, onMode }: ThemeProps) {
+  return (
+    <>
+      <div className="hnav-tools">
+        <div className="hnav-swatches" role="radiogroup" aria-label="Color theme">
+          {PALETTES.map((p) => (
             <button
               key={p}
               type="button"
@@ -90,33 +98,28 @@ function ThemeTools({ palette, mode, onPalette, onMode, swatchStyle }: ThemeProp
               aria-checked={p === palette}
               aria-label={`${PALETTE_LABELS[p]} theme`}
               className="sw"
-              style={{ "--sw-bg": t.bg, "--sw-accent": t.accent, "--sw-second": t["chart-2"], "--sw-text": t.text } as React.CSSProperties}
+              style={{ "--sw": TOKENS[p][mode].accent } as React.CSSProperties}
               onClick={() => onPalette(p)}
             >
-              <span className="sw-a" />
-              <span className="sw-b" />
-              <span className="sw-c" />
-              <span className="sw-d" />
+              {Array.from({ length: 9 }, (_, i) => (
+                <i key={i} />
+              ))}
             </button>
-          );
-        })}
+          ))}
+        </div>
       </div>
       <button
         type="button"
         role="switch"
         aria-checked={mode === "dark"}
         aria-label="Dark mode"
-        className="dn"
+        className="hnav-cell hnav-mode px"
         onClick={() => onMode(mode === "dark" ? "light" : "dark")}
       >
-        <span className="dn-stars" aria-hidden="true">
-          <i />
-          <i />
-          <i />
-        </span>
-        <span className="dn-cloud" aria-hidden="true" />
-        <span className="dn-knob" aria-hidden="true" />
+        <Pixels cols={20} rows={9} />
+        <Label text={mode === "dark" ? "Dark" : "Light"} />
+        <PixelIcon rows={mode === "dark" ? MOON : SUN} />
       </button>
-    </div>
+    </>
   );
 }

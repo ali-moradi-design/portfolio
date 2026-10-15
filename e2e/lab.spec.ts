@@ -1,12 +1,9 @@
 import { test, expect } from "@playwright/test";
 
-test("hero lab shows the combined hero and the photo variant", async ({ page }) => {
+test("hero lab shows the name and the live dashboard", async ({ page }) => {
   await page.goto("/lab");
   await expect(page.getByRole("heading", { level: 1, name: "Ali Moradi" })).toBeVisible();
-
-  await page.getByRole("button", { name: "D Combined with photo" }).click();
-  await expect(page).toHaveURL(/v=d/);
-  await expect(page.getByRole("img", { name: "Placeholder portrait" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Inspect all" })).toBeVisible();
 });
 
 test("inspector reports tokens and contrast", async ({ page }) => {
