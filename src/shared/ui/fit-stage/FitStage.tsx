@@ -23,6 +23,8 @@ export function FitStage({
     if (!box || !inner) return;
     const measure = () => {
       const h = inner.offsetHeight;
+      // Hidden or not laid out yet (e.g. inside a collapsed or hidden parent).
+      if (!h || !box.clientWidth || !box.clientHeight) return;
       const scale = Math.min(
         box.clientWidth / width,
         box.clientHeight / h,

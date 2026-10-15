@@ -4,19 +4,19 @@ import { useEffect, useRef } from "react";
 import { useTheme } from "@/shared/lib/theme";
 
 // Cursor after heronaiapp.com, measured frame by frame there. The native
-// pointer stays; a 10 px square in the accent color follows it, closing 10%
+// pointer stays; a 7 px square in the accent color follows it, closing 10%
 // of the gap every 60 Hz frame. Behind the square runs a 1 px line along the
-// path it took, up to MAX_LENGTH long and fading toward its old end. While
+// path it took, up to MAX_LENGTH long (shorter than Heron's, by choice) and fading toward its old end. While
 // the square still moves, the old end holds; once it almost stops, the line
 // retracts into it. Over links and controls nothing is drawn, nor inside the
 // hero, which has its own mark.
 
-const SIZE = 10;
+const SIZE = 7;
 /** Share of the gap left after one 60 Hz frame. */
 const DECAY = 0.9;
 /** Spacing of the recorded path points, px. */
 const STEP = 4;
-const MAX_LENGTH = 560;
+const MAX_LENGTH = 220;
 /** Speed below which the square counts as stopped, px per frame. */
 const REST_SPEED = 0.4;
 /** How fast the line retracts once the square stops, px per frame. */

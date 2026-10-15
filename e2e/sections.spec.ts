@@ -87,13 +87,3 @@ test("the CV downloads as a PDF", async ({ page, request }) => {
   expect(response.ok()).toBe(true);
   expect(response.headers()["content-type"]).toContain("application/pdf");
 });
-
-test("each filter design preview renders and filters", async ({ page }) => {
-  for (let i = 1; i <= 6; i++) {
-    await page.goto(`/projects/designs/${i}?type=dashboard`);
-    await expect(page.locator("main article").first()).toBeVisible();
-    await expect(page.getByRole("status").first()).toContainText(
-      /of \d+ projects/,
-    );
-  }
-});

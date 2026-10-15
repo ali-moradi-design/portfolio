@@ -12,7 +12,8 @@ import { useTheme } from "@/shared/lib/theme";
 // The DOM headline stays for screen readers and text selection, and is the fallback when the
 // layer is off (no WebGL2, touch screens, reduced motion).
 
-const MAX_DPR = 1.5;
+// The halftone hides resolution; 1x keeps the full-hero pass cheap on any GPU.
+const MAX_DPR = 1;
 const SIM_SCALE = 0.25;
 
 const VERT = `#version 300 es
@@ -288,6 +289,8 @@ export function TrailField({
     let smoothSpeed = 0;
     let raf = 0;
     let prev = 0;
+    /** False while the hero is scrolled out of view: no simulation then. */
+    let onScreen = true;
 
     const resize = () => {
       const rect = wrap.getBoundingClientRect();
@@ -445,11 +448,12 @@ export function TrailField({
         energy *= Math.pow(0.93, f);
         display();
       }
-      if (energy > 0.004 || pending) raf = requestAnimationFrame(tick);
+      if (onScreen && (energy > 0.004 || pending))
+        raf = requestAnimationFrame(tick);
       else prev = 0;
     };
     const request = () => {
-      if (!raf) raf = requestAnimationFrame(tick);
+      if (onScreen && !raf) raf = requestAnimationFrame(tick);
     };
     requestRef.current = request;
 
@@ -459,6 +463,8 @@ export function TrailField({
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       const inside = x >= 0 && y >= 0 && x <= rect.width && y <= rect.height;
+      // Outside the hero only the moment of leaving needs a frame (to hide the mark).
+      if (!inside && !pointer.inside) return;
       if (inside && pointer.inside) {
         const p = pending ?? { dx: 0, dy: 0 };
         pending = { dx: p.dx + x - pointer.x, dy: p.dy + y - pointer.y };
@@ -471,8 +477,23 @@ export function TrailField({
       resize();
       display();
     };
-    const ro = new ResizeObserver(rebuild);
+    let size = "";
+    const ro = new ResizeObserver(([entry]) => {
+      const next = `${Math.round(entry.contentRect.width)}x${Math.round(entry.contentRect.height)}`;
+      if (next === size) return;
+      size = next;
+      rebuild();
+    });
     ro.observe(wrap);
+    const io = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      if (!onScreen) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+        prev = 0;
+      }
+    });
+    io.observe(wrap);
     document.fonts.ready.then(rebuild);
     window.addEventListener("pointermove", onMove, { passive: true });
     host.appendChild(canvas);
@@ -481,6 +502,7 @@ export function TrailField({
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      io.disconnect();
       window.removeEventListener("pointermove", onMove);
       delete h1.dataset.gl;
       canvas.remove();
