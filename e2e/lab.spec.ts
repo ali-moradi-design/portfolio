@@ -9,7 +9,8 @@ test("hero lab shows the name and the live dashboard", async ({ page }) => {
 test("inspector reports tokens and contrast", async ({ page }) => {
   await page.goto("/lab");
   await page.getByRole("button", { name: "Inspect all" }).click();
-  await expect(page.getByText(/AA pass/).first()).toBeVisible();
+  await expect(page.getByText(/^Text .* AA pass$/).first()).toBeVisible();
+  await expect(page.getByText(/^Graphics min .* AA pass$/).first()).toBeVisible();
 });
 
 test("theme controls switch the palette and mode", async ({ page }) => {

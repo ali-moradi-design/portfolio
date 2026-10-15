@@ -2,14 +2,25 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { contrastRatio, parseColor } from "../_lib/contrast";
+import { AA_GRAPHICS, AA_TEXT, isGraphicRole, isToken, parseTokens } from "../_lib/inspectTokens";
 import { Pixels } from "./Pixels";
 
 type Box = { x: number; y: number; w: number; h: number };
+type TokenItem = {
+  label: string;
+  /** Resolved CSS value, shown when short (e.g. "24px"). */
+  value: string | null;
+  /** Set when the value is a color. */
+  swatch: string | null;
+  /** Graphics contrast against the element background (series colors only). */
+  contrast: number | null;
+};
 type Finding = {
   id: number;
   name: string;
-  tokens: string[];
+  tokens: { role: string; items: TokenItem[] }[];
   box: Box;
+  /** Text contrast of the first text inside the element. */
   contrast: number | null;
   /** Size in design pixels: the dashboard may be scaled to fit the hero. */
   size: { w: number; h: number };
@@ -38,6 +49,19 @@ function textElement(el: Element): Element | null {
   return null;
 }
 
+function resolveItem(el: Element, label: string, graphic: boolean, bg: string | null): TokenItem {
+  if (!isToken(label)) return { label, value: null, swatch: null, contrast: null };
+  const raw = getComputedStyle(el).getPropertyValue(label).trim();
+  const color = raw ? parseColor(raw) : null;
+  const bgColor = bg ? parseColor(bg) : null;
+  return {
+    label,
+    value: !color && raw && raw.length <= 10 ? raw : null,
+    swatch: color ? raw : null,
+    contrast: graphic && color && bgColor ? contrastRatio(color, bgColor) : null,
+  };
+}
+
 function describe(el: Element, id: number, origin: DOMRect): Finding {
   const r = el.getBoundingClientRect();
   const scale = parseFloat(el.closest("[data-scale]")?.getAttribute("data-scale") ?? "1") || 1;
@@ -51,17 +75,73 @@ function describe(el: Element, id: number, origin: DOMRect): Finding {
     const bg = bgValue ? parseColor(bgValue) : null;
     if (fg && bg) contrast = contrastRatio(fg, bg);
   }
+  const elBg = effectiveBackground(el);
   return {
     id,
     name: el.getAttribute("data-inspect") ?? el.tagName.toLowerCase(),
-    tokens: (el.getAttribute("data-tokens") ?? "")
-      .split(";")
-      .map((t) => t.trim())
-      .filter(Boolean),
+    tokens: parseTokens(el.getAttribute("data-tokens")).map((g) => ({
+      role: g.role,
+      items: g.items.map((item) => resolveItem(el, item, isGraphicRole(g.role), elBg)),
+    })),
     box: { x: r.left - origin.left, y: r.top - origin.top, w: r.width, h: r.height },
     size: { w: Math.round(r.width / scale), h: Math.round(r.height / scale) },
     contrast,
   };
+}
+
+function ratio(n: number) {
+  return `${n.toFixed(2)}:1`;
+}
+
+function FindingRow({ f }: { f: Finding }) {
+  const graphics = f.tokens.flatMap((g) => g.items).filter((i) => i.contrast !== null);
+  const minGraphics = graphics.length ? Math.min(...graphics.map((i) => i.contrast!)) : null;
+  return (
+    <li>
+      <span className="insp-report-name">{f.name}</span>
+      <span className="insp-report-size">
+        {f.size.w} × {f.size.h}
+      </span>
+      {f.tokens.length > 0 ? (
+        <dl className="insp-tokens">
+          {f.tokens.map((g) => (
+            <div key={g.role} className="insp-token-row">
+              <dt>{g.role}</dt>
+              <dd>
+                {g.items.map((item) => (
+                  <span
+                    key={item.label}
+                    className={`insp-chip${item.contrast !== null && item.contrast < AA_GRAPHICS ? " is-fail" : ""}`}
+                  >
+                    {item.swatch && <i className="insp-swatch" style={{ background: item.swatch }} />}
+                    <code>{item.label}</code>
+                    {item.value && <span className="insp-chip-value">{item.value}</span>}
+                    {item.contrast !== null && <span className="insp-chip-value">{ratio(item.contrast)}</span>}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <span className="insp-report-empty">No tokens</span>
+      )}
+      {(f.contrast !== null || minGraphics !== null) && (
+        <div className="insp-checks">
+          {f.contrast !== null && (
+            <span className={`insp-badge ${f.contrast >= AA_TEXT ? "is-pass" : "is-fail"}`}>
+              Text {ratio(f.contrast)} · {f.contrast >= AA_TEXT ? "AA pass" : "AA fail"}
+            </span>
+          )}
+          {minGraphics !== null && (
+            <span className={`insp-badge ${minGraphics >= AA_GRAPHICS ? "is-pass" : "is-fail"}`}>
+              Graphics min {ratio(minGraphics)} · {minGraphics >= AA_GRAPHICS ? "AA pass" : "AA fail"}
+            </span>
+          )}
+        </div>
+      )}
+    </li>
+  );
 }
 
 function intersects(a: Box, b: Box) {
@@ -243,18 +323,7 @@ export function Inspector({ children, hint }: { children: ReactNode; hint?: stri
         {findings.length > 0 && (
           <ul className="insp-report" aria-live="polite">
             {findings.map((f) => (
-              <li key={f.id}>
-                <span className="insp-report-name">{f.name}</span>
-                <span className="insp-report-size">
-                  {f.size.w} × {f.size.h}
-                </span>
-                <span className="insp-report-tokens">{f.tokens.join(", ") || "no tokens"}</span>
-                {f.contrast !== null && (
-                  <span className={`insp-badge ${f.contrast >= 4.5 ? "is-pass" : "is-fail"}`}>
-                    {f.contrast.toFixed(2)}:1 {f.contrast >= 4.5 ? "AA pass" : "AA fail"}
-                  </span>
-                )}
-              </li>
+              <FindingRow key={f.id} f={f} />
             ))}
           </ul>
         )}
