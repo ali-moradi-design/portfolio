@@ -19,6 +19,10 @@ test("menu links to the sections", async ({ page }) => {
   await expect(
     menu.getByRole("link", { name: "Work" }).first(),
   ).toHaveAttribute("href", "/#work");
+  await expect(menu.getByRole("link", { name: "Projects" })).toHaveAttribute(
+    "href",
+    "/projects",
+  );
 });
 
 test("inspector reports tokens and contrast", async ({ page }) => {

@@ -1,8 +1,8 @@
 {
   "e2e/home.spec.ts": {
-    "mtime": 1793313228.4521189,
-    "seen": 1793313782.9474432,
-    "ast_hash": "5f87cd17823522c86bfb2b99a945b14b",
+    "mtime": 1793315324.7565026,
+    "seen": 1793317329.8844802,
+    "ast_hash": "b0c24dfabd06181d220efd4795e15e1b",
     "semantic_hash": ""
   },
   "eslint.config.mjs": {
@@ -18,9 +18,9 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1793313228.4633632,
-    "seen": 1793313782.947451,
-    "ast_hash": "2ba8ddb8edca44f94a70a600657fccc3",
+    "mtime": 1793316546.8352387,
+    "seen": 1793317329.884489,
+    "ast_hash": "8c75cf24fcb5115caa0fec0462b634a5",
     "semantic_hash": ""
   },
   "playwright.config.ts": {
@@ -66,9 +66,9 @@
     "semantic_hash": "5b15127479006049683718c429dc5341"
   },
   "README.md": {
-    "mtime": 1793313643.2353878,
-    "seen": 1793313782.947636,
-    "ast_hash": "523b1858efe83c07e0e03892ba9a9f22",
+    "mtime": 1793316546.8358173,
+    "seen": 1793317329.8846946,
+    "ast_hash": "337a2eceabbf144eb27bdb85ffc52ba5",
     "semantic_hash": ""
   },
   "pnpm-workspace.yaml": {
@@ -120,15 +120,15 @@
     "semantic_hash": ""
   },
   "src/shared/config/content.test.ts": {
-    "mtime": 1793313228.4687572,
-    "seen": 1793313782.94753,
-    "ast_hash": "11b8e51c3f695b1d7136fb478c60b8e4",
+    "mtime": 1793315324.7558165,
+    "seen": 1793317329.884542,
+    "ast_hash": "c517019c2fadf406df35f12cde7f3705",
     "semantic_hash": ""
   },
   "src/shared/config/content.ts": {
-    "mtime": 1793313228.4687986,
-    "seen": 1793313782.9475315,
-    "ast_hash": "f9f639c09b2511aafa3bbaabc0dacd7c",
+    "mtime": 1793315324.7553227,
+    "seen": 1793317329.8845432,
+    "ast_hash": "215326c95dedeb1806729a818a487fdb",
     "semantic_hash": ""
   },
   "src/shared/config/index.ts": {
@@ -276,9 +276,9 @@
     "semantic_hash": ""
   },
   "src/widgets/header/ui/Header.tsx": {
-    "mtime": 1793313228.4725318,
-    "seen": 1793313782.9476151,
-    "ast_hash": "4a1c714d997a7b94b0b5d769980f5c11",
+    "mtime": 1793315324.7561762,
+    "seen": 1793317329.8846695,
+    "ast_hash": "586d08beaa941906eaf23248dfe6bea9",
     "semantic_hash": ""
   },
   "src/widgets/hero/index.ts": {
@@ -420,9 +420,9 @@
     "semantic_hash": ""
   },
   "e2e/sections.spec.ts": {
-    "mtime": 1793313633.772548,
-    "seen": 1793313782.9474459,
-    "ast_hash": "170f91ef63442ef87876961cfe2116e0",
+    "mtime": 1793315341.5030699,
+    "seen": 1793317329.884483,
+    "ast_hash": "d51ba8a17c43f9351b979d56dc6bf952",
     "semantic_hash": ""
   },
   "src/features/copy-text/index.ts": {
@@ -492,9 +492,9 @@
     "semantic_hash": ""
   },
   "src/widgets/experience/ui/Experience.tsx": {
-    "mtime": 1793313228.4720793,
-    "seen": 1793313782.9476032,
-    "ast_hash": "b3a35cb4dd02d26aba615b221ae57f23",
+    "mtime": 1793315341.5025012,
+    "seen": 1793317329.8846555,
+    "ast_hash": "cdbf327bde1046c7019588d24a5083af",
     "semantic_hash": ""
   },
   "src/widgets/footer/index.ts": {
@@ -564,9 +564,9 @@
     "semantic_hash": ""
   },
   "src/entities/project/model/projects.ts": {
-    "mtime": 1793313633.7696466,
-    "seen": 1793313782.9475014,
-    "ast_hash": "3f1100afaafd53b4facdcf959409a324",
+    "mtime": 1793316538.7410502,
+    "seen": 1793317329.8845148,
+    "ast_hash": "fc95ddadc8eb509a1c7a0d98c23a7ed2",
     "semantic_hash": ""
   },
   "src/entities/project/model/types.ts": {
@@ -582,9 +582,9 @@
     "semantic_hash": ""
   },
   "src/entities/project/ui/ProjectCard.tsx": {
-    "mtime": 1793313633.7712967,
-    "seen": 1793313782.9475055,
-    "ast_hash": "ae523373dc47987e68bca5ec34efa220",
+    "mtime": 1793315324.7568843,
+    "seen": 1793317329.8845189,
+    "ast_hash": "2ceaa6fa8a1443e968827bd8b2f7b936",
     "semantic_hash": ""
   },
   "src/entities/project/ui/ProjectLinks.tsx": {
@@ -624,9 +624,9 @@
     "semantic_hash": ""
   },
   "src/views/projects/ui/ProjectsPage.tsx": {
-    "mtime": 1793313228.4716725,
-    "seen": 1793313782.9475904,
-    "ast_hash": "d278c022f4148a58efe425e1245d9664",
+    "mtime": 1793315332.4041402,
+    "seen": 1793317329.884642,
+    "ast_hash": "84811d902acd6afedb86291da365c27e",
     "semantic_hash": ""
   },
   "src/widgets/experience/lib/formSchema.test.ts": {
@@ -696,9 +696,9 @@
     "semantic_hash": ""
   },
   "src/features/filter-projects/ui/parts.tsx": {
-    "mtime": 1793313228.4682524,
-    "seen": 1793313782.9475205,
-    "ast_hash": "b721970d0bf51e597acfd82cda7b4fda",
+    "mtime": 1793315332.4010406,
+    "seen": 1793317329.884533,
+    "ast_hash": "7e9fb55dddbfba53a178663fd610d5ee",
     "semantic_hash": ""
   },
   "src/shared/lib/motion/SmoothScroll.tsx": {
@@ -765,6 +765,288 @@
     "mtime": 1793313228.4711125,
     "seen": 1793313782.9475768,
     "ast_hash": "e2ed8a98a32acc62deb1e092c0a7f8bb",
+    "semantic_hash": ""
+  },
+  "scripts/previews/record.mjs": {
+    "mtime": 1793316819.8008037,
+    "seen": 1793317329.884496,
+    "ast_hash": "fe8d6e7e6dbe28cdf6142b66d90b94e6",
+    "semantic_hash": ""
+  },
+  "scripts/previews/scenes.mjs": {
+    "mtime": 1793316978.1809576,
+    "seen": 1793317329.884498,
+    "ast_hash": "05d355e06c116afc762e7664964aefc7",
+    "semantic_hash": ""
+  },
+  "public/projects/3d-configurator.jpg": {
+    "mtime": 1793317081.2547808,
+    "seen": 1793317329.8846993,
+    "ast_hash": "8bf45911937283033c05a70f69f3a7ef",
+    "semantic_hash": ""
+  },
+  "public/projects/3d-furniture-ar.jpg": {
+    "mtime": 1793317114.219876,
+    "seen": 1793317329.8847008,
+    "ast_hash": "6f2f1146b8d73a7fc087b5d5883f8059",
+    "semantic_hash": ""
+  },
+  "public/projects/aat-company.jpg": {
+    "mtime": 1793316643.2007763,
+    "seen": 1793317329.884702,
+    "ast_hash": "fe66938d0779a46716e3705757381edd",
+    "semantic_hash": ""
+  },
+  "public/projects/aml-dashboard.jpg": {
+    "mtime": 1793316859.690591,
+    "seen": 1793317329.884703,
+    "ast_hash": "87476dafd98080417217ad3cf3dfe1a9",
+    "semantic_hash": ""
+  },
+  "public/projects/arvand-company.jpg": {
+    "mtime": 1793316590.9992793,
+    "seen": 1793317329.8847044,
+    "ast_hash": "dcd91ee266e0db20af7cc781b9d847d5",
+    "semantic_hash": ""
+  },
+  "public/projects/cafe-hoor.jpg": {
+    "mtime": 1793316617.6778176,
+    "seen": 1793317329.8847053,
+    "ast_hash": "d21bbc58776aa1017562615f172e87c4",
+    "semantic_hash": ""
+  },
+  "public/projects/crypto-dashboard.jpg": {
+    "mtime": 1793315857.6058795,
+    "seen": 1793317329.8847065,
+    "ast_hash": "36b45872299ee5f0dc0381ec947795d0",
+    "semantic_hash": ""
+  },
+  "public/projects/dashboard-builder.jpg": {
+    "mtime": 1793316386.809194,
+    "seen": 1793317329.884708,
+    "ast_hash": "13a8035937c0f03373a980c1f3af71bd",
+    "semantic_hash": ""
+  },
+  "public/projects/formcanvas.jpg": {
+    "mtime": 1793317004.8329911,
+    "seen": 1793317329.884709,
+    "ast_hash": "13b1b7e05aa83bf9dda6e3f8c1217ea2",
+    "semantic_hash": ""
+  },
+  "public/projects/leather-shop.jpg": {
+    "mtime": 1793316544.9559302,
+    "seen": 1793317329.8847103,
+    "ast_hash": "429eeef6a4f5de2654b24b0034ded2c3",
+    "semantic_hash": ""
+  },
+  "public/projects/pixelbits.jpg": {
+    "mtime": 1793316498.6390138,
+    "seen": 1793317329.8847115,
+    "ast_hash": "ed4a52fd165ac9490c9807f3ca9b824b",
+    "semantic_hash": ""
+  },
+  "public/projects/pulsefit.jpg": {
+    "mtime": 1793316429.4344327,
+    "seen": 1793317329.8847125,
+    "ast_hash": "4b5c8292f373336dd6ff8ee2dba30ea2",
+    "semantic_hash": ""
+  },
+  "public/projects/shop-books.jpg": {
+    "mtime": 1793316520.841443,
+    "seen": 1793317329.8847136,
+    "ast_hash": "31396f87d697632f969fdec0910dbf80",
+    "semantic_hash": ""
+  },
+  "public/projects/shop-tools.jpg": {
+    "mtime": 1793316568.2103746,
+    "seen": 1793317329.884715,
+    "ast_hash": "9b04f74943d33f34bed45a04b346b200",
+    "semantic_hash": ""
+  },
+  "public/projects/team-chat.jpg": {
+    "mtime": 1793317029.6249604,
+    "seen": 1793317329.884716,
+    "ast_hash": "5bfc58c4d351f9b924b9b5e61c1f21a9",
+    "semantic_hash": ""
+  },
+  "public/projects/3d-configurator.mp4": {
+    "mtime": 1793317073.0282423,
+    "seen": 1793317329.884717,
+    "ast_hash": "bc2a223437d3a016d22c37e1bcbaf576",
+    "semantic_hash": ""
+  },
+  "public/projects/3d-configurator.webm": {
+    "mtime": 1793317081.1209636,
+    "seen": 1793317329.8847184,
+    "ast_hash": "f83fed1d668966efe8a19bc8f01d3e76",
+    "semantic_hash": ""
+  },
+  "public/projects/3d-furniture-ar.mp4": {
+    "mtime": 1793317104.571415,
+    "seen": 1793317329.8847194,
+    "ast_hash": "bf8dc5d223f4e90e968c24d822acc5de",
+    "semantic_hash": ""
+  },
+  "public/projects/3d-furniture-ar.webm": {
+    "mtime": 1793317114.1329656,
+    "seen": 1793317329.8847206,
+    "ast_hash": "40a6e0eadbe681f3e496a2ee8c4fc427",
+    "semantic_hash": ""
+  },
+  "public/projects/aat-company.mp4": {
+    "mtime": 1793316636.670928,
+    "seen": 1793317329.8847218,
+    "ast_hash": "b91f54f1d5f930029d3c9ab32db8aa21",
+    "semantic_hash": ""
+  },
+  "public/projects/aat-company.webm": {
+    "mtime": 1793316643.1049376,
+    "seen": 1793317329.8847227,
+    "ast_hash": "b8e67363ba48b7c8c92dbdfaf103295c",
+    "semantic_hash": ""
+  },
+  "public/projects/aml-dashboard.mp4": {
+    "mtime": 1793316850.3985138,
+    "seen": 1793317329.8847237,
+    "ast_hash": "ceb57994ddfc70930086708c0d727a18",
+    "semantic_hash": ""
+  },
+  "public/projects/aml-dashboard.webm": {
+    "mtime": 1793316859.5889504,
+    "seen": 1793317329.884725,
+    "ast_hash": "2e69533aa1ae3457420c8b9e73661ea2",
+    "semantic_hash": ""
+  },
+  "public/projects/arvand-company.mp4": {
+    "mtime": 1793316585.0341039,
+    "seen": 1793317329.8847263,
+    "ast_hash": "62ff88782b7b4dc30d4f53357ff9831a",
+    "semantic_hash": ""
+  },
+  "public/projects/arvand-company.webm": {
+    "mtime": 1793316590.8729343,
+    "seen": 1793317329.8847272,
+    "ast_hash": "5101b765e8b45e53c888b3212552a84e",
+    "semantic_hash": ""
+  },
+  "public/projects/cafe-hoor.mp4": {
+    "mtime": 1793316610.99693,
+    "seen": 1793317329.8847284,
+    "ast_hash": "1e272dc0f1cc2d9764ad3657c35425f2",
+    "semantic_hash": ""
+  },
+  "public/projects/cafe-hoor.webm": {
+    "mtime": 1793316617.5489361,
+    "seen": 1793317329.8847299,
+    "ast_hash": "01bdc4748dfb70f1d234cac27595f946",
+    "semantic_hash": ""
+  },
+  "public/projects/crypto-dashboard.mp4": {
+    "mtime": 1793315849.7091963,
+    "seen": 1793317329.8847308,
+    "ast_hash": "2dae2ce80089e2455b25b08ae6013fce",
+    "semantic_hash": ""
+  },
+  "public/projects/crypto-dashboard.webm": {
+    "mtime": 1793315857.4968908,
+    "seen": 1793317329.8847327,
+    "ast_hash": "69d0fef38599d1de02a8583cb9d446a4",
+    "semantic_hash": ""
+  },
+  "public/projects/dashboard-builder.mp4": {
+    "mtime": 1793316379.6985004,
+    "seen": 1793317329.8847337,
+    "ast_hash": "1583800b3c975ad1aae36bb6ac0257a3",
+    "semantic_hash": ""
+  },
+  "public/projects/dashboard-builder.webm": {
+    "mtime": 1793316386.7049222,
+    "seen": 1793317329.8847353,
+    "ast_hash": "90caeb5c59ee386ec63b7e503d3dd3f5",
+    "semantic_hash": ""
+  },
+  "public/projects/formcanvas.mp4": {
+    "mtime": 1793316998.463381,
+    "seen": 1793317329.8847363,
+    "ast_hash": "d41ccfeba186dcfdc749d373f07437d3",
+    "semantic_hash": ""
+  },
+  "public/projects/formcanvas.webm": {
+    "mtime": 1793317004.7049592,
+    "seen": 1793317329.8847375,
+    "ast_hash": "cfc00262721514ca3616c95e80b4388c",
+    "semantic_hash": ""
+  },
+  "public/projects/leather-shop.mp4": {
+    "mtime": 1793316538.5531805,
+    "seen": 1793317329.8847384,
+    "ast_hash": "65816ea2eac38cc52b87f1644d98399b",
+    "semantic_hash": ""
+  },
+  "public/projects/leather-shop.webm": {
+    "mtime": 1793316544.8489318,
+    "seen": 1793317329.8847396,
+    "ast_hash": "90a59530b86adf34dbf391c50f8f76a7",
+    "semantic_hash": ""
+  },
+  "public/projects/pixelbits.mp4": {
+    "mtime": 1793316490.199967,
+    "seen": 1793317329.8847406,
+    "ast_hash": "ed30ac7ef4224e487a27e1ced2d03d6d",
+    "semantic_hash": ""
+  },
+  "public/projects/pixelbits.webm": {
+    "mtime": 1793316498.420929,
+    "seen": 1793317329.8847418,
+    "ast_hash": "25f00764ec01f764e2334de6fc7cf5cf",
+    "semantic_hash": ""
+  },
+  "public/projects/pulsefit.mp4": {
+    "mtime": 1793316424.1569245,
+    "seen": 1793317329.8847432,
+    "ast_hash": "c7bb07f7e063fda7dead2c41d3295c5a",
+    "semantic_hash": ""
+  },
+  "public/projects/pulsefit.webm": {
+    "mtime": 1793316429.3329248,
+    "seen": 1793317329.8847444,
+    "ast_hash": "e717b60641282918deaee97c5ce7a819",
+    "semantic_hash": ""
+  },
+  "public/projects/shop-books.mp4": {
+    "mtime": 1793316514.7703862,
+    "seen": 1793317329.8847454,
+    "ast_hash": "6df09ca4bf4e82638972b5451b9e254d",
+    "semantic_hash": ""
+  },
+  "public/projects/shop-books.webm": {
+    "mtime": 1793316520.7089303,
+    "seen": 1793317329.8847466,
+    "ast_hash": "4a878fd6d68343086f6bc09f780b92fb",
+    "semantic_hash": ""
+  },
+  "public/projects/shop-tools.mp4": {
+    "mtime": 1793316562.1669016,
+    "seen": 1793317329.88475,
+    "ast_hash": "414dd4a23b1e91133e881b7d4786ff1a",
+    "semantic_hash": ""
+  },
+  "public/projects/shop-tools.webm": {
+    "mtime": 1793316568.100933,
+    "seen": 1793317329.8847508,
+    "ast_hash": "7c294d34f48a42b5cb88e3cad10be0d9",
+    "semantic_hash": ""
+  },
+  "public/projects/team-chat.mp4": {
+    "mtime": 1793317023.0685515,
+    "seen": 1793317329.8847523,
+    "ast_hash": "9cf8313eca1c8474e8aeb2bafc37bc4c",
+    "semantic_hash": ""
+  },
+  "public/projects/team-chat.webm": {
+    "mtime": 1793317029.5009606,
+    "seen": 1793317329.8847535,
+    "ast_hash": "14e606d2194306af35dbe12be9ba25f2",
     "semantic_hash": ""
   },
   "pnpm-lock.yaml": {

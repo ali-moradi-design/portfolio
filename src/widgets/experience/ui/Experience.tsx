@@ -1,14 +1,15 @@
-import { experience, person, workSamples } from "@/shared/config";
+import { experience, person } from "@/shared/config";
 import { Reveal } from "@/shared/ui/reveal";
 import { Section } from "@/shared/ui/section";
-import { WorkSamples } from "./WorkSamples";
 
-/**
- * Roles as ruled rows; each opens to show what was done there and, for the
- * private products, a small working sample of each.
- */
-const samplesOf = (roleId: string) =>
-  workSamples.filter((w) => w.roleId === roleId);
+// Work samples (Neor, Asiatech) are hidden for now, until we decide whether
+// they stay. To bring them back, restore these lines and the block below.
+// import { workSamples } from "@/shared/config";
+// import { WorkSamples } from "./WorkSamples";
+// const samplesOf = (roleId: string) =>
+//   workSamples.filter((w) => w.roleId === roleId);
+
+/** Roles as ruled rows; each opens to show what was done there. */
 
 export function Experience() {
   return (
@@ -63,9 +64,9 @@ export function Experience() {
                   </li>
                 ))}
               </ul>
-              {samplesOf(r.id).length > 0 && (
+              {/* {samplesOf(r.id).length > 0 && (
                 <WorkSamples items={samplesOf(r.id)} />
-              )}
+              )} */}
             </div>
           </details>
         ))}

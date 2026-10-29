@@ -46,6 +46,8 @@ test("projects page filters by type and tech through the URL", async ({
   await expect(page).toHaveURL(/\/projects$/);
 });
 
+// Work samples are hidden for now (see widgets/experience/ui/Experience.tsx).
+/*
 test("Neor's work samples sit in its experience row", async ({ page }) => {
   await page.goto("/");
   const neor = page.locator("#experience details").first();
@@ -67,6 +69,7 @@ test("Neor's work samples sit in its experience row", async ({ page }) => {
   await form.getByRole("button", { name: "Submit" }).click();
   await expect(form.getByText(/^Valid\./)).toBeVisible();
 });
+*/
 
 test("experience rows open one at a time", async ({ page }) => {
   await page.goto("/");

@@ -19,6 +19,7 @@ export const person = {
 
 export const nav = [
   { href: "#work", label: "Work" },
+  { href: "/projects", label: "Projects" },
   { href: "#experience", label: "Experience" },
   { href: "#skills", label: "Skills" },
   { href: "#about", label: "About" },

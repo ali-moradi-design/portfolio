@@ -36,7 +36,7 @@ export function ResultCount({
 
 export function Results({
   s,
-  columns = 2,
+  columns = 3,
 }: {
   s: FilterState;
   columns?: 2 | 3;

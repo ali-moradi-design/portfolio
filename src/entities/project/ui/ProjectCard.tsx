@@ -40,5 +40,5 @@ export function ProjectCard({
 /** Responsive card grid: `columns` on wide screens, fewer as space shrinks. */
 export const projectGrid = {
   2: "grid gap-x-[clamp(24px,3vw,48px)] gap-y-14 md:grid-cols-2",
-  3: "grid gap-x-[clamp(20px,2.5vw,40px)] gap-y-14 sm:grid-cols-2 lg:grid-cols-3",
+  3: "grid gap-x-[clamp(20px,2.5vw,40px)] gap-y-14 sm:grid-cols-2 lg:grid-cols-[repeat(3,minmax(0,1fr))]",
 } as const;

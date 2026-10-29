@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { experience, nav, workSamples } from "./content";
 
 describe("nav", () => {
-  it("links only to in-page sections", () => {
+  it("links to home sections or to pages", () => {
     for (const item of nav) {
-      expect(item.href).toMatch(/^#[a-z]+$/);
+      expect(item.href).toMatch(/^(#|\/)[a-z]+$/);
     }
   });
 

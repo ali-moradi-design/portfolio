@@ -13,6 +13,5 @@
   "14": "HomePage.tsx",
   "15": "dependencies",
   "16": "eslint.config.mjs",
-  "18": "@playwright/test",
-  "21": "react"
+  "18": "@playwright/test"
 }
