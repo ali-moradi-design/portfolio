@@ -23,7 +23,7 @@ const p = (slug: string, extra: Partial<Project>): Project => ({
 const list = [
   p("a", { type: "dashboard", tech: ["React", "Zod"] }),
   p("b", { type: "website", tech: ["React"], year: 2026 }),
-  p("c", { type: "dashboard", tech: ["Vue"], placeholder: true }),
+  p("c", { type: "dashboard", tech: ["Vue"], year: 2024 }),
 ];
 
 describe("project filters", () => {
@@ -69,13 +69,8 @@ describe("project filters", () => {
 });
 
 describe("visibleProjects", () => {
-  it("hides placeholders in production and sorts newest first", () => {
-    const prod = visibleProjects(list, { NODE_ENV: "production" });
-    expect(prod.map((x) => x.slug)).toEqual(["b", "a"]);
-    const ci = visibleProjects(list, {
-      NODE_ENV: "production",
-      SHOW_SAMPLE_PROJECTS: "1",
-    });
-    expect(ci).toHaveLength(3);
+  it("sorts newest first and keeps the list order within a year", () => {
+    const same = [p("x", {}), p("y", {}), p("z", { year: 2026 })];
+    expect(visibleProjects(same).map((x) => x.slug)).toEqual(["z", "x", "y"]);
   });
 });
