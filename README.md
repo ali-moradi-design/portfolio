@@ -62,6 +62,10 @@ detail pages.
    muted loop as `<slug>.mp4` (H.264, about 720 px wide, under 2 MB) and `<slug>.webm`.
    Videos play only while their card is hovered, one at a time. Without them the card shows a
    "Preview coming soon" frame.
+3. Record the preview from the live site: add a scene to `scripts/previews/scenes.mjs` (what
+   to click and scroll, about 8 to 10 seconds) and run `pnpm previews <slug>`. It needs
+   `ffmpeg`; set `CHROMIUM_PATH` to use an installed Chromium. Frames come from the DevTools
+   screencast and are encoded at 960×600 (mp4 H.264, webm VP9, jpg poster = first frame).
 
 ## Structure
 

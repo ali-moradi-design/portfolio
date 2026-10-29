@@ -6,9 +6,17 @@ import type { Project } from "./types";
 
 const gh = (repo: string) => `https://github.com/ali-moradi-design/${repo}`;
 
+/** Recorded with `pnpm previews` (scripts/previews). */
+const preview = (slug: string) => ({
+  mp4: `/projects/${slug}.mp4`,
+  webm: `/projects/${slug}.webm`,
+  poster: `/projects/${slug}.jpg`,
+});
+
 export const projects: readonly Project[] = [
   {
     slug: "aml-dashboard",
+    preview: preview("aml-dashboard"),
     title: "AML Monitor",
     summary:
       "Anti-money-laundering dashboard for a fictional bank: alerts, cases, a money-flow network graph and role-based access.",
@@ -34,6 +42,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "dashboard-builder",
+    preview: preview("dashboard-builder"),
     title: "Dashboard builder",
     summary:
       "Build dashboards from data without code, like Metabase, with queries running in the browser.",
@@ -58,6 +67,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "formcanvas",
+    preview: preview("formcanvas"),
     title: "formcanvas",
     summary:
       "Schema-driven form engine with a visual builder: publish forms by link, embed or npm package, then analyse the responses.",
@@ -83,6 +93,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "pixelbits",
+    preview: preview("pixelbits"),
     title: "Pixelbits UI kit",
     summary:
       "A calm React UI kit whose pixel effects appear only at the moment of interaction.",
@@ -98,6 +109,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "crypto-dashboard",
+    preview: preview("crypto-dashboard"),
     title: "Live crypto dashboard",
     summary:
       "Real-time prices, candlestick charts and an order book from a public exchange WebSocket, with no server.",
@@ -111,6 +123,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "team-chat",
+    preview: preview("team-chat"),
     title: "Team chat",
     summary:
       "Slack-style chat with channels, threads, reactions, files and live presence, on Node.js and MongoDB.",
@@ -133,6 +146,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "shop-books",
+    preview: preview("shop-books"),
     title: "Bay Book Company",
     summary:
       "Bookshop with Partial Prerendering: a cached page shell with live stock and reviews, on Postgres.",
@@ -146,6 +160,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "leather-shop",
+    preview: preview("leather-shop"),
     title: "Welt & Grain",
     summary:
       "Leather goods shop with Partial Prerendering, live stock per size and a MongoDB API.",
@@ -160,6 +175,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "shop-tools",
+    preview: preview("shop-tools"),
     title: "Tool shop",
     summary:
       "Tool shop rendered on the server per request, with spec filters in your own units and side-by-side compare.",
@@ -173,6 +189,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "arvand-company",
+    preview: preview("arvand-company"),
     title: "Arvand Partners",
     summary:
       "Bilingual company site for a fictional consulting firm, in English and right-to-left Persian.",
@@ -186,6 +203,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "cafe-hoor",
+    preview: preview("cafe-hoor"),
     title: "Hoor Cafe & Restaurant",
     summary:
       "Site for a real Tehran cafe, with a fast mobile menu behind the QR code on its tables.",
@@ -200,6 +218,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "aat-company",
+    preview: preview("aat-company"),
     title: "Architecture studio site",
     summary:
       "Recreation of an architecture studio's site with scroll choreography and smooth scrolling.",
@@ -212,21 +231,24 @@ export const projects: readonly Project[] = [
     repo: gh("aat-company"),
     note: "A demo recreation of AAT|Architecten, not affiliated with the studio. The contact form sends nothing and the site is not indexed.",
   },
-  {
-    slug: "brainstorming-tool",
-    title: "Ideabloom",
-    summary:
-      "Local-first mind-map tool: boards stay in your browser and work offline.",
-    description:
-      "Radial mind maps with keyboard shortcuts, free links between ideas, tags, notes, templates (SWOT, Six Hats and more), undo and redo, Ctrl K search and export to PNG, SVG or Markdown. Boards are stored in IndexedDB and backed up as JSON. English, Spanish and Persian.",
-    type: "tool",
-    tech: ["React", "Vite", "React Flow", "Dexie", "Zustand", "Zod"],
-    tags: ["PWA", "Offline", "RTL"],
-    year: 2026,
-    repo: gh("brainstorming-tool"),
-  },
+  // Ideabloom (brainstorming-tool) is left out until it gets more work.
+  // {
+  //   slug: "brainstorming-tool",
+  //   preview: preview("brainstorming-tool"),
+  //   title: "Ideabloom",
+  //   summary:
+  //     "Local-first mind-map tool: boards stay in your browser and work offline.",
+  //   description:
+  //     "Radial mind maps with keyboard shortcuts, free links between ideas, tags, notes, templates (SWOT, Six Hats and more), undo and redo, Ctrl K search and export to PNG, SVG or Markdown. Boards are stored in IndexedDB and backed up as JSON. English, Spanish and Persian.",
+  //   type: "tool",
+  //   tech: ["React", "Vite", "React Flow", "Dexie", "Zustand", "Zod"],
+  //   tags: ["PWA", "Offline", "RTL"],
+  //   year: 2026,
+  //   repo: gh("brainstorming-tool"),
+  // },
   {
     slug: "pulsefit",
+    preview: preview("pulsefit"),
     title: "Pulsefit",
     summary:
       "Offline-first workout and diet tracker for a coach and an athlete, as an installable PWA.",
@@ -241,6 +263,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "3d-configurator",
+    preview: preview("3d-configurator"),
     title: "3D sneaker configurator",
     summary:
       "Change colorway, accent and finish on a live 3D shoe, share the design as a link or save a PNG.",
@@ -254,6 +277,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: "3d-furniture-ar",
+    preview: preview("3d-furniture-ar"),
     title: "Furniture shop with AR",
     summary:
       "Furniture product pages with a 3D viewer, fabric options and “view in your room” augmented reality.",

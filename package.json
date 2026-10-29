@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "previews": "node scripts/previews/record.mjs",
     "start": "next start",
     "lint": "eslint && steiger ./src",
     "typecheck": "next typegen && tsc --noEmit",
