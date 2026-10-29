@@ -67,7 +67,7 @@ export function Header({ showWork = true }: { showWork?: boolean }) {
             {items.map((item) => (
               <li key={item.href} className="flex">
                 <Link
-                  href={`/${item.href}`}
+                  href={item.href.startsWith("#") ? `/${item.href}` : item.href}
                   className={cn(
                     cell,
                     "max-[1100px]:h-header max-[1100px]:min-w-55 max-[1100px]:border-t max-[1100px]:border-l-0",

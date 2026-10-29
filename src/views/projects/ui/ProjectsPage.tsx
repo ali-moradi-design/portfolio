@@ -43,7 +43,7 @@ export function ProjectsPage() {
         {/* Without JavaScript, or before the URL is read, the full list shows. */}
         <Suspense
           fallback={
-            <div className={projectGrid[2]}>
+            <div className={projectGrid[3]}>
               {projects.map((p) => (
                 <ProjectCard key={p.slug} project={p} detailed />
               ))}
