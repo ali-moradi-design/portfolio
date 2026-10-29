@@ -42,10 +42,6 @@ jobs:
 
       - name: Build
         run: pnpm build
-        env:
-          # The E2E tests run against the sample projects (see
-          # src/entities/project/model/visible.ts); the Docker image never has them.
-          SHOW_SAMPLE_PROJECTS: "1"
 
       - name: Install Playwright browser
         run: pnpm exec playwright install --with-deps chromium

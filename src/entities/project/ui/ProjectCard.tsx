@@ -6,7 +6,7 @@ import { ProjectPreview } from "./ProjectPreview";
 /**
  * A project card: preview, title, text, tags and links. The home page uses
  * the short summary and a few tags; the projects page (`detailed`) the full
- * description and every tag.
+ * description, the note and every tag.
  */
 export function ProjectCard({
   project,
@@ -25,6 +25,11 @@ export function ProjectCard({
         <p className="text-muted">
           {detailed ? project.description : project.summary}
         </p>
+        {detailed && project.note && (
+          <p className="border-l-2 border-accent pl-3 text-body-sm">
+            {project.note}
+          </p>
+        )}
       </div>
       <ProjectTags project={project} limit={detailed ? undefined : 4} />
       <ProjectLinks project={project} />

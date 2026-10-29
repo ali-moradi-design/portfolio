@@ -57,16 +57,11 @@ Each demo project runs on its own subdomain (`<slug>.ali-moradi-develop.com`). T
 detail pages.
 
 1. Add an entry to `src/entities/project/model/projects.ts` (fields are documented in
-   `types.ts`). `featured: true` puts it on the home page (the first six).
+   `types.ts`). `featured: true` puts it on the home page (the first four).
 2. Put its images in `public/projects/`: a `<slug>.jpg` still (16:10) and, if wanted, a short
    muted loop as `<slug>.mp4` (H.264, about 720 px wide, under 2 MB) and `<slug>.webm`.
-   Videos play only while their card is hovered, one at a time.
-3. Delete the `placeholder` sample entries once real projects are in.
-
-Placeholder entries show only in `pnpm dev` and in builds with `SHOW_SAMPLE_PROJECTS=1` (the CI
-build that the E2E tests run against). Until a real project exists, the live site hides the
-Work section and its menu link, the hero button leads to Experience, and `/projects` returns
-404; all of it comes back with the first real project.
+   Videos play only while their card is hovered, one at a time. Without them the card shows a
+   "Preview coming soon" frame.
 
 ## Structure
 

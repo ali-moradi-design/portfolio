@@ -1,7 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-// Runs against a build made with SHOW_SAMPLE_PROJECTS=1 (see the CI workflow).
-
 test("every menu link has a section", async ({ page }) => {
   await page.goto("/");
   for (const id of ["work", "experience", "skills", "about", "contact"]) {

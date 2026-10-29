@@ -1,7 +1,6 @@
 {
   "0": "scripts",
   "1": "opengraph-image.tsx",
-  "2": "package.json",
   "5": "Deploy Job (SSH, compose pull/up --wait)",
   "6": "SampleDashboard.tsx",
   "7": "compilerOptions",
