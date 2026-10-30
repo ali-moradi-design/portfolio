@@ -135,6 +135,8 @@ async function record(browser, scene) {
   await page.waitForTimeout(600);
   const end = clock();
   await cdp.send("Page.stopScreencast");
+  // Undo what the scene changed on the live demo.
+  if (scene.cleanup) await scene.cleanup(page, h);
   await context.close();
   // `speed` > 1 plays a slow scene (software WebGL) faster.
   const speed = scene.speed ?? 1;
