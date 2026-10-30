@@ -92,9 +92,12 @@ are in the `@theme` blocks of `src/app/globals.css`.
 
 - **CI** (`.github/workflows/ci.yml`, required check `ci`): format, lint, typecheck, unit
   tests, build and E2E tests on every pull request and push to `main`.
-- **CD** (`.github/workflows/docker.yml`): every push to `main` builds the Docker image,
-  pushes it to `ghcr.io/ali-moradi-design/portfolio` (tagged `main` and the commit SHA), then
-  the server pulls it over SSH (`docker compose pull && up -d`) and the site is checked.
+- **CD** (`.github/workflows/docker.yml`): after CI passed on `main`, builds the Docker image
+  `ghcr.io/ali-moradi-design/portfolio:<commit SHA>`, then
+  [deploy-kit](https://github.com/ali-moradi-design/deploy-kit)'s `deploy-app.yml` sends the SHA
+  over SSH. On the server the key is forced to `deploy-app portfolio`: it pulls the image, restarts
+  with `up --wait` and rolls back by itself if the new container is not healthy. Then a few pages
+  are checked through Nginx.
 
 ## Stack
 
