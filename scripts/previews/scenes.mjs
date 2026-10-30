@@ -1,10 +1,10 @@
 // What each preview shows. `setup` runs before recording starts (sign-in,
 // first page); `play` is the recorded part, about 8 to 10 seconds. Scenes only
-// look around: nothing is sent, saved or bought on the live demos.
+// look around: nothing is sent or bought, and `cleanup` undoes any edit.
 
 const site = (sub) => `https://${sub}.ali-moradi-develop.com`;
 
-/** @type {{ slug: string, url: string, colorScheme?: "light" | "dark", settle?: number, setup?: Function, play: Function }[]} */
+/** @type {{ slug: string, url: string, colorScheme?: "light" | "dark", settle?: number, setup?: Function, play: Function, cleanup?: Function, speed?: number }[]} */
 export const scenes = [
   {
     slug: "aml-dashboard",
@@ -29,60 +29,82 @@ export const scenes = [
       await h.wait(400);
       await h.hover(page.locator("table tbody tr").nth(7), 40);
       await h.wait(400);
-      await h.go(
-        page.getByRole("link", { name: "Account network" }),
-        async () => {
-          await page.waitForLoadState("networkidle");
-          await page.waitForTimeout(6000);
-        },
-      );
-      await h.wait(2500);
+      await h.go(page.getByRole("link", { name: "Reports" }), async () => {
+        await page.waitForLoadState("networkidle");
+        await page.waitForTimeout(3000);
+      });
+      await h.wait(800);
+      await page.mouse.move(760, 450, { steps: 20 });
+      await h.scroll(600, 1800);
+      await h.wait(1500);
     },
   },
   {
     slug: "dashboard-builder",
     url: `${site("dashboard-builder")}/d/sample-sales`,
-    settle: 6000,
+    settle: 5000,
     async play(page, h) {
-      await h.wait(800);
-      await h.scroll(450, 1800);
-      await h.wait(800);
-      await h.scroll(-450, 1200);
+      await h.wait(1200);
+      await h.go(page.getByText("Edit", { exact: true }).first(), async () => {
+        await page.waitForURL(/\/edit/);
+        await page.waitForTimeout(2500);
+      });
+      await h.wait(500);
+      // Select widgets so the settings panel fills, then open the query builder.
       await h.click(
-        page
-          .getByRole("link", { name: "Edit", exact: true })
-          .or(page.getByRole("button", { name: "Edit", exact: true }))
-          .first(),
+        page.getByText("Revenue by month", { exact: true }).first(),
       );
+      await h.wait(1500);
+      await h.click(
+        page.getByText("Share by category", { exact: true }).first(),
+      );
+      await h.wait(1300);
+      await h.click(page.getByRole("button", { name: "Edit query" }));
       await h.wait(2500);
     },
   },
   {
     slug: "formcanvas",
     url: `${site("formcanvas")}/sign-in`,
-    settle: 2500,
+    settle: 2000,
     async setup(page) {
       await page.getByRole("button", { name: /Try the demo account/ }).click();
       await page.waitForURL(/\/forms/);
       await page.waitForLoadState("networkidle");
-      // Start on the form with sample answers: its responses and charts.
-      await page
-        .getByRole("link", { name: /^[1-9]\d* responses/ })
-        .first()
-        .click();
-      await page.waitForURL(/\/responses/);
-      await page.getByText("Analytics", { exact: true }).click();
-      await page.waitForURL(/\/analytics/);
+      // The builder of the sample form with the most field types.
+      await page.getByRole("link", { name: /^Product feedback/ }).click();
       await page.waitForLoadState("networkidle");
     },
     async play(page, h) {
       await h.wait(800);
-      await h.scroll(500, 1800);
-      await h.wait(800);
-      await h.scroll(500, 1800);
-      await h.wait(600);
-      await h.scroll(-1000, 1200);
+      // Select a question, add a rating after it and give it a label.
+      await h.click(page.getByRole("button", { name: /^plan \(Question/ }));
+      await h.wait(1200);
+      await h.hover(page.getByRole("button", { name: "Add Number" }), 20);
+      await h.wait(300);
+      await h.click(page.getByRole("button", { name: "Add Rating" }));
+      await h.wait(900);
+      const label = page.locator("input[name=label_en]");
+      await h.click(label);
+      await label.fill("");
+      await label.pressSequentially("How was your onboarding?", { delay: 55 });
+      await h.wait(500);
+      await h.click(page.locator("input[name=required]"));
+      await h.wait(700);
+      await h.hover(page.getByText("How was your onboarding?").first());
       await h.wait(1500);
+    },
+    async cleanup(page) {
+      // The demo form autosaves: delete the added question again.
+      const added = page.getByRole("button", { name: /^rating\w* \(Question/ });
+      while (await added.count()) {
+        await added.first().click();
+        await page
+          .getByRole("button", { name: "Delete", exact: true })
+          .first()
+          .click();
+        await page.waitForTimeout(1500);
+      }
     },
   },
   {
@@ -90,15 +112,17 @@ export const scenes = [
     url: site("pixelbits"),
     colorScheme: "dark",
     async play(page, h) {
-      await h.wait(600);
-      await h.hover(page.getByRole("link", { name: "GET STARTED" }));
-      await h.wait(700);
+      await h.wait(1500);
       await h.hover(page.getByRole("link", { name: "BROWSE COMPONENTS" }));
-      await h.wait(700);
-      await h.scroll(700, 2000);
-      await h.wait(600);
-      await h.scroll(700, 2000);
       await h.wait(800);
+      await h.go(page.getByRole("link", { name: "GET STARTED" }), async () => {
+        await page.waitForLoadState("networkidle");
+        await page.waitForTimeout(800);
+      });
+      await h.wait(1500);
+      await page.mouse.move(760, 450, { steps: 20 });
+      await h.scroll(600, 2000);
+      await h.wait(1500);
     },
   },
   {
