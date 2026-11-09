@@ -29,9 +29,10 @@ export function SmoothScroll() {
         return;
       const target = document.querySelector(a.hash);
       if (!target) return;
+      // next/link skips a click whose default is prevented, so we glide
+      // instead and keep the hash in the URL. The click still propagates, so
+      // the link's own onClick runs (the mobile menu closes on it).
       e.preventDefault();
-      // Stop next/link from jumping; glide instead and keep the hash in the URL.
-      e.stopPropagation();
       history.pushState(null, "", a.hash);
       // Lenis honours the html scroll-padding-top, so the header gap is kept.
       lenis.scrollTo(target as HTMLElement);
