@@ -25,6 +25,18 @@ test("menu links to the sections", async ({ page }) => {
   );
 });
 
+test("menu closes after a section link is clicked", async ({ page }) => {
+  // Smooth scroll handles in-page links and is off for reduced motion.
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.setViewportSize({ width: 400, height: 800 });
+  await page.goto("/");
+  const menu = page.getByRole("navigation", { name: "Primary" });
+  await page.getByRole("button", { name: "Menu" }).click();
+  await menu.getByRole("link").first().click();
+  await expect(menu).toBeHidden();
+  await expect(page).toHaveURL(/#\w+$/);
+});
+
 test("inspector reports tokens and contrast", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Inspect all" }).click();
